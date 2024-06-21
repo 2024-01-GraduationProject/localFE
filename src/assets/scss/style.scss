@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+// setting
+@import "setting/fonts";
+@import "setting/vars";
+@import "setting/mixin";
+
+// section
+@import "section/header";
+@import "section/header2";
+@import "section/intro";
+@import "section/join";
+@import "section/login";
+@import "section/taste";
+@import "section/searchBar";
+@import "section/main";

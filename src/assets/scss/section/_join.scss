@@ -1,0 +1,73 @@
+#join {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2.5rem;
+}
+
+img {
+  width: 330px;
+  height: 125px;
+  object-fit: cover;
+}
+
+.join_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .join_input {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1.3rem;
+
+    .join_email,
+    .join_pw {
+      width: 20rem;
+      height: 3.5rem;
+      border: 1px solid lightgray;
+      border-radius: 5px;
+      padding: 0 10px;
+      margin-bottom: 8px;
+    }
+
+    small {
+      font-size: 10px;
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: darkgray;
+    }
+  }
+
+  .check_agree {
+    font-size: 12px;
+    margin-right: 6rem;
+    padding-bottom: 0.5rem;
+
+    ul {
+      list-style: none;
+      padding-left: 0px;
+    }
+
+    label {
+      padding-left: 1rem;
+    }
+  }
+
+  .agree_btn {
+    width: 21.5rem;
+    height: 3.5rem;
+    background-color: #b6dc80;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 10px 0 10px 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-size: 1rem;
+  }
+}
