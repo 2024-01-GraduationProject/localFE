@@ -17,7 +17,7 @@ const Main = () => {
           <IoLibrary size="1.7em" />
         </span> */}
       </div>
-      <div>커밋용</div>
+      <div>커밋용코드</div>
     </>
   );
 };
