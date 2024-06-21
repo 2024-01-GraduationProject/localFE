@@ -17,6 +17,7 @@ const Main = () => {
           <IoLibrary size="1.7em" />
         </span> */}
       </div>
+      <div>커밋</div>
     </>
   );
 };
