@@ -38,7 +38,9 @@ const Taste = () => {
         </div>
 
         <div>
-          <button className="nextbtn">{">"} 다음으로</button>
+          <Link to="/tastenext">
+            <button className="nextbtn">{">"} 다음으로</button>
+          </Link>
         </div>
       </div>
     </>

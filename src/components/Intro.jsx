@@ -3,7 +3,6 @@ import google from "../assets/img/google.ico";
 import kakao from "../assets/img/kakaotalk.ico";
 import naver from "../assets/img/naver.ico";
 import { Link, useNavigate } from "react-router-dom";
-import boogi from "../assets/img/character.jpg";
 
 const Intro = () => {
   // 입력한 이메일 값 저장

@@ -50,7 +50,9 @@ const Join = () => {
       setEmailError("사용 가능한 이메일입니다.");
       setIsEmailAvailable(true);
     }
+
     /*
+
     try {
       const responseData = await emailDuplicateCheck(email);
       if (responseData) {

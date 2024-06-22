@@ -7,6 +7,7 @@ import Login from "./routes/Login";
 import Taste from "./routes/Taste";
 import Main from "./components/Main";
 import MyPage from "./routes/MyPage";
+import TasteNext from "./routes/TasteNext";
 
 // import { BrowserView, MobileView } from "react-device-detect";
 
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/taste" element={<Taste />} />
         <Route path="/main" element={<Main />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/tastenext" element={<TasteNext />} />
       </Routes>
     </BrowserRouter>
     /*
