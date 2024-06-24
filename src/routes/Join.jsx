@@ -133,7 +133,7 @@ const Join = () => {
     setAllAgreed(checked);
   };
 
-  // 대충 만들어본 것. 근데 프론트 범위가 아닌 듯?
+  // 대충 만들어본 것. 근데 프론트 범위가 아닌 듯??
 
   // 회원가입 요청 핸들러
   const handleJoinSubmit = async (e) => {
