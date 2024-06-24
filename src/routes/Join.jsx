@@ -1,9 +1,10 @@
-import Reaagree_check_infoct, { useState } from "react";
-import logo from "../assets/img/logo.jpg";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import logo from "assets/img/logo.jpg";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Join = () => {
-  // Itro에서 입력한 이메일 값 받아오기
+  const navigate = useNavigate();
+  // Intro에서 입력한 이메일 값 받아오기
   const { state } = useLocation();
 
   // 이메일, 패스워드 상태 설정
@@ -13,8 +14,24 @@ const Join = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPwError] = useState("");
 
-  const [isEmailCheck, setIsEmailCheck] = useState(false); // 중복 검사 여부
   const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
+
+  // 이용약관 상태초기화
+  const [allAgreed, setAllAgreed] = useState(false);
+  const [agreements, setAgreements] = useState({
+    personalInfo: false,
+    eventAlarm: false,
+  });
+
+  // 버튼 활성화 상태 설정
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  useEffect(() => {
+    const isEmailValid = isEmailAvailable;
+    const isPasswordValid = passwordError === "";
+    const isAgreementValid = agreements.personalInfo;
+
+    setIsButtonEnabled(isEmailValid && isPasswordValid && isAgreementValid);
+  }, [isEmailAvailable, passwordError, agreements]);
 
   // onChangeHandler - 사용자가 input 값 입력할 때마다 변화 감지 및 업데이트
   const onChangeEmailHandler = (e) => {
@@ -47,30 +64,33 @@ const Join = () => {
       setIsEmailAvailable(false);
       return false;
     } else {
-      setEmailError("사용 가능한 이메일입니다.");
-      setIsEmailAvailable(true);
-    }
+      // 이메일 중복 확인 API 호출
+      try {
+        const response = await fetch("/api/check-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
 
-    /*
-
-    try {
-      const responseData = await emailDuplicateCheck(email);
-      if (responseData) {
-        setEmailError("사용 가능한 이메일입니다.");
-        setIsEmailCheck(true);
-        setIsEmailAvailable(true);
-        return true;
-      } else {
-        setEmailError("이미 사용 중인 이메일입니다.");
+        if (data.isDuplicate) {
+          setEmailError("이미 사용 중인 이메일입니다.");
+          setIsEmailAvailable(false);
+        } else {
+          setEmailError("사용 가능한 이메일입니다.");
+          setIsEmailAvailable(true);
+        }
+      } catch (error) {
+        setEmailError(
+          "이메일 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
+        );
         setIsEmailAvailable(false);
-        return false;
       }
-    } catch (error) {
-      alert("서버 오류입니다. 관리자에게 문의하세요.");
-      console.error(error);
-      return false;
-    } */
+    }
   };
+
   // 패스워드 유효성, 중복 검사 핸들러
   const passwordCheckHandler = (password) => {
     const passwordRegx = /^(?=.*[a-zA-Z])(?=.*[!@$&-_])(?=.*[0-9]).{8,16}$/;
@@ -87,45 +107,7 @@ const Join = () => {
       return true;
     }
   };
-  /*
-  // 회원가입 요청 서버에 전송하는 핸들러
-  const joinHandler = async (e) => {
-    e.preventDefalut();
 
-    const emailCheckresult = await emailCheckHandler(email);
-    if (emailCheckresult) setEmailError("");
-    else return;
-    if (!isEmailCheck || !isEmailAvailable) {
-      alert("이메일 중복 검사를 해주세요.");
-      return;
-    }
-
-    const pwCheckResult = passwordCheckHandler(password, confirm);
-    if (pwCheckResult) {
-      setPwError("");
-      setConfirmError("");
-    } else return;
-
-    try {
-      const responseData = await join(email, password, confirm);
-      if (responseData) {
-        localStorage.setItem("loginEmail", email);
-        setOpenModal(true);
-      } else {
-        alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-      }
-    } catch (error) {
-      alert("회원가입에 실패하였습니다. 다시 시도해주세요.");
-      console.error(error);
-    }
-  }; */
-
-  // 이용약관 상태초기화
-  const [allAgreed, setAllAgreed] = useState(false);
-  const [agreements, setAgreements] = useState({
-    personalInfo: false,
-    eventAlarm: false,
-  });
   // 이용약관 이벤트 핸들러
   const handleAgreementChange = (e) => {
     const { name, checked } = e.target;
@@ -151,6 +133,39 @@ const Join = () => {
     setAllAgreed(checked);
   };
 
+  // 대충 만들어본 것. 근데 프론트 범위가 아닌 듯?
+
+  // 회원가입 요청 핸들러
+  const handleJoinSubmit = async (e) => {
+    e.preventDefault();
+    if (!isEmailAvailable) {
+      setEmailError("이메일을 확인해주세요.");
+      return;
+    }
+    if (passwordCheckHandler(password)) {
+      try {
+        const response = await fetch("/api/join", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password, agreements }),
+        });
+        if (response.ok) {
+          alert("회원가입이 완료되었습니다.");
+          navigate("/MainView");
+        } else {
+          const errorData = await response.json();
+          alert(`회원가입 실패: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert("회원가입 중 오류가 발생했습니다.");
+      }
+    } else {
+      setPwError("비밀번호를 확인해주세요.");
+    }
+  };
+
   return (
     <>
       <div id="join">
@@ -158,7 +173,7 @@ const Join = () => {
           <img src={logo} alt="로고"></img>
         </span>
 
-        <form className="join_form">
+        <form className="join_form" onSubmit={handleJoinSubmit}>
           <div>
             <div className="join_input">
               <input
@@ -191,7 +206,7 @@ const Join = () => {
               <li>
                 <input
                   type="checkbox"
-                  id=""
+                  id="agree_check_info"
                   name="personalInfo"
                   required
                   checked={agreements.personalInfo}
@@ -230,7 +245,13 @@ const Join = () => {
 
           <div>
             <Link to="/taste">
-              <button className="agree_btn">동의하고 계속</button>
+              <button
+                type="submit"
+                className={isButtonEnabled ? "active_btn" : "agree_btn"}
+                disabled={!isButtonEnabled}
+              >
+                동의하고 계속
+              </button>
             </Link>
           </div>
         </form>

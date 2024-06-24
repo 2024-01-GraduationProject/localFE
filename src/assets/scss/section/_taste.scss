@@ -74,6 +74,12 @@
     &:hover {
       font-weight: 700;
     }
+
+    &.selected {
+      font-weight: 700;
+      background-color: #7db82a;
+      filter: brightness(120%);
+    }
   }
 }
 

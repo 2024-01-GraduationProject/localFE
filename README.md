@@ -3,4 +3,5 @@
 ## 사용 스택
 
 - React
+- SCSS
 - git 파일 관리

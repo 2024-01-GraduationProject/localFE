@@ -61,7 +61,7 @@ img {
   .agree_btn {
     width: 21.5rem;
     height: 3.5rem;
-    background-color: #b6dc80;
+    background-color: lightgrey;
     color: white;
     border: none;
     border-radius: 5px;
@@ -69,5 +69,10 @@ img {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     font-size: 1rem;
+  }
+
+  .active_btn {
+    background-color: #b6dc80;
+    color: white;
   }
 }

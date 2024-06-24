@@ -1,11 +1,26 @@
 import React, { useState } from "react";
-import logo from "../assets/img/logo.jpg";
-import google from "../assets/img/google.ico";
-import kakao from "../assets/img/kakaotalk.ico";
-import naver from "../assets/img/naver.ico";
+import logo from "assets/img/logo.jpg";
+import google from "assets/img/ico/google.ico";
+import kakao from "assets/img/ico/kakaotalk.ico";
+import naver from "assets/img/ico/naver.ico";
 import { Link } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onEmailHandler = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const onPasswordHandler = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const onLogin = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <div id="login">
@@ -20,19 +35,26 @@ const Login = () => {
                   className="login_email"
                   type="email"
                   placeholder="사용자 이메일"
+                  value={email}
+                  onChange={onEmailHandler}
                   autoFocus
+                  required // 이메일 비어있으면 안 됨.
                 />
                 <input
                   className="login_pw"
                   type="password"
                   placeholder="비밀번호"
+                  value={password}
+                  onChange={onPasswordHandler}
                 />
               </div>
             </div>
 
             <div>
               <Link to="/main">
-                <button className="login_btn">로그인</button>
+                <button className="login_btn" onSubmit={onLogin}>
+                  로그인
+                </button>
               </Link>
             </div>
           </form>

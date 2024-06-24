@@ -1,5 +1,5 @@
 import React from "react";
-import search from "../assets/img/search.ico";
+import search from "assets/img/ico/search.ico";
 const SearchBar = () => {
   return (
     <div id="searchbar">

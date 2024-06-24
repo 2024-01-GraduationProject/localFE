@@ -1,6 +1,5 @@
 import React from "react";
-import Header from "../components/Header";
-import Intro from "../components/Intro";
+import { Header, Intro } from "components";
 
 const HomeView = () => {
   return (

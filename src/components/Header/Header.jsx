@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-//import { headerNav } from "../constants";
 import { Link } from "react-router-dom";
-import logo from "../assets/img/logo.jpg";
+import logo from "assets/img/logo.jpg";
 
 const Header = () => {
   return (

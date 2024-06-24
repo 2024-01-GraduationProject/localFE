@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Header2 from "../components/Header2";
-import boogi2 from "../assets/img/boogi2.jpg";
+import { Header2 } from "components";
+import boogi2 from "assets/img/boogi2.jpg";
 
 const TasteNext = () => {
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import google from "../assets/img/google.ico";
-import kakao from "../assets/img/kakaotalk.ico";
-import naver from "../assets/img/naver.ico";
+import google from "assets/img/ico/google.ico";
+import kakao from "assets/img/ico/kakaotalk.ico";
+import naver from "assets/img/ico/naver.ico";
 import { Link, useNavigate } from "react-router-dom";
 
 const Intro = () => {
@@ -34,7 +34,12 @@ const Intro = () => {
           />
         </div>
         <Link to={"/join"} state={{ value: introEmail }}>
-          <button className="start_btn">첫 달 무료로 시작하기</button>
+          <button
+            className={`start_btn ${introEmail ? "active" : "inactive"}`}
+            disabled={!introEmail}
+          >
+            첫 달 무료로 시작하기
+          </button>
         </Link>
       </form>
 
