@@ -51,7 +51,7 @@ const Login = () => {
             </div>
 
             <div>
-              <Link to="/main">
+              <Link to="/mainview">
                 <button className="login_btn" onSubmit={onLogin}>
                   로그인
                 </button>

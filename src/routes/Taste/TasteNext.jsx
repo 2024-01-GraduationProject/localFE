@@ -13,7 +13,7 @@ const TasteNext = () => {
           <div>감사합니다!</div>
           <div>부기가 취향에 맞는 도서를 소개해드릴게요!</div>
         </div>
-        <Link to="/main">
+        <Link to="/mainview">
           <button className="move_home">홈으로 이동하기</button>
         </Link>
       </div>

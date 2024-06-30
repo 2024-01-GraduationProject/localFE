@@ -14,7 +14,7 @@ const Header2 = () => {
         <nav className="header__nav" role="navigation" aria-label="로그인 메뉴">
           <ul>
             <li>
-              <Link to="/mypage">MyPage</Link>
+              <Link to="/mypage">My</Link>
             </li>
             <li>
               | <a>LOGOUT</a>

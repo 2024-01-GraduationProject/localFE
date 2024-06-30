@@ -1,0 +1,50 @@
+.main_nav {
+  margin-left: 4em;
+  margin-top: 1em;
+  display: flex;
+
+  .hambtn {
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    margin-right: 2em;
+  }
+
+  .mylib {
+    //font-size: 14px;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+}
+
+.taste_buttons {
+  position: absolute;
+  top: 14em; /* Adjust this value based on your header height */
+  left: 4.5em;
+  right: 0;
+  width: 8em;
+  height: 18em;
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it appears above other components */
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  //align-items:
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: 0.5em;
+}
+
+.taste_button {
+  margin-bottom: 0.5em;
+  font-size: 12px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.taste_button:hover {
+  background-color: #ddd;
+  font-weight: bold;
+}
