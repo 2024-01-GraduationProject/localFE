@@ -1,0 +1,57 @@
+#mylib {
+  margin-left: 8em;
+  margin-right: 8em;
+  margin-top: 7em;
+
+  .profile_container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .profile_img {
+      width: 6em;
+      height: 6em;
+      border-radius: 30%;
+    }
+
+    .profile_title {
+      margin-left: 1.5em;
+      font-size: 2.7em;
+      font-weight: bold;
+
+      span {
+        font-weight: 100;
+      }
+    }
+  }
+
+  .mylib_menu {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    li {
+      display: inline-block;
+      margin-right: 1em;
+      font-size: 1.1em;
+      cursor: pointer;
+      border-radius: 5px 5px 0 0;
+      border: 0;
+      bottom: -2px;
+    }
+    li.active {
+      font-weight: 600;
+      border-bottom: 2px solid black;
+      bottom: -2px;
+      padding-bottom: 2px;
+    }
+  }
+
+  .tab_content {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+}
