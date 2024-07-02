@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "assets/img/logo.jpg";
 
 const Header2 = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("email");
+    // 페이지 이동
+    navigate("/");
+  };
+
   return (
     <header id="header2" role="banner">
       <div className="header__inner">
@@ -14,10 +23,15 @@ const Header2 = () => {
         <nav className="header__nav" role="navigation" aria-label="로그인 메뉴">
           <ul>
             <li>
-              <Link to="/mypage">My</Link>
+              <Link to="/mypage">
+                <button className="header2_btn">MY</button>
+              </Link>
             </li>
+
             <li>
-              | <a>LOGOUT</a>
+              <button className="header2_btn" onClick={handleLogout}>
+                LOGOUT
+              </button>
             </li>
           </ul>
         </nav>

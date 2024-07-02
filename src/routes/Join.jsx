@@ -6,14 +6,13 @@ const Join = () => {
   const navigate = useNavigate();
   // Intro에서 입력한 이메일 값 받아오기
   const { state } = useLocation();
+  const initialEmail = state?.value || ""; // 값 가져오지 못했을 때를 대비
 
   // 이메일, 패스워드 상태 설정
-  const [email, setEmail] = useState(state.value);
-  const [password, setPw] = useState("");
-
+  const [email, setEmail] = useState(initialEmail);
+  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [passwordError, setPwError] = useState("");
-
+  const [passwordError, setPasswordError] = useState("");
   const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
 
   // 이용약관 상태초기화
@@ -25,6 +24,7 @@ const Join = () => {
 
   // 버튼 활성화 상태 설정
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+
   useEffect(() => {
     const isEmailValid = isEmailAvailable;
     const isPasswordValid = passwordError === "";
@@ -41,40 +41,31 @@ const Join = () => {
   };
 
   const onChangePwHandler = (e) => {
-    const { name, value } = e.target;
-    if (name === "password") {
-      setPw(value);
-      passwordCheckHandler(value);
-    } else {
-      passwordCheckHandler(password);
-    }
+    const value = e.target.value;
+    setPassword(value);
+    passwordCheckHandler(value);
   };
 
   // 이메일 유효성, 중복 검사 핸들러
   const emailCheckHandler = async (email) => {
     const emailRegex =
       /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-    ///^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/;
+
     if (email === "") {
       setEmailError("이메일을 입력해주세요.");
       setIsEmailAvailable(false);
-      return false;
     } else if (!emailRegex.test(email)) {
       setEmailError("이메일 형식으로 입력해주세요.");
       setIsEmailAvailable(false);
-      return false;
     } else {
       // 이메일 중복 확인 API 호출
       try {
-        const response = await fetch("/api/check-email", {
+        const response = await fetch("/validate-email", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
         });
         const data = await response.json();
-
         if (data.isDuplicate) {
           setEmailError("이미 사용 중인 이메일입니다.");
           setIsEmailAvailable(false);
@@ -91,19 +82,19 @@ const Join = () => {
     }
   };
 
-  // 패스워드 유효성, 중복 검사 핸들러
+  // 패스워드 유효성 검사 핸들러
   const passwordCheckHandler = (password) => {
-    const passwordRegx = /^(?=.*[a-zA-Z])(?=.*[!@$&-_])(?=.*[0-9]).{8,16}$/;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@$&-_])(?=.*[0-9]).{8,16}$/;
     if (password === "") {
-      setPwError("비밀번호를 입력해주세요.");
+      setPasswordError("비밀번호를 입력해주세요.");
       return false;
-    } else if (!passwordRegx.test(password)) {
-      setPwError(
+    } else if (!passwordRegex.test(password)) {
+      setPasswordError(
         "비밀번호는 8~16자리 영문 대소문자 + 숫자 + ! @ $ & - _ 조합으로 입력해주세요."
       );
       return false;
     } else {
-      setPwError("");
+      setPasswordError("");
       return true;
     }
   };
@@ -112,28 +103,26 @@ const Join = () => {
   const handleAgreementChange = (e) => {
     const { name, checked } = e.target;
 
-    setAgreements((preAgreements) => ({ ...preAgreements, [name]: checked }));
+    setAgreements((prev) => ({ ...prev, [name]: checked }));
     const allChecked = Object.values({ ...agreements, [name]: checked }).every(
-      (value) => value === true
+      (value) => value
     );
     setAllAgreed(allChecked);
   };
 
   const handleAllAgreementChange = (e) => {
     const { checked } = e.target;
-    setAgreements((preAgreements) =>
-      Object.keys(preAgreements).reduce(
-        (newAgreements, agreementKey) => ({
+    setAgreements((prev) =>
+      Object.keys(prev).reduce(
+        (newAgreements, key) => ({
           ...newAgreements,
-          [agreementKey]: checked,
+          [key]: checked,
         }),
         {}
       )
     );
     setAllAgreed(checked);
   };
-
-  // 대충 만들어본 것. 근데 프론트 범위가 아닌 듯??
 
   // 회원가입 요청 핸들러
   const handleJoinSubmit = async (e) => {
@@ -144,16 +133,14 @@ const Join = () => {
     }
     if (passwordCheckHandler(password)) {
       try {
-        const response = await fetch("/api/join", {
+        const response = await fetch("/register", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password, agreements }),
         });
         if (response.ok) {
           alert("회원가입이 완료되었습니다.");
-          navigate("/MainView");
+          navigate("/taste");
         } else {
           const errorData = await response.json();
           alert(`회원가입 실패: ${errorData.message}`);
@@ -162,7 +149,7 @@ const Join = () => {
         alert("회원가입 중 오류가 발생했습니다.");
       }
     } else {
-      setPwError("비밀번호를 확인해주세요.");
+      setPasswordError("비밀번호를 확인해주세요.");
     }
   };
 
@@ -244,15 +231,14 @@ const Join = () => {
           </div>
 
           <div>
-            <Link to="/taste">
-              <button
-                type="submit"
-                className={isButtonEnabled ? "active_btn" : "agree_btn"}
-                disabled={!isButtonEnabled}
-              >
-                동의하고 계속
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className={isButtonEnabled ? "active_btn" : "agree_btn"}
+              disabled={!isButtonEnabled}
+              onClick={handleJoinSubmit}
+            >
+              동의하고 계속
+            </button>
           </div>
         </form>
       </div>

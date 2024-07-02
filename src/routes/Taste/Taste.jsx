@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { tasteAge, tasteGender, tasteText } from "constants";
 import Header2 from "components/Header/Header2";
 
 const Taste = () => {
-  const [selectedMoods, setSelectedMoods] = useState(""); // 선택된 분위기 저장
+  const navigate = useNavigate();
+  const [selectedMoods, setSelectedMoods] = useState([]); // 선택된 분위기 저장
   const [selectedAge, setSelectedAge] = useState(""); // 선택된 연령 저장
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별 저장
 
@@ -28,9 +29,9 @@ const Taste = () => {
   };
 
   // 다음으로 버튼 클릭 시 서버로 데이터 전송
-  const handleSubmit = async () => {
+  const handleTasteSubmit = async () => {
     try {
-      const response = await fetch("/api/save-taste", {
+      const response = await fetch("/save-taste", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +44,7 @@ const Taste = () => {
       });
       if (response.ok) {
         alert("선택된 정보가 서버에 전송되었습니다.");
-        // 서버로 전송 성공 후 처리할 로직 추가
+        navigate("/tastenext");
       } else {
         const errorData = await response.json();
         alert(`서버로 데이터 전송 실패: ${errorData.message}`);
@@ -101,9 +102,9 @@ const Taste = () => {
         </div>
 
         <div>
-          <Link to="/tastenext">
-            <button className="nextbtn">{">"} 다음으로</button>
-          </Link>
+          <button className="nextbtn" onClick={handleTasteSubmit}>
+            {">"} 다음으로
+          </button>
         </div>
       </div>
     </>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Intro = () => {
   // 입력한 이메일 값 저장
