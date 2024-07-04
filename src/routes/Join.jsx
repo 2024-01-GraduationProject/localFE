@@ -11,9 +11,12 @@ const Join = () => {
   // 이메일, 패스워드 상태 설정
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
+  const [nickname, setNickname] = useState("");
+  //const [emailError, setEmailError] = useState("");
+  //const [passwordError, setPasswordError] = useState("");
+  //const [nicknameError, setNicknameError] = useState("");
+  //const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
+  //const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
 
   // 이용약관 상태초기화
   const [allAgreed, setAllAgreed] = useState(false);
@@ -26,26 +29,36 @@ const Join = () => {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   useEffect(() => {
-    const isEmailValid = isEmailAvailable;
-    const isPasswordValid = passwordError === "";
+    //const isEmailValid = isEmailAvailable;
+    //const isPasswordValid = passwordError === "";
+    //const isNicknameValid = isNicknameAvailable;
     const isAgreementValid = agreements.personalInfo;
 
-    setIsButtonEnabled(isEmailValid && isPasswordValid && isAgreementValid);
-  }, [isEmailAvailable, passwordError, agreements]);
+    setIsButtonEnabled(
+      isAgreementValid
+      //isEmailValid && isPasswordValid && isNicknameValid && isAgreementValid
+    );
+  }, [agreements]);
+  //[isEmailAvailable, passwordError, isNicknameAvailable, agreements]);
 
   // onChangeHandler - 사용자가 input 값 입력할 때마다 변화 감지 및 업데이트
   const onChangeEmailHandler = (e) => {
     const emailValue = e.target.value;
     setEmail(emailValue);
-    emailCheckHandler(emailValue);
+    //emailCheckHandler(emailValue);
   };
 
   const onChangePwHandler = (e) => {
     const value = e.target.value;
     setPassword(value);
-    passwordCheckHandler(value);
+    //passwordCheckHandler(value);
   };
-
+  const onChangeNicknameHandler = (e) => {
+    const nicknameValue = e.target.value;
+    setNickname(nicknameValue);
+    //nicknameCheckHandler(nicknameValue);
+  };
+  /*
   // 이메일 유효성, 중복 검사 핸들러
   const emailCheckHandler = async (email) => {
     const emailRegex =
@@ -65,7 +78,13 @@ const Join = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
         });
+
+        if (!response.ok) {
+          throw new Error("서버 응답이 올바르지 않습니다.");
+        }
+
         const data = await response.json();
+
         if (data.isDuplicate) {
           setEmailError("이미 사용 중인 이메일입니다.");
           setIsEmailAvailable(false);
@@ -74,14 +93,16 @@ const Join = () => {
           setIsEmailAvailable(true);
         }
       } catch (error) {
+        console.error("Error checking email: ", error);
         setEmailError(
           "이메일 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
         );
         setIsEmailAvailable(false);
-      }
+      } 
     }
-  };
+  }; 
 
+  
   // 패스워드 유효성 검사 핸들러
   const passwordCheckHandler = (password) => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@$&-_])(?=.*[0-9]).{8,16}$/;
@@ -97,7 +118,45 @@ const Join = () => {
       setPasswordError("");
       return true;
     }
-  };
+  }; 
+
+  // 닉네임 유효성, 중복 검사 핸들러
+  const nicknameCheckHandler = async (nickname) => {
+    if (nickname === "") {
+      setNicknameError("닉네임을 입력해주세요.");
+      setIsNicknameAvailable(false);
+    } else {
+      
+      // 닉네임 중복 확인 API 호출
+      try {
+        const response = await fetch("/validate-nickname", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nickname }),
+        });
+
+        if (!response.ok) {
+          throw new Error("서버 응답이 올바르지 않습니다.");
+        }
+
+        const data = await response.json();
+
+        if (data.isDuplicate) {
+          setNicknameError("이미 사용 중인 닉네임입니다.");
+          setIsNicknameAvailable(false);
+        } else {
+          setNicknameError("사용 가능한 닉네임입니다.");
+          setIsNicknameAvailable(true);
+        }
+      } catch (error) {
+        console.error("Error checking nickname: ", error);
+        setNicknameError(
+          "닉네임 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
+        );
+        setIsNicknameAvailable(false);
+      } 
+    }
+  }; */
 
   // 이용약관 이벤트 핸들러
   const handleAgreementChange = (e) => {
@@ -127,10 +186,33 @@ const Join = () => {
   // 회원가입 요청 핸들러
   const handleJoinSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, nickname, agreements }),
+      });
+      if (response.ok) {
+        alert("회원가입이 완료되었습니다.");
+        navigate("/taste");
+      } else {
+        const errorData = await response.json();
+        alert(`회원가입 실패: ${errorData.message}`);
+      }
+    } catch (error) {
+      alert("회원가입 중 오류가 발생했습니다.");
+    }
+    /*
     if (!isEmailAvailable) {
       setEmailError("이메일을 확인해주세요.");
       return;
     }
+    if (!isNicknameAvailable) {
+      setNicknameError("닉네임을 확인해주세요.");
+      return;
+    }
+
     if (passwordCheckHandler(password)) {
       try {
         const response = await fetch("/register", {
@@ -150,7 +232,7 @@ const Join = () => {
       }
     } else {
       setPasswordError("비밀번호를 확인해주세요.");
-    }
+    } */
   };
 
   return (
@@ -172,11 +254,11 @@ const Join = () => {
                 placeholder="사용자 이메일"
                 autoFocus
               />
-              {emailError && (
+              {/*{emailError && (
                 <small className={isEmailAvailable ? "emailAvailable" : ""}>
                   * {emailError}
                 </small>
-              )}
+              )} */}
               <input
                 onChange={onChangePwHandler}
                 className="join_pw"
@@ -184,7 +266,22 @@ const Join = () => {
                 name="password"
                 placeholder="비밀번호"
               />
-              {passwordError && <small>* {passwordError}</small>}
+              {/*{passwordError && <small>* {passwordError}</small>} */}
+              <input
+                onChange={onChangeNicknameHandler}
+                className="join_nickname"
+                type="text"
+                name="nickname"
+                value={nickname}
+                placeholder="사용할 닉네임"
+              ></input>
+              {/*{nicknameError && (
+                <small
+                  className={isNicknameAvailable ? "NicknameAvailable" : ""}
+                >
+                  * {nicknameError}
+                </small>
+              )} */}
             </div>
           </div>
 
