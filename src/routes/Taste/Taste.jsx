@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { tasteAge, tasteGender, tasteText } from "constants";
 import Header2 from "components/Header/Header2";
+import axios from "axios";
 
 const Taste = () => {
   const navigate = useNavigate();
@@ -31,23 +32,16 @@ const Taste = () => {
   // 다음으로 버튼 클릭 시 서버로 데이터 전송
   const handleTasteSubmit = async () => {
     try {
-      const response = await fetch("/save-taste", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mood: selectedMoods,
-          age: selectedAge,
-          gender: selectedGender,
-        }),
+      const response = await axios.post("/save-taste", {
+        mood: selectedMoods,
+        age: selectedAge,
+        gender: selectedGender,
       });
-      if (response.ok) {
+      if (response.status === 200) {
         alert("선택된 정보가 서버에 전송되었습니다.");
         navigate("/tastenext");
       } else {
-        const errorData = await response.json();
-        alert(`서버로 데이터 전송 실패: ${errorData.message}`);
+        alert(`서버로 데이터 전송 실패: ${response.data.message}`);
       }
     } catch (error) {
       alert("서버 통신 중 오류가 발생했습니다.");

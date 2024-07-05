@@ -4,6 +4,7 @@ import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,25 +26,17 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
+      const response = await axios.post("/login", {
+        email: email,
+        password: password,
       });
-
-      const result = await response.json();
 
       if (response.status === 200) {
         // 로그인 성공 시
         setLoginCheck(false);
-        sessionStorage.setItem("token", result.token);
-        sessionStorage.setItem("email", result.email); // 이메일 저장
-        console.log("로그인 성공, 이메일 주소: " + result.email);
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("email", response.data.email); // 이메일 저장
+        console.log("로그인 성공, 이메일 주소: " + response.data.email);
         navigate("/mainview");
       } else {
         // 로그인 실패 시
