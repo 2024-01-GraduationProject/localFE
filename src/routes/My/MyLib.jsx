@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header2 from "components/Header/Header2";
 import boogi2 from "assets/img/boogi2.jpg";
-import { useState } from "react";
 
 const MyLib = () => {
   const [activeTab, setActiveTab] = useState("관심 분야");
+  const [nickname, setNickname] = useState("");
+
+  useEffect(() => {
+    const storedNickname = sessionStorage.getItem("nickname");
+    if (storedNickname) {
+      setNickname(storedNickname);
+    }
+  }, []);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -28,7 +35,8 @@ const MyLib = () => {
             <img src={boogi2} alt="프로필" className="profile_img"></img>
           </span>
           <span className="profile_title">
-            ㅇㅇㅇ<span>의 서재</span>
+            {nickname}
+            <span>의 서재</span>
           </span>
         </div>
         <div>
