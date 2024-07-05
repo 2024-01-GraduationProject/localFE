@@ -5,18 +5,36 @@ import boogi2 from "assets/img/boogi2.jpg";
 const MyLib = () => {
   const [activeTab, setActiveTab] = useState("관심 분야");
   const [nickname, setNickname] = useState("");
+  const [selectedMoods, setSelectedMoods] = useState([]);
 
   useEffect(() => {
     const storedNickname = sessionStorage.getItem("nickname");
     if (storedNickname) {
       setNickname(storedNickname);
     }
+
+    const storedMoods = sessionStorage.getItem("selectedMoods");
+    if (storedMoods) {
+      setSelectedMoods(JSON.parse(storedMoods));
+    }
   }, []);
 
   const renderContent = () => {
     switch (activeTab) {
       case "관심 분야":
-        return <div>관심 분야 내용</div>;
+        return (
+          <div>
+            {selectedMoods.length > 0 ? (
+              <ul>
+                {selectedMoods.map((mood, index) => (
+                  <li key={index}>#{mood}</li>
+                ))}
+              </ul>
+            ) : (
+              <div>관심 분야가 없습니다.</div>
+            )}
+          </div>
+        );
       case "책장":
         return <div>책장 내용</div>;
       case "My Favorite":
