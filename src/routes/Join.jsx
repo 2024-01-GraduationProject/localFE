@@ -138,6 +138,7 @@ const Join = () => {
         const response = await api.post("/register", {
           email,
           password,
+          nickname,
           agreements,
         });
         if (response.status === 200) {
