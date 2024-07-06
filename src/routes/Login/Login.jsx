@@ -4,7 +4,7 @@ import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,7 +26,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/login", {
+      const response = await api.post("/login", {
         email: email,
         password: password,
       });

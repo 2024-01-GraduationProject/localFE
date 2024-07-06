@@ -80,18 +80,23 @@
     font-size: 11px;
     white-space: nowrap;
     z-index: 1;
-  }
 
-  .error-message::before {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 10px;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 5px 0 5px;
-    border-color: #f8d7da transparent transparent transparent;
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 10px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 5px 5px 0 5px;
+      border-color: #f8d7da transparent transparent transparent;
+    }
+
+    &.success {
+      color: green;
+      background: #afe06b;
+    }
   }
 }
 

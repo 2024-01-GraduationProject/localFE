@@ -79,7 +79,15 @@ const Intro = () => {
             onChange={onChangeEmail}
           />
 
-          {emailError && <div className="error-message">{emailError}</div>}
+          {emailError && (
+            <div
+              className={`error-message ${
+                emailError === "사용 가능한 이메일입니다." ? "success" : ""
+              }`}
+            >
+              {emailError}
+            </div>
+          )}
         </div>
 
         <button

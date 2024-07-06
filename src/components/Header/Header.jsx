@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "assets/img/logo.jpg";
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
   return (
     <header id="header" role="banner">
       <div className="header__inner">
@@ -14,7 +20,12 @@ const Header = () => {
         <nav className="header__nav" role="navigation" aria-label="로그인 메뉴">
           <ul>
             <li>
-              <Link to="/login">Login</Link>
+              <button
+                className="login_btn"
+                onClick={() => handleNavigate("/login")}
+              >
+                Login
+              </button>
             </li>
           </ul>
         </nav>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "assets/img/logo.jpg";
 
 const Header2 = () => {
@@ -10,6 +10,10 @@ const Header2 = () => {
     sessionStorage.removeItem("email");
     // 페이지 이동
     navigate("/");
+  };
+
+  const handleNavigate = (path) => {
+    navigate(path);
   };
 
   return (
@@ -23,11 +27,14 @@ const Header2 = () => {
         <nav className="header__nav" role="navigation" aria-label="로그인 메뉴">
           <ul>
             <li>
-              <Link to="/mypage">
-                <button className="header2_btn">MY</button>
-              </Link>
+              <button
+                className="header2_btn"
+                onClick={() => handleNavigate("/mypage")}
+              >
+                MY
+              </button>
             </li>
-
+            <span> | </span>
             <li>
               <button className="header2_btn" onClick={handleLogout}>
                 LOGOUT
