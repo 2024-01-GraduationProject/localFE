@@ -22,14 +22,17 @@ const MainView = () => {
       </div>
 
       <div>
+        <hr className="mainview_line" />
         <RecentBook />
       </div>
 
       <div>
+        <hr className="mainview_line" />
         <FamousBook />
       </div>
 
       <div>
+        <hr className="mainview_line" />
         <Recommend />
       </div>
     </>
