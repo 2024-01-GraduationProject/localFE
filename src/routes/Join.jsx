@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import logo from "assets/img/logo.jpg";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import api from "../api"; // Axios 인스턴스 import
 
 const Join = () => {
   const navigate = useNavigate();
@@ -16,7 +16,6 @@ const Join = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
 
   // 이용약관 상태초기화
@@ -30,22 +29,20 @@ const Join = () => {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   useEffect(() => {
-    const isEmailValid = isEmailAvailable;
     const isPasswordValid = passwordError === "";
     const isNicknameValid = isNicknameAvailable;
     const isAgreementValid = agreements.personalInfo;
 
-    setIsButtonEnabled(
-      isEmailValid && isPasswordValid && isNicknameValid && isAgreementValid
-    );
-  }, [isEmailAvailable, passwordError, isNicknameAvailable, agreements]);
+    setIsButtonEnabled(isPasswordValid && isNicknameValid && isAgreementValid);
+  }, [passwordError, isNicknameAvailable, agreements]);
 
   // onChangeHandler - 사용자가 input 값 입력할 때마다 변화 감지 및 업데이트
-  const onChangeEmailHandler = (e) => {
+
+  /*const onChangeEmailHandler = (e) => {
     const emailValue = e.target.value;
     setEmail(emailValue);
     emailCheckHandler(emailValue);
-  };
+  };*/
 
   const onChangePwHandler = (e) => {
     const value = e.target.value;
@@ -56,39 +53,6 @@ const Join = () => {
     const nicknameValue = e.target.value;
     setNickname(nicknameValue);
     nicknameCheckHandler(nicknameValue);
-  };
-
-  // 이메일 유효성, 중복 검사 핸들러
-  const emailCheckHandler = async (email) => {
-    const emailRegex =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-
-    if (email === "") {
-      setEmailError("이메일을 입력해주세요.");
-      setIsEmailAvailable(false);
-    } else if (!emailRegex.test(email)) {
-      setEmailError("이메일 형식으로 입력해주세요.");
-      setIsEmailAvailable(false);
-    } else {
-      // 이메일 중복 확인 API 호출
-      try {
-        const response = await axios.post("/validate-email", { email });
-
-        if (response.data.isDuplicate) {
-          setEmailError("이미 사용 중인 이메일입니다.");
-          setIsEmailAvailable(false);
-        } else {
-          setEmailError("사용 가능한 이메일입니다.");
-          setIsEmailAvailable(true);
-        }
-      } catch (error) {
-        console.error("Error checking email: ", error);
-        setEmailError(
-          "이메일 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
-        );
-        setIsEmailAvailable(false);
-      }
-    }
   };
 
   // 패스워드 유효성 검사 핸들러
@@ -116,7 +80,7 @@ const Join = () => {
     } else {
       // 닉네임 중복 확인 API 호출
       try {
-        const response = await axios.post("/validate-nickname", { nickname });
+        const response = await api.post("/validate-nickname", { nickname });
 
         if (response.data.isDuplicate) {
           setNicknameError("이미 사용 중인 닉네임입니다.");
@@ -164,10 +128,6 @@ const Join = () => {
   const handleJoinSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isEmailAvailable) {
-      setEmailError("이메일을 확인해주세요.");
-      return;
-    }
     if (!isNicknameAvailable) {
       setNicknameError("닉네임을 확인해주세요.");
       return;
@@ -175,7 +135,7 @@ const Join = () => {
 
     if (passwordCheckHandler(password)) {
       try {
-        const response = await axios.post("/register", {
+        const response = await api.post("/register", {
           email,
           password,
           agreements,
@@ -206,18 +166,15 @@ const Join = () => {
           <div>
             <div className="join_input">
               <input
-                onChange={onChangeEmailHandler}
                 className="join_email"
                 type="email"
                 name="email"
                 value={email}
+                readOnly
                 placeholder="사용자 이메일"
-                autoFocus
               />
               {emailError && (
-                <small className={isEmailAvailable ? "emailAvailable" : ""}>
-                  * {emailError}
-                </small>
+                <small className="emailAvailable">* {emailError}</small>
               )}
               <input
                 onChange={onChangePwHandler}
@@ -225,6 +182,7 @@ const Join = () => {
                 type="password"
                 name="password"
                 placeholder="비밀번호"
+                autoFocus
               />
               {passwordError && <small>* {passwordError}</small>}
               <input
@@ -292,7 +250,6 @@ const Join = () => {
               type="submit"
               className={isButtonEnabled ? "active_btn" : "agree_btn"}
               disabled={!isButtonEnabled}
-              onClick={handleJoinSubmit}
             >
               동의하고 계속
             </button>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { tasteAge, tasteGender, tasteText } from "constants";
 import Header2 from "components/Header/Header2";
-import axios from "axios";
+import api from "../../api"; // Axios 인스턴스 import
 
 const Taste = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Taste = () => {
   // 다음으로 버튼 클릭 시 서버로 데이터 전송
   const handleTasteSubmit = async () => {
     try {
-      const response = await axios.post("/save-taste", {
+      const response = await api.post("/save-taste", {
         mood: selectedMoods,
         age: selectedAge,
         gender: selectedGender,

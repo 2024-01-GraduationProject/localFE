@@ -44,6 +44,7 @@
 }
 
 .intro__input {
+  position: relative;
   padding-right: 2rem;
   input {
     font-size: 10vm;
@@ -65,6 +66,32 @@
       outline: none;
       border: solid #afe06b 3px;
     }
+  }
+
+  .error-message {
+    position: absolute;
+    top: -35px;
+    left: 0;
+    background: #f8d7da;
+    color: #721c24;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 1;
+  }
+
+  .error-message::before {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 10px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: #f8d7da transparent transparent transparent;
   }
 }
 

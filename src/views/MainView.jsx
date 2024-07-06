@@ -17,6 +17,7 @@ const MainView = () => {
       <MainNav />
 
       <div>
+        <hr className="mainview_line" />
         <BestNew />
       </div>
 

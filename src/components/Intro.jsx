@@ -2,13 +2,59 @@ import React, { useState } from "react";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import api from "../api"; // Axios 인스턴스 import
 
 const Intro = () => {
   // 입력한 이메일 값 저장
   const [introEmail, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
+
+  const navigate = useNavigate();
   const onChangeEmail = (e) => {
-    setEmail(e.target.value);
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+    emailCheckHandler(emailValue);
+  };
+
+  // 이메일 유효성, 중복 검사 핸들러
+  const emailCheckHandler = async (email) => {
+    const emailRegex =
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+    if (email === "") {
+      setEmailError("이메일을 입력해주세요.");
+      setIsEmailAvailable(false);
+    } else if (!emailRegex.test(email)) {
+      setEmailError("이메일 형식으로 입력해주세요.");
+      setIsEmailAvailable(false);
+    } else {
+      // 이메일 중복 확인 API 호출
+      try {
+        const response = await api.post("/validate-email", { email });
+
+        if (response.data.isDuplicate) {
+          setEmailError("이미 사용 중인 이메일입니다.");
+          setIsEmailAvailable(false);
+        } else {
+          setEmailError("사용 가능한 이메일입니다.");
+          setIsEmailAvailable(true);
+        }
+      } catch (error) {
+        console.error("Error checking email: ", error);
+        setEmailError(
+          "이메일 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
+        );
+        setIsEmailAvailable(false);
+      }
+    }
+  };
+
+  const handleStartClick = () => {
+    if (introEmail) {
+      navigate("/join", { state: { value: introEmail } });
+    }
   };
 
   return (
@@ -24,7 +70,7 @@ const Intro = () => {
         </div>
       </div>
 
-      <form className="intro__start">
+      <form className="intro__start" onSubmit={(e) => e.preventDefault()}>
         <div className="intro__input">
           <input
             type="text"
@@ -32,15 +78,17 @@ const Intro = () => {
             value={introEmail}
             onChange={onChangeEmail}
           />
+
+          {emailError && <div className="error-message">{emailError}</div>}
         </div>
-        <Link to={"/join"} state={{ value: introEmail }}>
-          <button
-            className={`start_btn ${introEmail ? "active" : "inactive"}`}
-            disabled={!introEmail}
-          >
-            첫 달 무료로 시작하기
-          </button>
-        </Link>
+
+        <button
+          className={`start_btn ${isEmailAvailable ? "active" : "inactive"}`}
+          disabled={!isEmailAvailable}
+          onClick={handleStartClick}
+        >
+          첫 달 무료로 시작하기
+        </button>
       </form>
 
       <div className="social_join">
