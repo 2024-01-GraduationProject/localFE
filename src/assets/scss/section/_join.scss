@@ -10,6 +10,7 @@ img {
   width: 330px;
   height: 125px;
   object-fit: cover;
+  cursor: pointer;
 }
 
 .join_form {
@@ -39,11 +40,10 @@ img {
     small {
       font-size: 10px;
       margin-bottom: 10px;
-      font-weight: 500;
+      font-weight: bolder;
       color: darkgray;
     }
   }
-
   .check_agree {
     font-size: 12px;
     margin-right: 6rem;

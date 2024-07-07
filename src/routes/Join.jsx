@@ -5,6 +5,11 @@ import api from "../api"; // Axios 인스턴스 import
 
 const Join = () => {
   const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
   // Intro에서 입력한 이메일 값 받아오기
   const { state } = useLocation();
   const initialEmail = state?.value || ""; // 값 가져오지 못했을 때를 대비
@@ -38,21 +43,24 @@ const Join = () => {
 
   // onChangeHandler - 사용자가 input 값 입력할 때마다 변화 감지 및 업데이트
 
-  /*const onChangeEmailHandler = (e) => {
-    const emailValue = e.target.value;
-    setEmail(emailValue);
-    emailCheckHandler(emailValue);
-  };*/
-
   const onChangePwHandler = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/\s/g, ""); // 공백 제거
+
     setPassword(value);
     passwordCheckHandler(value);
   };
+
   const onChangeNicknameHandler = (e) => {
-    const nicknameValue = e.target.value;
+    const nicknameValue = e.target.value.replace(/\s/g, ""); // 공백 제거
     setNickname(nicknameValue);
     nicknameCheckHandler(nicknameValue);
+  };
+
+  // 패스워드 input에서 공백 입력하면 기호 보이지 않도록 설정
+  const handlePasswordInput = (e) => {
+    if (e.inputType === "insertText" && e.data === " ") {
+      e.preventDefault();
+    }
   };
 
   // 패스워드 유효성 검사 핸들러
@@ -159,7 +167,7 @@ const Join = () => {
   return (
     <>
       <div id="join">
-        <span>
+        <span onClick={() => handleNavigate("/")}>
           <img src={logo} alt="로고"></img>
         </span>
 
@@ -179,9 +187,11 @@ const Join = () => {
               )}
               <input
                 onChange={onChangePwHandler}
+                onInput={handlePasswordInput}
                 className="join_pw"
                 type="password"
                 name="password"
+                value={password}
                 placeholder="비밀번호"
                 autoFocus
               />
