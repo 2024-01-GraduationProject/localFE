@@ -9,6 +9,7 @@ import api from "../../api";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailCheck, setEmailCheck] = useState("");
   const [loginCheck, setLoginCheck] = useState(false);
 
   const onEmailHandler = (e) => {
@@ -75,8 +76,12 @@ const Login = () => {
                   onChange={onPasswordHandler}
                   required // 비밀번호 비어있으면 안 됨.
                 />
+                <div className={`login_check ${loginCheck ? "visible" : ""}`}>
+                  {loginCheck && (
+                    <small>이메일 혹은 비밀번호를 확인해주세요.</small>
+                  )}
+                </div>
               </div>
-              {loginCheck && <div>이메일 혹은 비밀번호를 확인해주세요.</div>}
             </div>
 
             <div>

@@ -226,7 +226,7 @@ const Join = () => {
                   onChange={handleAgreementChange}
                 />
                 <label htmlFor="agree_check_info">
-                  [필수] 개인정보 이용 수집 방침
+                  <span>[필수] </span>개인정보 이용 수집 방침
                 </label>
               </li>
 
@@ -239,7 +239,7 @@ const Join = () => {
                   onChange={handleAgreementChange}
                 />
                 <label htmlFor="agree_check_event_receive">
-                  [선택] 이벤트 및 혜택 알림 수신 동의
+                  <span>[선택] </span> 이벤트 및 혜택 알림 수신 동의
                 </label>
               </li>
 

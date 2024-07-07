@@ -25,6 +25,7 @@
     height: auto;
     padding-top: 2rem;
     padding-bottom: 2rem;
+    position: relative;
 
     .login_email,
     .login_pw {
@@ -34,6 +35,37 @@
       border-radius: 5px;
       padding: 0 10px;
       margin-bottom: 10px;
+    }
+
+    .login_check {
+      display: none;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      background: #f8d7da;
+      color: #721c24;
+      padding: 5px 20px;
+      border-radius: 4px;
+      border: 1px solid #f5c6cb;
+      font-size: 11px;
+      white-space: nowrap;
+      z-index: 1;
+
+      &::before {
+        content: "";
+        position: absolute;
+        bottom: -5px; // 삼각형 위치
+        left: 10px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 5px 5px 0 5px;
+        border-color: #f8d7da transparent transparent transparent;
+      }
+
+      &.visible {
+        display: block; // loginCheck가 true일 때 말풍선 보이도록
+      }
     }
   }
 
@@ -48,6 +80,7 @@
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     font-size: 1rem;
+    cursor: pointer;
   }
 }
 
