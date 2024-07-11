@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { tasteAge, tasteGender, tasteText } from "constants";
 import Header2 from "components/Header/Header2";
 import api from "../../api"; // Axios 인스턴스 import
 
@@ -9,6 +8,46 @@ const Taste = () => {
   const [selectedMoods, setSelectedMoods] = useState([]); // 선택된 분위기 저장
   const [selectedAge, setSelectedAge] = useState(""); // 선택된 연령 저장
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별 저장
+
+  const [ageOptions, setAgeOptions] = useState([]);
+  const [genderOptions, setGenderOptions] = useState([]);
+  const [moodOptions, setMoodOptions] = useState([]);
+
+  useEffect(() => {
+    // 연령 데이터 가져오기
+    const fetchAges = async () => {
+      try {
+        const response = await api.get("/ages");
+        setAgeOptions(response.data);
+      } catch (error) {
+        console.log("연령 데이터를 가져오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    // 성별 데이터 가져오기
+    const fetchGenders = async () => {
+      try {
+        const response = await api.get("/genders");
+        setGenderOptions(response.data);
+      } catch (error) {
+        console.log("성별 데이터를 가져오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    // 취향 데이터 가져오기
+    const fetchMoods = async () => {
+      try {
+        const response = await api.get("/book-categories");
+        setMoodOptions(response.data);
+      } catch (error) {
+        console.log("취향 데이터를 가져오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchAges();
+    fetchGenders();
+    fetchMoods();
+  }, []);
 
   // 분위기 버튼 클릭 핸들러
   const handleMoodClick = (title) => {
@@ -61,7 +100,7 @@ const Taste = () => {
             value={selectedAge}
           >
             <option value="">연령 선택</option>
-            {tasteAge.map((taste) => (
+            {ageOptions.map((taste) => (
               <option key={taste.age} value={taste.age}>
                 {taste.age}
               </option>
@@ -74,7 +113,7 @@ const Taste = () => {
             value={selectedGender}
           >
             <option value="">성별 선택</option>
-            {tasteGender.map((taste) => (
+            {genderOptions.map((taste) => (
               <option key={taste.gender} value={taste.gender}>
                 {taste.gender}
               </option>
@@ -84,7 +123,7 @@ const Taste = () => {
 
         <div className="mood">
           <div>유형(분위기)</div>
-          {tasteText.map((taste, key) => (
+          {moodOptions.map((taste, key) => (
             <button
               key={key}
               className={selectedMoods.includes(taste.title) ? "selected" : ""}

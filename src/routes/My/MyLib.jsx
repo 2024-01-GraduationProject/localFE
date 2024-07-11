@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header2 from "components/Header/Header2";
 import boogi2 from "assets/img/boogi2.jpg";
+import api from "../../api"; // Axios 인스턴스 import
 
 const MyLib = () => {
   const [activeTab, setActiveTab] = useState("관심 분야");
@@ -8,15 +9,22 @@ const MyLib = () => {
   const [selectedMoods, setSelectedMoods] = useState([]);
 
   useEffect(() => {
-    const storedNickname = sessionStorage.getItem("nickname");
-    if (storedNickname) {
-      setNickname(storedNickname);
-    }
+    // 사용자 데이터 가져오기
+    const fetchUserData = async () => {
+      try {
+        // 닉네임 가져오기
+        const nicknameResponse = await api.get("/user-nickname");
+        setNickname(nicknameResponse.data.nickname);
 
-    const storedMoods = sessionStorage.getItem("selectedMoods");
-    if (storedMoods) {
-      setSelectedMoods(JSON.parse(storedMoods));
-    }
+        // 관심 분야 데이터 가져오기
+        const moodsResponse = await api.get("/user-interests");
+        setSelectedMoods(moodsResponse.data);
+      } catch (error) {
+        alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   const renderContent = () => {

@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineMenu } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { GiBookshelf } from "react-icons/gi";
-import { tasteText } from "../../constants/index";
+import api from "../../api"; // Axios 인스턴스 import
 
 const MainNav = () => {
   const [showTasteButtons, setShowTasteButtons] = useState(false);
+  const [tasteOptions, setTasteOptions] = useState([]);
+
+  useEffect(() => {
+    // 취향 데이터 가져오기
+    const fetchTastes = async () => {
+      try {
+        const response = await api.get("/book-categories");
+        setTasteOptions(response.data);
+      } catch (error) {
+        console.log("취향 데이터를 가져오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchTastes();
+  }, []);
 
   const handleHambtnClick = () => {
     setShowTasteButtons(!showTasteButtons);
@@ -31,7 +46,7 @@ const MainNav = () => {
 
       {showTasteButtons && (
         <div className="taste_buttons">
-          {tasteText.map((taste, index) => (
+          {tasteOptions.map((taste, index) => (
             <Link to={getLinkPath(taste.title)} key={index}>
               <button className="taste_button">{taste.title}</button>
             </Link>
