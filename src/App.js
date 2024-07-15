@@ -19,6 +19,9 @@ import {
   Economy,
   Philosophy,
   Original,
+  GoogleLogin,
+  NaverLogin,
+  KakaoLogin,
 } from "routes";
 import MainView from "views/MainView";
 
@@ -29,6 +32,9 @@ const App = () => {
         <Route path="/" element={<HomeView />} />
         <Route path="/join" element={<Join />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/login/google" element={<GoogleLogin />} />
+        <Route path="/login/kakao" element={<KakaoLogin />} />
+        <Route path="/login/naver" element={<NaverLogin />} />
         <Route path="/mylib" element={<MyLib />} />
         <Route path="/taste" element={<Taste />} />
         <Route path="/mainview" element={<MainView />} />

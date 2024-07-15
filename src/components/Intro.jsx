@@ -57,6 +57,22 @@ const Intro = () => {
     }
   };
 
+  const handleSocialLogin = (provider) => {
+    switch (provider) {
+      case "google":
+        navigate("/login/google");
+        break;
+      case "kakao":
+        navigate("/login/kakao");
+        break;
+      case "naver":
+        navigate("/login/naver");
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <section id="intro">
       <div className="intro__text">
@@ -103,14 +119,14 @@ const Intro = () => {
         <div>OR</div>
         {/* 간편로그인 연결 미완성 */}
         <div className="social">
-          <button>
+          <button onClick={() => handleSocialLogin("google")}>
             <img src={google} alt="구글"></img>
           </button>
 
-          <button>
+          <button onClick={() => handleSocialLogin("kakao")}>
             <img src={kakao} alt="카카오"></img>
           </button>
-          <button>
+          <button onClick={() => handleSocialLogin("naver")}>
             <img src={naver} alt="네이버"></img>
           </button>
         </div>
