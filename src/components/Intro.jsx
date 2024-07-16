@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
 import { useNavigate } from "react-router-dom";
 import api from "../api"; // Axios 인스턴스 import
+import KakaoLogin from "../routes/Login/KakaoLogin";
+import GoogleLogin from "../routes/Login/GoogleLogin";
 
 const Intro = () => {
   // 입력한 이메일 값 저장
@@ -12,6 +14,10 @@ const Intro = () => {
   const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
 
   const navigate = useNavigate();
+
+  const kakaoLoginRef = useRef(); // Reference to KakaoLogin component
+  const googleLoginRef = useRef();
+
   const onChangeEmail = (e) => {
     const emailValue = e.target.value;
     setEmail(emailValue);
@@ -60,10 +66,10 @@ const Intro = () => {
   const handleSocialLogin = (provider) => {
     switch (provider) {
       case "google":
-        navigate("/login/google");
+        googleLoginRef.current.triggerGoogleLogin();
         break;
       case "kakao":
-        navigate("/login/kakao");
+        kakaoLoginRef.current.loginWithKakao();
         break;
       case "naver":
         navigate("/login/naver");
@@ -85,7 +91,6 @@ const Intro = () => {
           던져줍니다!
         </div>
       </div>
-
       <form className="intro__start" onSubmit={(e) => e.preventDefault()}>
         <div className="intro__input">
           <input
@@ -114,7 +119,6 @@ const Intro = () => {
           첫 달 무료로 시작하기
         </button>
       </form>
-
       <div className="social_join">
         <div>OR</div>
         {/* 간편로그인 연결 미완성 */}
@@ -131,6 +135,8 @@ const Intro = () => {
           </button>
         </div>
       </div>
+      <KakaoLogin ref={kakaoLoginRef} /> {/* Include KakaoLogin component */}
+      <GoogleLogin ref={googleLoginRef} />
     </section>
   );
 };
