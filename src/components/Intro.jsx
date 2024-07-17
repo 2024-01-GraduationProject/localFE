@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api"; // Axios 인스턴스 import
 import KakaoLogin from "../routes/Login/KakaoLogin";
 import GoogleLogin from "../routes/Login/GoogleLogin";
+import NaverLogin from "../routes/Login/NaverLogin";
 
 const Intro = () => {
   // 입력한 이메일 값 저장
@@ -78,6 +79,20 @@ const Intro = () => {
         break;
     }
   };
+
+  /*const openNaverLoginPopup = () => {
+    const popup = window.open(
+      "/login/naver",
+      "naverLoginPopup",
+      "width=350,height=400"
+    );
+    if (popup) {
+      popup.focus();
+    } else {
+      console.error("팝업 차단됨 - 네이버 로그인 팝업을 열 수 없습니다.");
+      // 팝업이 차단된 경우 대체할 수 있는 처리 추가
+    }
+  }; */
 
   return (
     <section id="intro">

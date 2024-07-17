@@ -33,7 +33,7 @@ const GoogleLogin = forwardRef((props, ref) => {
       console.log("Encoded JWT ID token: " + response.credential);
 
       try {
-        const res = await api.post("/api/auth/google", {
+        const res = await api.post("/auth/google", {
           token: response.credential,
         });
         if (res.data.isNewUser) {
