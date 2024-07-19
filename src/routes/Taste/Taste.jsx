@@ -6,7 +6,7 @@ import api from "../../api"; // Axios 인스턴스 import
 const Taste = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || ""; // Retrieve the email from navigation state
+  const email = location.state?.value || ""; // Retrieve the email from navigation state
 
   const [selectedMoods, setSelectedMoods] = useState([]); // 선택된 분위기 저장
   const [selectedAge, setSelectedAge] = useState(""); // 선택된 연령 저장
