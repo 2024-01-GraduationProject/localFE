@@ -61,7 +61,6 @@ const Intro = () => {
   const handleStartClick = () => {
     if (introEmail) {
       navigate("/join", { state: { value: introEmail } });
-      navigate("/taste", { state: { value: introEmail } });
     }
   };
 
