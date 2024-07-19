@@ -141,6 +141,11 @@ const Join = () => {
       return;
     }
 
+    if (!agreements.personalInfo) {
+      alert("개인정보 수집 및 이용에 동의해주세요.");
+      return;
+    }
+
     if (passwordCheckHandler(password)) {
       try {
         const response = await api.post("/register", {
@@ -151,7 +156,7 @@ const Join = () => {
         });
         if (response.status === 200) {
           alert("회원가입이 완료되었습니다.");
-          navigate("/taste");
+          navigate("/taste", { state: { email: email } });
         } else {
           const errorData = response.data;
           alert(`회원가입 실패: ${errorData.message}`);
