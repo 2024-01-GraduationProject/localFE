@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import logo from "assets/img/logo.jpg";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
 import { useNavigate } from "react-router-dom";
+import KakaoLogin from "./KakaoLogin";
+import GoogleLogin from "./GoogleLogin";
 import api from "../../api";
 
 const Login = () => {
@@ -11,6 +13,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [emailCheck, setEmailCheck] = useState("");
   const [loginCheck, setLoginCheck] = useState(false);
+
+  const kakaoLoginRef = useRef(); // Reference to KakaoLogin component
+  const googleLoginRef = useRef();
+
+  const navigate = useNavigate();
 
   const onEmailHandler = (e) => {
     setEmail(e.target.value);
@@ -20,7 +27,18 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
-  const navigate = useNavigate();
+  const handleSocialLogin = (provider) => {
+    switch (provider) {
+      case "google":
+        googleLoginRef.current.triggerGoogleLogin();
+        break;
+      case "kakao":
+        kakaoLoginRef.current.loginWithKakao();
+        break;
+      default:
+        break;
+    }
+  };
 
   // 로그인 요청 핸들러
   const handleLogin = async (e) => {
@@ -91,20 +109,23 @@ const Login = () => {
             </div>
           </form>
 
-          {/* 간편로그인 연결 미완성 */}
           <div className="social">
-            <button>
+            <button onClick={() => handleSocialLogin("google")}>
               <img src={google} alt="구글"></img>
             </button>
 
-            <button>
+            <button onClick={() => handleSocialLogin("kakao")}>
               <img src={kakao} alt="카카오"></img>
             </button>
+
+            {/* 네이버 미완성 */}
             <button>
               <img src={naver} alt="네이버"></img>
             </button>
           </div>
         </div>
+        <KakaoLogin ref={kakaoLoginRef} />
+        <GoogleLogin ref={googleLoginRef} />
       </div>
     </>
   );

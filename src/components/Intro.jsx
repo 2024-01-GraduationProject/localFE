@@ -136,7 +136,7 @@ const Intro = () => {
       </form>
       <div className="social_join">
         <div>OR</div>
-        {/* 간편로그인 연결 미완성 */}
+
         <div className="social">
           <button onClick={() => handleSocialLogin("google")}>
             <img src={google} alt="구글"></img>
@@ -145,12 +145,14 @@ const Intro = () => {
           <button onClick={() => handleSocialLogin("kakao")}>
             <img src={kakao} alt="카카오"></img>
           </button>
+
+          {/* 네이버 미완성 */}
           <button onClick={() => handleSocialLogin("naver")}>
             <img src={naver} alt="네이버"></img>
           </button>
         </div>
       </div>
-      <KakaoLogin ref={kakaoLoginRef} /> {/* Include KakaoLogin component */}
+      <KakaoLogin ref={kakaoLoginRef} />
       <GoogleLogin ref={googleLoginRef} />
     </section>
   );
