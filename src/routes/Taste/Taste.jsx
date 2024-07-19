@@ -76,9 +76,9 @@ const Taste = () => {
     try {
       const response = await api.post("/save-taste", {
         email,
-        mood: selectedMoods,
         age: selectedAge,
         gender: selectedGender,
+        mood: selectedMoods,
       });
       if (response.status === 200) {
         alert("선택된 정보가 서버에 전송되었습니다.");
@@ -130,10 +130,12 @@ const Taste = () => {
           {moodOptions.map((taste) => (
             <button
               key={taste.id}
-              className={selectedMoods.includes(taste.title) ? "selected" : ""}
-              onClick={() => handleMoodClick(taste.title)}
+              className={
+                selectedMoods.includes(taste.category) ? "selected" : ""
+              }
+              onClick={() => handleMoodClick(taste.category)}
             >
-              #{taste.title}
+              #{taste.category}
             </button>
           ))}
         </div>
