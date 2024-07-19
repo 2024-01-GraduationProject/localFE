@@ -60,7 +60,7 @@ const Intro = () => {
 
   const handleStartClick = () => {
     if (introEmail) {
-      navigate("/join", { state: { value: introEmail } });
+      navigate("/join", { state: { email: introEmail } });
     }
   };
 

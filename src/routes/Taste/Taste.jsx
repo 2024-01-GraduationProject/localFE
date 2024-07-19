@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header2 from "components/Header/Header2";
 import api from "../../api"; // Axios 인스턴스 import
 
 const Taste = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || ""; // Retrieve the email from navigation state
+
   const [selectedMoods, setSelectedMoods] = useState([]); // 선택된 분위기 저장
   const [selectedAge, setSelectedAge] = useState(""); // 선택된 연령 저장
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별 저장
@@ -72,6 +75,7 @@ const Taste = () => {
   const handleTasteSubmit = async () => {
     try {
       const response = await api.post("/save-taste", {
+        email,
         mood: selectedMoods,
         age: selectedAge,
         gender: selectedGender,
@@ -123,9 +127,9 @@ const Taste = () => {
 
         <div className="mood">
           <div>유형(분위기)</div>
-          {moodOptions.map((taste, key) => (
+          {moodOptions.map((taste) => (
             <button
-              key={key}
+              key={taste.id}
               className={selectedMoods.includes(taste.title) ? "selected" : ""}
               onClick={() => handleMoodClick(taste.title)}
             >
