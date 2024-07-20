@@ -49,7 +49,6 @@
   input {
     font-size: 10vm;
     color: #222222;
-    //caret-color: #aaaaaa;
     width: 20rem;
     height: 3.5rem;
     border: solid #aaaaaa 1px;
@@ -96,6 +95,11 @@
     &.success {
       color: green;
       background: #afe06b;
+      border: 1px solid #a5d266;
+
+      &::before {
+        border-color: #afe06b transparent transparent transparent;
+      }
     }
   }
 }
