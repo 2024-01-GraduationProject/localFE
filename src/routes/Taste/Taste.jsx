@@ -83,7 +83,7 @@ const Taste = () => {
         mood: selectedMoods,
       });
       if (response.status === 200) {
-        alert("선택된 정보가 서버에 전송되었습니다.");
+        console.log("선택된 정보가 서버에 전송되었습니다.");
         navigate("/tastenext");
       } else {
         alert(`서버로 데이터 전송 실패: ${response.data.message}`);

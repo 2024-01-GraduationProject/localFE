@@ -1,34 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineMenu } from "react-icons/md";
-import { Link } from "react-router-dom";
 import { GiBookshelf } from "react-icons/gi";
+import { useNavigate } from "react-router-dom";
 import api from "../../api"; // Axios 인스턴스 import
 
 const MainNav = () => {
-  const [showTasteButtons, setShowTasteButtons] = useState(false);
-  const [tasteOptions, setTasteOptions] = useState([]);
+  const [showCategoryButtons, setShowCategoryButtons] = useState(false);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // 취향 데이터 가져오기
-    const fetchTastes = async () => {
+    // 책 카테고리 데이터 가져오기
+    const fetchCategories = async () => {
       try {
         const response = await api.get("/book-categories");
-        setTasteOptions(response.data);
+        console.log(response.data);
+        setCategoryOptions(response.data);
       } catch (error) {
-        console.log("취향 데이터를 가져오는 중 오류가 발생했습니다.");
+        console.log("카테고리 데이터를 가져오는 중 오류가 발생했습니다.");
       }
     };
 
-    fetchTastes();
+    fetchCategories();
   }, []);
 
   const handleHambtnClick = () => {
-    setShowTasteButtons(!showTasteButtons);
+    setShowCategoryButtons(!showCategoryButtons);
   };
 
-  const getLinkPath = (title) => {
-    // title 값을 소문자로 변환하고 공백을 대시(-)로 변환하여 URL 경로를 생성
-    return `/${title.toLowerCase().replace(/ /g, "-")}`;
+  const getLinkPath = (category) => {
+    // category 값이 undefined일 경우 빈 문자열을 반환
+    if (!category) return "/";
+
+    const englishFileNames = {
+      로맨스: "Romance",
+      스릴러: "Thriller",
+      "공포/호러": "Horror",
+      SF: "SF",
+      판타지: "Fantasy",
+      고전: "Classic",
+      역사: "History",
+      경제: "Economy",
+      철학: "Philosophy",
+      "드라마/영화 원작": "Original",
+    };
+
+    return `/${
+      englishFileNames[category] || category.toLowerCase().replace(/ /g, "-")
+    }`;
+  };
+
+  const handleCategoryButtonClick = (category) => {
+    navigate(getLinkPath(category));
   };
 
   return (
@@ -37,19 +60,22 @@ const MainNav = () => {
         <button className="hambtn" onClick={handleHambtnClick}>
           <MdOutlineMenu size="3em" />
         </button>
-        <Link to="/mylib">
-          <button className="mylib">
-            <GiBookshelf size="3em" />
-          </button>
-        </Link>
+
+        <button className="mylib" onClick={() => navigate("/mylib")}>
+          <GiBookshelf size="3em" />
+        </button>
       </div>
 
-      {showTasteButtons && (
-        <div className="taste_buttons">
-          {tasteOptions.map((taste, index) => (
-            <Link to={getLinkPath(taste.title)} key={index}>
-              <button className="taste_button">{taste.title}</button>
-            </Link>
+      {showCategoryButtons && (
+        <div className="category_buttons">
+          {categoryOptions.map((categoryData, index) => (
+            <button
+              className="category_button"
+              key={index}
+              onClick={() => handleCategoryButtonClick(categoryData.category)}
+            >
+              {categoryData.category}
+            </button>
           ))}
         </div>
       )}

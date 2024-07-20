@@ -19,25 +19,24 @@
   }
 }
 
-.taste_buttons {
+.category_buttons {
   position: absolute;
-  top: 14em; /* Adjust this value based on your header height */
+  top: 14em;
   left: 4.5em;
   right: 0;
   width: 8em;
-  height: 18em;
+  height: 250px;
   background-color: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000; /* Ensure it appears above other components */
   display: flex;
-  flex-direction: column; /* Stack buttons vertically */
-  //align-items:
+  flex-direction: column;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
-  padding-left: 0.5em;
+  padding-left: 0.3em;
 }
 
-.taste_button {
+.category_button {
   margin-bottom: 0.5em;
   font-size: 12px;
   border: none;
@@ -45,7 +44,7 @@
   cursor: pointer;
 }
 
-.taste_button:hover {
+.category_button:hover {
   background-color: #ddd;
   font-weight: bold;
 }
