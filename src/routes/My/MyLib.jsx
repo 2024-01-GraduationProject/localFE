@@ -4,9 +4,8 @@ import boogi2 from "assets/img/boogi2.jpg";
 import api from "../../api"; // Axios 인스턴스 import
 
 const MyLib = () => {
-  const [activeTab, setActiveTab] = useState("관심 분야");
+  const [activeTab, setActiveTab] = useState("책장");
   const [nickname, setNickname] = useState("");
-  const [selectedMoods, setSelectedMoods] = useState([]);
 
   useEffect(() => {
     // 사용자 데이터 가져오기
@@ -15,34 +14,15 @@ const MyLib = () => {
         // 닉네임 가져오기
         const nicknameResponse = await api.get("/user-nickname");
         setNickname(nicknameResponse.data.nickname);
-
-        // 관심 분야 데이터 가져오기
-        const moodsResponse = await api.get("/user-interests");
-        setSelectedMoods(moodsResponse.data);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
     };
-
     fetchUserData();
   }, []);
 
   const renderContent = () => {
     switch (activeTab) {
-      case "관심 분야":
-        return (
-          <div>
-            {selectedMoods.length > 0 ? (
-              <ul>
-                {selectedMoods.map((mood, index) => (
-                  <li key={index}>#{mood}</li>
-                ))}
-              </ul>
-            ) : (
-              <div>관심 분야가 없습니다.</div>
-            )}
-          </div>
-        );
       case "책장":
         return <div>책장 내용</div>;
       case "My Favorite":
@@ -67,7 +47,7 @@ const MyLib = () => {
         </div>
         <div>
           <ul className="mylib_menu">
-            {["관심 분야", "책장", "My Favorite"].map((tab) => (
+            {["책장", "My Favorite"].map((tab) => (
               <li
                 key={tab}
                 className={tab === activeTab ? "active" : ""}

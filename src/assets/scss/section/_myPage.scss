@@ -1,0 +1,197 @@
+#mypage {
+  margin-left: 8em;
+  margin-right: 8em;
+  margin-top: 7em;
+
+  .profile_container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .profile_img {
+      width: 6em;
+      height: 6em;
+      border-radius: 50%;
+      position: relative;
+      background-position: center;
+    }
+    .profile_picture_container {
+      position: relative;
+      display: inline-block;
+
+      .camera_icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: white;
+        border-radius: 50%;
+        padding: 5px;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: darkgray;
+
+        &:hover {
+          color: darkgray;
+        }
+
+        input {
+          display: none;
+        }
+      }
+    }
+
+    .profile_title {
+      margin-left: 1.5em;
+      font-size: 2.7em;
+      font-weight: bold;
+
+      span {
+        font-weight: 100;
+      }
+    }
+  }
+
+  .mypage_menu {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    li {
+      display: inline-block;
+      margin-right: 1em;
+      font-size: 1.1em;
+      cursor: pointer;
+      border-radius: 5px 5px 0 0;
+      border: 0;
+    }
+    li.active {
+      font-weight: 600;
+      border-bottom: 2px solid black;
+      bottom: -2px;
+      padding-bottom: 2px;
+    }
+  }
+
+  .tab_content {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+
+  .user_info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+      font-size: 1em;
+
+      .input_with_button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .check_nickname_button {
+          width: 70px;
+          margin-bottom: 10px;
+          flex-shrink: 0;
+          padding: 5px 10px;
+          font-size: 0.7em;
+          color: darkgray;
+          background: transparent;
+          border: 1px solid darkgray;
+          border-radius: 5px;
+          cursor: pointer;
+
+          &:hover {
+            background-color: darkgray;
+            color: #fff;
+          }
+        }
+
+        input {
+          flex: 1;
+          min-width: 0; // 자동 줄 바꿈 방지
+          max-width: 20em; // 최대 너비 설정
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          font-size: 1em;
+          box-sizing: border-box; // padding 포함하여 너비 계산
+          margin-bottom: 10px;
+        }
+      }
+
+      input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+        width: 20em;
+        margin-bottom: 10px;
+      }
+      &[readonly] {
+        background-color: #f5f5f5;
+        pointer-events: none; // 읽기 전용일 때 클릭 불가능
+        outline: none;
+        box-shadow: none;
+      }
+
+      &.editable:focus {
+        outline: none;
+        border: 1px solid #ccc; // 클릭했을 때 border line 변하지 않도록
+        box-shadow: none;
+      }
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.1em;
+      color: #fff;
+      background-color: #b6dc80;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 10em;
+
+      &:hover {
+        background-color: #b6dc80;
+      }
+    }
+
+    .error_message {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
+  }
+
+  .readonly {
+    background-color: #f5f5f5;
+    pointer-events: none; // 읽기 전용일 때 클릭 불가능
+    outline: none;
+    box-shadow: none;
+  }
+
+  .tastes_list {
+    margin-top: 20px;
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+
+      li {
+        display: inline-block;
+        background-color: #f5f5f5;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
