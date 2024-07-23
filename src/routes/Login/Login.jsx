@@ -53,8 +53,8 @@ const Login = () => {
       if (response.status === 200) {
         // 로그인 성공 시
         setLoginCheck(false);
-        sessionStorage.setItem("token", response.data.token);
-        sessionStorage.setItem("email", response.data.email); // 이메일 저장
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("email", response.data.email); // 이메일 저장
         console.log("로그인 성공, 이메일 주소: " + response.data.email);
         navigate("/mainview");
       } else {

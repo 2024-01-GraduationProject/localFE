@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header2 from "components/Header/Header2";
 import api from "../../api"; // Axios 인스턴스 import
+import useAuth from "routes/Login/UseAuth";
 
 const Taste = () => {
+  useAuth();
+
   const navigate = useNavigate();
 
   // Join에서 이메일 값 받아오기

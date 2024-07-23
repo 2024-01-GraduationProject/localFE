@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import Header2 from "components/Header/Header2";
 import boogi2 from "assets/img/boogi2.jpg";
 import api from "../../api"; // Axios 인스턴스 import
+import useAuth from "routes/Login/UseAuth";
 
 const MyLib = () => {
+  useAuth();
+
   const [activeTab, setActiveTab] = useState("책장");
   const [nickname, setNickname] = useState("");
 

@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "assets/img/logo.jpg";
 import api from "../../api";
+import useAuth from "routes/Login/UseAuth";
 
 const Header2 = () => {
+  useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -14,15 +16,15 @@ const Header2 = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
       if (response.status === 200) {
         // 로그아웃 성공
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("email");
+        localStorage.removeItem("token");
+        localStorage.removeItem("email");
         // 페이지 이동
         navigate("/");
       } else {

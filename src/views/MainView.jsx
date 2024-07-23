@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Header2,
   SearchBar,
@@ -8,8 +9,11 @@ import {
   FamousBook,
   Recommend,
 } from "components";
+import useAuth from "routes/Login/UseAuth";
 
 const MainView = () => {
+  useAuth();
+
   return (
     <>
       <Header2 />
