@@ -17,7 +17,7 @@ const MyLib = () => {
         // 닉네임 가져오기
         const nicknameResponse = await api.get("/user-nickname");
         console.log(nicknameResponse);
-        setNickname(nicknameResponse.data.nickname);
+        setNickname(nicknameResponse.data);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
@@ -46,7 +46,7 @@ const MyLib = () => {
           </span>
           <span className="profile_title">
             {nickname}
-            <span>의 서재</span>
+            <span>님의 서재</span>
           </span>
         </div>
         <div>
