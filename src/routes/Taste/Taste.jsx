@@ -11,7 +11,7 @@ const Taste = () => {
 
   // Join에서 이메일 값 받아오기
   const location = useLocation();
-  const email = location.state?.email || "";
+  const { email, password } = location.state || {};
 
   const [selectedMoods, setSelectedMoods] = useState([]); // 선택된 분위기 저장
   const [selectedAge, setSelectedAge] = useState(""); // 선택된 연령 저장
@@ -87,7 +87,7 @@ const Taste = () => {
       });
       if (response.status === 200) {
         console.log("선택된 정보가 서버에 전송되었습니다.");
-        navigate("/tastenext");
+        navigate("/tastenext", { state: { email, password } });
       } else {
         alert(`서버로 데이터 전송 실패: ${response.data.message}`);
       }

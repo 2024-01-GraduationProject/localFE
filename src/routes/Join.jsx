@@ -5,7 +5,6 @@ import api from "../api"; // Axios 인스턴스 import
 
 const Join = () => {
   const navigate = useNavigate();
-
   const handleNavigate = (path) => {
     navigate(path);
   };
@@ -156,7 +155,7 @@ const Join = () => {
         });
         if (response.status === 200) {
           alert("회원가입이 완료되었습니다.");
-          navigate("/taste", { state: { email: email } });
+          navigate("/taste", { state: { email, password } });
         } else {
           const errorData = response.data;
           alert(`회원가입 실패: ${errorData.message}`);

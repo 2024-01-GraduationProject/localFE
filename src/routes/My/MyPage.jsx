@@ -23,6 +23,12 @@ const MyPage = () => {
     newPassword: "",
   });
 
+  // 기존 사용자 정보를 저장하는 상태
+  const [originalData, setOriginalData] = useState({
+    nickname: "",
+    newPassword: "",
+  });
+
   // 관심 분야와 전체 카테고리 정보를 저장하는 상태
   const [selectedTastes, setSelectedTastes] = useState([]);
   const [allTastes, setAllTastes] = useState([]);
@@ -50,6 +56,10 @@ const MyPage = () => {
         // 사용자 데이터 요청
         const userDataResponse = await api.get("/user-data");
         setUserData(userDataResponse.data);
+        setOriginalData({
+          nickname: userDataResponse.data.nickname,
+          newPassword: "", // 초기에는 비밀번호가 빈 문자열임
+        });
 
         // (사용자) 관심 분야 데이터 요청
         const tastesResponse = await api.get("/user-taste");
@@ -115,12 +125,22 @@ const MyPage = () => {
   // 저장 버튼 클릭 핸들러
   const handleSaveChanges = async (section) => {
     try {
+      const changes = {};
+      if (userData.nickname !== originalData.nickname) {
+        changes.nickname = userData.nickname;
+      }
+      if (userData.newPassword !== originalData.newPassword) {
+        changes.newPassword = userData.newPassword;
+      }
+
       if (section === "profile") {
         // 프로필 정보 저장 요청
-        await api.post("/update-profile", {
-          ...userData,
-          currentPassword: inputPassword,
-        });
+        if (Object.keys(changes).length > 0) {
+          await api.post("/update-userData", {
+            ...changes,
+            currentPassword: inputPassword,
+          });
+        }
       } else if (section === "profileAndTastes") {
         // 관심 분야 저장 요청
         await api.post("/update-tastes", { tastes: selectedTastes });
