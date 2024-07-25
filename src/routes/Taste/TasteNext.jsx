@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Header2 } from "components";
 import boogi2 from "assets/img/boogi2.jpg";
 import useAuth from "routes/Login/UseAuth";
