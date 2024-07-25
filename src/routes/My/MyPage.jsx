@@ -12,7 +12,7 @@ const MyPage = () => {
   const [userData, setUserData] = useState({
     nickname: "",
     email: "",
-    loginType: "",
+    loginType: "book-mind 자체 로그인", // 임의
     profilePicture: boogi3, // 기본 프로필
     age: "",
     gender: "",
@@ -22,6 +22,7 @@ const MyPage = () => {
   const [selectedTastes, setSelectedTastes] = useState([]); // 관심 분야 저장
   const [editMode, setEditMode] = useState(false); // 편집 모드 관리
   const [inputPassword, setInputPassword] = useState(""); // 입력받은 현재 비밀번호 저장
+  const [newPassword, setNewPassword] = useState(""); // 새 비밀번호 저장
   const [error, setError] = useState(""); // 오류 메시지 저장
 
   // 컴포넌트 처음 렌더링 될 때 사용자 데이터 가져옴
@@ -56,6 +57,11 @@ const MyPage = () => {
     setInputPassword(e.target.value);
   };
 
+  // 새 비밀번호 입력 필드값 변경 핸들러
+  const handleNewPasswordChange = (e) => {
+    setNewPassword(e.target.value);
+  };
+
   // 프로필 사진 변경 핸들러
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -78,9 +84,11 @@ const MyPage = () => {
       await api.put("/user-data", {
         ...userData,
         currentPassword: inputPassword,
+        newPassword: newPassword,
       });
       alert("저장되었습니다.");
       setEditMode(false); // 저장 후 편집 모드 종료
+      setError(""); // 오류 메시지 초기화
     } catch (error) {
       alert("비밀번호가 일치하지 않습니다.");
     }
@@ -162,8 +170,8 @@ const MyPage = () => {
             <input
               type="password"
               name="newPassword"
-              value={userData.newPassword}
-              onChange={handleInputChange}
+              value={newPassword}
+              onChange={handleNewPasswordChange}
               className="editable"
             />
           </label>
