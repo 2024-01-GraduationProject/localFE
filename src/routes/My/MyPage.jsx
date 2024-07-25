@@ -51,19 +51,19 @@ const MyPage = () => {
         const userDataResponse = await api.get("/user-data");
         setUserData(userDataResponse.data);
 
-        // 관심 분야 데이터 요청
+        // (사용자) 관심 분야 데이터 요청
         const tastesResponse = await api.get("/user-taste");
         setSelectedTastes(tastesResponse.data);
 
-        // 전체 카테고리 데이터 요청
+        // 전체 관심분야(카테고리) 데이터 요청
         const allTastesResponse = await api.get("/book-categories");
         setAllTastes(allTastesResponse.data);
 
-        // 연령 데이터 요청
+        // 전체 연령 데이터 요청
         const ageResponse = await api.get("/ages");
         setAges(ageResponse.data);
 
-        // 성별 데이터 요청
+        // 전체 성별 데이터 요청
         const genderResponse = await api.get("/genders");
         setGenders(genderResponse.data);
       } catch (error) {
