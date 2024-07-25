@@ -5,43 +5,71 @@ import boogi3 from "../../assets/img/boogi3.jpg";
 import api from "../../api";
 
 const MyPage = () => {
-  // 현재 활성화된 탭 관리
+  // 현재 활성화된 탭을 관리하는 상태
   const [activeTab, setActiveTab] = useState("profile");
 
-  // 사용자 정보 저장
+  // 사용자 정보를 저장하는 상태
   const [userData, setUserData] = useState({
     nickname: "",
     email: "",
-    loginType: "book-mind 자체 로그인", // 임의
-    profilePicture: boogi3, // 기본 프로필
+    loginType: "book-mind 자체 로그인",
+    profilePicture: boogi3,
     age: "",
     gender: "",
     currentPassword: "",
     newPassword: "",
   });
-  const [selectedTastes, setSelectedTastes] = useState([]); // 관심 분야 저장
-  const [editMode, setEditMode] = useState(false); // 편집 모드 관리
-  const [inputPassword, setInputPassword] = useState(""); // 입력받은 현재 비밀번호 저장
-  const [newPassword, setNewPassword] = useState(""); // 새 비밀번호 저장
-  const [error, setError] = useState(""); // 오류 메시지 저장
 
-  // 컴포넌트 처음 렌더링 될 때 사용자 데이터 가져옴
+  // 관심 분야와 전체 카테고리 정보를 저장하는 상태
+  const [selectedTastes, setSelectedTastes] = useState([]);
+  const [allTastes, setAllTastes] = useState([]);
+
+  // 연령과 성별 드롭다운에 사용할 데이터를 저장하는 상태
+  const [ages, setAges] = useState([]);
+  const [genders, setGenders] = useState([]);
+
+  // 편집 모드를 관리하는 상태
+  const [editMode, setEditMode] = useState({
+    profile: false,
+    profileAndTastes: false,
+  });
+
+  // 현재 비밀번호 입력값을 저장하는 상태
+  const [inputPassword, setInputPassword] = useState("");
+
+  // 오류 메시지를 저장하는 상태
+  const [error, setError] = useState("");
+
+  // 컴포넌트가 처음 렌더링될 때 사용자 데이터를 가져오는 useEffect
   useEffect(() => {
-    // 사용자 데이터 가져오기
     const fetchUserData = async () => {
       try {
         // 사용자 데이터 요청
-        const response = await api.get("/user-data");
-        setUserData(response.data);
+        const userDataResponse = await api.get("/user-data");
+        setUserData(userDataResponse.data);
+
         // 관심 분야 데이터 요청
         const tastesResponse = await api.get("/user-taste");
         setSelectedTastes(tastesResponse.data);
+
+        // 전체 카테고리 데이터 요청
+        const allTastesResponse = await api.get("/book-categories");
+        setAllTastes(allTastesResponse.data);
+
+        // 연령 데이터 요청
+        const ageResponse = await api.get("/ages");
+        setAges(ageResponse.data);
+
+        // 성별 데이터 요청
+        const genderResponse = await api.get("/genders");
+        setGenders(genderResponse.data);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
     };
+
     fetchUserData();
-  }, []); // 빈 배열 넣어서 처음 마운트될 때만 실행
+  }, []); // 빈 배열을 넣어 처음 마운트될 때만 실행
 
   // 입력 필드값 변경 핸들러
   const handleInputChange = (e) => {
@@ -55,11 +83,6 @@ const MyPage = () => {
   // 현재 비밀번호 입력 필드값 변경 핸들러
   const handlePasswordChange = (e) => {
     setInputPassword(e.target.value);
-  };
-
-  // 새 비밀번호 입력 필드값 변경 핸들러
-  const handleNewPasswordChange = (e) => {
-    setNewPassword(e.target.value);
   };
 
   // 프로필 사진 변경 핸들러
@@ -77,35 +100,44 @@ const MyPage = () => {
     }
   };
 
-  // 사용자 데이터 저장 핸들러
-  const handleSave = async () => {
+  // 수정 버튼 클릭 핸들러
+  const handleEditClick = (section) => {
+    setEditMode((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+    setActiveTab(section); // 클릭한 탭으로 활성화
+  };
+
+  // 저장 버튼 클릭 핸들러
+  const handleSaveChanges = async (section) => {
     try {
-      // 사용자 데이터 업데이트 요청
-      await api.put("/user-data", {
-        ...userData,
-        currentPassword: inputPassword,
-        newPassword: newPassword,
-      });
-      alert("저장되었습니다.");
-      setEditMode(false); // 저장 후 편집 모드 종료
-      setError(""); // 오류 메시지 초기화
+      if (section === "profile") {
+        // 프로필 정보 저장 요청
+        await api.post("/update-profile", {
+          ...userData,
+          currentPassword: inputPassword,
+        });
+      } else if (section === "profileAndTastes") {
+        // 관심 분야 저장 요청
+        await api.post("/update-tastes", { tastes: selectedTastes });
+      }
+      handleEditClick(section); // 저장 후 편집 모드 종료
     } catch (error) {
-      alert("비밀번호가 일치하지 않습니다.");
+      setError("변경 사항 저장 중 오류가 발생했습니다.");
     }
   };
 
-  // 닉네임 중복 확인 핸들러
-  const checkNicknameAvailability = async () => {
-    try {
-      const response = await api.get(`/check-nickname/${userData.nickname}`);
-      if (response.data.available) {
-        alert("닉네임 사용 가능");
-      } else {
-        alert("닉네임이 이미 존재합니다.");
-      }
-    } catch (error) {
-      alert("닉네임 중복 검사 중 오류가 발생했습니다.");
+  // 관심 분야 선택 핸들러
+  const handleAddTaste = (taste) => {
+    if (!selectedTastes.includes(taste)) {
+      setSelectedTastes((prev) => [...prev, taste]);
     }
+  };
+
+  // 관심 분야 제거 핸들러
+  const handleRemoveTaste = (taste) => {
+    setSelectedTastes((prev) => prev.filter((item) => item !== taste));
   };
 
   // 개인정보 렌더링
@@ -119,13 +151,13 @@ const MyPage = () => {
             name="nickname"
             value={userData.nickname}
             onChange={handleInputChange}
-            readOnly={!editMode}
-            className={`editable ${editMode ? "" : "readonly"}`}
+            readOnly={!editMode.profile}
+            className={`editable ${editMode.profile ? "" : "readonly"}`}
           />
-          {editMode && (
+          {editMode.profile && (
             <button
               type="button"
-              onClick={checkNicknameAvailability}
+              onClick={() => {}}
               className="check_nickname_button"
             >
               중복 확인
@@ -153,7 +185,7 @@ const MyPage = () => {
           className="readonly"
         />
       </label>
-      {editMode && (
+      {editMode.profile && (
         <>
           <label>
             현재 비밀번호:
@@ -170,55 +202,83 @@ const MyPage = () => {
             <input
               type="password"
               name="newPassword"
-              value={newPassword}
-              onChange={handleNewPasswordChange}
+              value={userData.newPassword}
+              onChange={handleInputChange}
               className="editable"
             />
           </label>
-          <button onClick={handleSave}>저장</button>
+          <button onClick={() => handleSaveChanges("profile")}>저장</button>
           {error && <div className="error_message">{error}</div>}
         </>
       )}
-      {!editMode && <button onClick={() => setEditMode(true)}>수정</button>}
+      {!editMode.profile && (
+        <button onClick={() => handleEditClick("profile")}>수정</button>
+      )}
     </div>
   );
 
   // 개인설정(관심분야, 연령, 성별) 정보 렌더링
   const renderProfileAndTastes = () => (
-    <div>
-      <div className="user_info">
-        <label>
-          연령:
-          <input
-            type="number"
-            name="age"
-            value={userData.age}
-            onChange={handleInputChange}
-            readOnly={!editMode}
-            className={`editable ${editMode ? "" : "readonly"}`}
-          />
-        </label>
-        <label>
-          성별:
-          <input
-            type="text"
-            name="gender"
-            value={userData.gender}
-            onChange={handleInputChange}
-            readOnly={!editMode}
-            className={`editable ${editMode ? "" : "readonly"}`}
-          />
-        </label>
-      </div>
-      <h3>관심 분야</h3>
-      <div className="tastes_list">
-        <ul>
-          {selectedTastes.map((taste) => (
-            <li key={taste.id}>#{taste.category}</li>
+    <div className="user_info">
+      <label>
+        관심 분야:
+        <div
+          className={`tastes_list ${
+            editMode.profileAndTastes ? "" : "readonly"
+          }`}
+        >
+          <ul>
+            {allTastes.map((taste) => (
+              <li
+                key={taste.id}
+                className={selectedTastes.includes(taste.id) ? "selected" : ""}
+                onClick={() => {
+                  if (selectedTastes.includes(taste.id)) {
+                    handleRemoveTaste(taste.id);
+                  } else {
+                    handleAddTaste(taste.id);
+                  }
+                }}
+              >
+                #{taste.category}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </label>
+      <label>
+        연령:
+        <select
+          name="age"
+          value={userData.age}
+          onChange={handleInputChange}
+          disabled={!editMode.profileAndTastes}
+          className={`editable ${editMode.profileAndTastes ? "" : "readonly"}`}
+        >
+          {ages.map((age) => (
+            <option key={age} value={age}>
+              {age}
+            </option>
           ))}
-        </ul>
-      </div>
-      {editMode && (
+        </select>
+      </label>
+      <label>
+        성별:
+        <select
+          name="gender"
+          value={userData.gender}
+          onChange={handleInputChange}
+          disabled={!editMode.profileAndTastes}
+          className={`editable ${editMode.profileAndTastes ? "" : "readonly"}`}
+        >
+          {genders.map((gender) => (
+            <option key={gender} value={gender}>
+              {gender}
+            </option>
+          ))}
+        </select>
+      </label>
+      {editMode.profileAndTastes && (
         <>
           <label>
             현재 비밀번호:
@@ -230,76 +290,59 @@ const MyPage = () => {
               className="editable"
             />
           </label>
-          <button onClick={handleSave}>저장</button>
+          <button onClick={() => handleSaveChanges("profileAndTastes")}>
+            저장
+          </button>
           {error && <div className="error_message">{error}</div>}
         </>
       )}
-      {!editMode && <button onClick={() => setEditMode(true)}>수정</button>}
+      {!editMode.profileAndTastes && (
+        <button onClick={() => handleEditClick("profileAndTastes")}>
+          수정
+        </button>
+      )}
     </div>
   );
 
-  // 활성화된 탭에 따라 콘텐츠 렌더링
-  const renderContent = () => {
-    switch (activeTab) {
-      case "profile":
-        return renderPersonalInfo(); // 개인정보
-      case "profileAndMoods":
-        return renderProfileAndTastes(); // 개인설정
-      default:
-        return null;
-    }
-  };
-
   return (
-    <>
-      <Header2 />
-      <div id="mypage">
-        <div className="profile_container">
-          <span className="profile_picture_container">
-            <img
-              src={userData.profilePicture}
-              alt="프로필"
-              className="profile_img"
-            />
-            {editMode && (
-              <>
-                <input
-                  type="file"
-                  id="profileImageInput"
-                  style={{ display: "none" }}
-                  onChange={handleImageChange}
-                />
-                <FaCamera
-                  className="camera_icon"
-                  onClick={() =>
-                    document.getElementById("profileImageInput").click()
-                  }
-                />
-              </>
-            )}
-          </span>
-          <span className="profile_title">
-            {userData.nickname}
-            <span>님의 정보</span>
-          </span>
+    <div id="mypage">
+      <Header2>마이 페이지</Header2>
+      <div className="profile_container">
+        <div className="profile_img">
+          <img src={userData.profilePicture} alt="Profile" />
+          {editMode.profile && (
+            <div className="profile_picture_container">
+              <label className="camera_icon">
+                <FaCamera />
+                <input type="file" onChange={handleImageChange} />
+              </label>
+            </div>
+          )}
         </div>
-        <ul className="mypage_menu">
-          <li
-            className={activeTab === "profile" ? "active" : ""}
-            onClick={() => setActiveTab("profile")}
-          >
-            가입정보
-          </li>
-          <li
-            className={activeTab === "profileAndTastes" ? "active" : ""}
-            onClick={() => setActiveTab("profileAndTastes")}
-          >
-            개인설정
-          </li>
-        </ul>
-        <div className="tab_content">{renderContent()}</div>
+        <div className="profile_title">
+          {userData.nickname}
+          <span>님</span>
+        </div>
       </div>
-    </>
+      <ul className="mypage_menu">
+        <li
+          onClick={() => setActiveTab("profile")}
+          className={activeTab === "profile" ? "active" : ""}
+        >
+          개인정보
+        </li>
+        <li
+          onClick={() => setActiveTab("profileAndTastes")}
+          className={activeTab === "profileAndTastes" ? "active" : ""}
+        >
+          관심분야
+        </li>
+      </ul>
+      <div className="mypage_content">
+        {activeTab === "profile" && renderPersonalInfo()}
+        {activeTab === "profileAndTastes" && renderProfileAndTastes()}
+      </div>
+    </div>
   );
 };
 
