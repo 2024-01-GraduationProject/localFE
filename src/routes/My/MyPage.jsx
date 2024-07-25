@@ -3,8 +3,11 @@ import { Header2 } from "components";
 import { FaCamera } from "react-icons/fa";
 import boogi3 from "../../assets/img/boogi3.jpg";
 import api from "../../api";
+import useAuth from "routes/Login/UseAuth";
 
 const MyPage = () => {
+  useAuth();
+
   // 현재 활성화된 탭을 관리하는 상태
   const [activeTab, setActiveTab] = useState("profile");
 
