@@ -247,25 +247,38 @@ const MyPage = () => {
         관심 분야:
         <div
           className={`tastes_list ${
-            editMode.profileAndTastes ? "" : "readonly"
+            editMode.profileAndTastes ? "" : "readonly" // 스타일 적용을 위함.
           }`}
         >
           <ul>
-            {allTastes.map((taste) => (
-              <li
-                key={taste.id}
-                className={selectedTastes.includes(taste.id) ? "selected" : ""}
-                onClick={() => {
-                  if (selectedTastes.includes(taste.id)) {
-                    handleRemoveTaste(taste.id);
-                  } else {
-                    handleAddTaste(taste.id);
-                  }
-                }}
-              >
-                #{taste.category}
-              </li>
-            ))}
+            {editMode.profileAndTastes
+              ? allTastes.map((taste) => (
+                  <li
+                    key={taste.id}
+                    className={
+                      selectedTastes.includes(taste.id)
+                        ? "taste-item selected"
+                        : "taste-item"
+                    }
+                    onClick={() => {
+                      if (selectedTastes.includes(taste.id)) {
+                        handleRemoveTaste(taste.id);
+                      } else {
+                        handleAddTaste(taste.id);
+                      }
+                    }}
+                  >
+                    #{taste.category}
+                  </li>
+                ))
+              : selectedTastes.map((tasteId) => {
+                  const taste = allTastes.find((t) => t.id === tasteId);
+                  return (
+                    <li key={taste.id} className="taste-item selected">
+                      #{taste.category}
+                    </li>
+                  );
+                })}
           </ul>
         </div>
       </label>
@@ -301,6 +314,8 @@ const MyPage = () => {
           ))}
         </select>
       </label>
+
+      {/* editMode일 때만 현재 비밀번호 입력 필드와 저장 버튼 표시 */}
       {editMode.profileAndTastes && (
         <>
           <label>
@@ -319,6 +334,8 @@ const MyPage = () => {
           {error && <div className="error_message">{error}</div>}
         </>
       )}
+
+      {/* readonly에서는 수정 버튼만 표시 */}
       {!editMode.profileAndTastes && (
         <button onClick={() => handleEditClick("profileAndTastes")}>
           수정
