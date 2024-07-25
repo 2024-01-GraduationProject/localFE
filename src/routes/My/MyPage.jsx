@@ -278,9 +278,9 @@ const MyPage = () => {
           disabled={!editMode.profileAndTastes}
           className={`editable ${editMode.profileAndTastes ? "" : "readonly"}`}
         >
-          {ages.map((age) => (
-            <option key={age} value={age}>
-              {age}
+          {ages.map((ageObj) => (
+            <option key={ageObj.id} value={ageObj.age}>
+              {ageObj.age}
             </option>
           ))}
         </select>
@@ -294,9 +294,9 @@ const MyPage = () => {
           disabled={!editMode.profileAndTastes}
           className={`editable ${editMode.profileAndTastes ? "" : "readonly"}`}
         >
-          {genders.map((gender) => (
-            <option key={gender} value={gender}>
-              {gender}
+          {genders.map((genderObj) => (
+            <option key={genderObj.id} value={genderObj.gender}>
+              {genderObj.gender}
             </option>
           ))}
         </select>
