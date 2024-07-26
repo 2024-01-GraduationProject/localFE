@@ -63,11 +63,11 @@ const MyPage = () => {
 
         // (사용자) 관심 분야 데이터 요청
         const tastesResponse = await api.get("/user-taste");
-        setSelectedTastes(tastesResponse.data);
+        setSelectedTastes(tastesResponse.data.userTaste);
 
         // 전체 관심분야(카테고리) 데이터 요청
         const allTastesResponse = await api.get("/book-categories");
-        setAllTastes(allTastesResponse.data);
+        setAllTastes(allTastesResponse.data.bookCategories);
 
         // 전체 연령 데이터 요청
         const ageResponse = await api.get("/ages");
@@ -272,10 +272,10 @@ const MyPage = () => {
                   </li>
                 ))
               : selectedTastes.map((tasteId) => {
-                  const taste = allTastes.find((t) => t.id === tasteId);
+                  const tasteObj = allTastes.find((t) => t.id === tasteId);
                   return (
-                    <li key={taste.id} className="taste-item selected">
-                      #{taste.category}
+                    <li key={tasteId} className="taste-item selected">
+                      #{tasteObj.category}
                     </li>
                   );
                 })}
