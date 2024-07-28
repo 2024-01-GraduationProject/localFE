@@ -205,15 +205,20 @@
 
   .tastes_list {
     margin-top: 5px;
-    width: 100%;
+    width: 60%;
     max-height: 180px; // 내용에 따라 높이 조정은 auto
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #f5f5f5; // 기본 배경색
     overflow-y: auto;
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+
     ul {
       list-style-type: none;
       padding: 10px;
+      flex-direction: row;
       align-items: center;
       flex-wrap: wrap; // 항목 자동 줄바꿈
       gap: 5px;

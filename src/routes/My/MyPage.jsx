@@ -30,7 +30,7 @@ const MyPage = () => {
   });
 
   // 관심 분야와 전체 카테고리 정보를 저장하는 상태
-  const [selectedTastes, setSelectedTastes] = useState([]);
+  const [selectedTastes, setSelectedTastes] = useState("");
   const [allTastes, setAllTastes] = useState([]);
 
   // 연령과 성별 드롭다운에 사용할 데이터를 저장하는 상태
@@ -63,19 +63,23 @@ const MyPage = () => {
 
         // (사용자) 관심 분야 데이터 요청
         const tastesResponse = await api.get("/user-taste");
-        setSelectedTastes(tastesResponse.data.userTaste);
+        console.log("User tastes response:", tastesResponse.data);
+        setSelectedTastes(tastesResponse.data);
+        console.log(selectedTastes);
 
         // 전체 관심분야(카테고리) 데이터 요청
         const allTastesResponse = await api.get("/book-categories");
-        setAllTastes(allTastesResponse.data.bookCategories);
+        console.log("bookCategories response:", allTastesResponse.data);
+        setAllTastes(allTastesResponse.data || []);
+        console.log(allTastesResponse);
 
         // 전체 연령 데이터 요청
         const ageResponse = await api.get("/ages");
-        setAges(ageResponse.data);
+        setAges(ageResponse.data || []);
 
         // 전체 성별 데이터 요청
         const genderResponse = await api.get("/genders");
-        setGenders(genderResponse.data);
+        setGenders(genderResponse.data || []);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
@@ -180,7 +184,7 @@ const MyPage = () => {
           {editMode.profile && (
             <button
               type="button"
-              onClick={() => {}}
+              onClick={() => {}} // 아직 중복 확인 핸들러 만들지 않음.
               className="check_nickname_button"
             >
               중복 확인
@@ -241,108 +245,113 @@ const MyPage = () => {
   );
 
   // 개인설정(관심분야, 연령, 성별) 정보 렌더링
-  const renderProfileAndTastes = () => (
-    <div className="user_info">
-      <label>
-        관심 분야:
-        <div
-          className={`tastes_list ${
-            editMode.profileAndTastes ? "" : "readonly" // 스타일 적용을 위함.
-          }`}
-        >
-          <ul>
-            {editMode.profileAndTastes
-              ? allTastes.map((taste) => (
+  const renderProfileAndTastes = () => {
+    return (
+      <div className="user_info">
+        <label>
+          관심 분야:
+          <div
+            className={`tastes_list ${
+              editMode.profileAndTastes ? "" : "readonly" // 스타일 적용을 위함.
+            }`}
+          >
+            <ul>
+              {editMode.profileAndTastes ? (
+                (allTastes || []).map((taste) => (
                   <li
-                    key={taste.id}
-                    className={
-                      selectedTastes.includes(taste.id)
-                        ? "taste-item selected"
-                        : "taste-item"
-                    }
+                    key={taste.category_id}
+                    className={`taste-item ${
+                      selectedTastes.includes(taste.category) ? "selected" : ""
+                    }`}
                     onClick={() => {
-                      if (selectedTastes.includes(taste.id)) {
-                        handleRemoveTaste(taste.id);
+                      if (selectedTastes.includes(taste.category)) {
+                        handleRemoveTaste(taste.category);
                       } else {
-                        handleAddTaste(taste.id);
+                        handleAddTaste(taste.category);
                       }
                     }}
                   >
                     #{taste.category}
                   </li>
                 ))
-              : selectedTastes.map((tasteId) => {
-                  const tasteObj = allTastes.find((t) => t.id === tasteId);
-                  return (
-                    <li key={tasteId} className="taste-item selected">
-                      #{tasteObj.category}
-                    </li>
-                  );
-                })}
-          </ul>
-        </div>
-      </label>
-      <label>
-        연령:
-        <select
-          name="age"
-          value={userData.age}
-          onChange={handleInputChange}
-          disabled={!editMode.profileAndTastes}
-          className={`editable ${editMode.profileAndTastes ? "" : "readonly"}`}
-        >
-          {ages.map((ageObj) => (
-            <option key={ageObj.id} value={ageObj.age}>
-              {ageObj.age}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label>
-        성별:
-        <select
-          name="gender"
-          value={userData.gender}
-          onChange={handleInputChange}
-          disabled={!editMode.profileAndTastes}
-          className={`editable ${editMode.profileAndTastes ? "" : "readonly"}`}
-        >
-          {genders.map((genderObj) => (
-            <option key={genderObj.id} value={genderObj.gender}>
-              {genderObj.gender}
-            </option>
-          ))}
-        </select>
-      </label>
+              ) : selectedTastes.length === 0 ? (
+                <li>선택된 관심 분야가 없습니다</li>
+              ) : (
+                selectedTastes.map((taste) => (
+                  <li key={taste} className="taste-item selected">
+                    #{taste}
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        </label>
+        <label>
+          연령:
+          <select
+            name="age"
+            value={userData.age}
+            onChange={handleInputChange}
+            disabled={!editMode.profileAndTastes}
+            className={`editable ${
+              editMode.profileAndTastes ? "" : "readonly"
+            }`}
+          >
+            {(ages || []).map((ageObj) => (
+              <option key={ageObj.id} value={ageObj.age}>
+                {ageObj.age}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          성별:
+          <select
+            name="gender"
+            value={userData.gender}
+            onChange={handleInputChange}
+            disabled={!editMode.profileAndTastes}
+            className={`editable ${
+              editMode.profileAndTastes ? "" : "readonly"
+            }`}
+          >
+            {(genders || []).map((genderObj) => (
+              <option key={genderObj.id} value={genderObj.gender}>
+                {genderObj.gender}
+              </option>
+            ))}
+          </select>
+        </label>
 
-      {/* editMode일 때만 현재 비밀번호 입력 필드와 저장 버튼 표시 */}
-      {editMode.profileAndTastes && (
-        <>
-          <label>
-            현재 비밀번호:
-            <input
-              type="password"
-              name="currentPassword"
-              value={inputPassword}
-              onChange={handlePasswordChange}
-              className="editable"
-            />
-          </label>
-          <button onClick={() => handleSaveChanges("profileAndTastes")}>
-            저장
+        {/* editMode일 때만 현재 비밀번호 입력 필드와 저장 버튼 표시 */}
+        {editMode.profileAndTastes && (
+          <>
+            <label>
+              현재 비밀번호:
+              <input
+                type="password"
+                name="currentPassword"
+                value={inputPassword}
+                onChange={handlePasswordChange}
+                className="editable"
+              />
+            </label>
+            <button onClick={() => handleSaveChanges("profileAndTastes")}>
+              저장
+            </button>
+            {error && <div className="error_message">{error}</div>}
+          </>
+        )}
+
+        {/* readonly에서는 수정 버튼만 표시 */}
+        {!editMode.profileAndTastes && (
+          <button onClick={() => handleEditClick("profileAndTastes")}>
+            수정
           </button>
-          {error && <div className="error_message">{error}</div>}
-        </>
-      )}
-
-      {/* readonly에서는 수정 버튼만 표시 */}
-      {!editMode.profileAndTastes && (
-        <button onClick={() => handleEditClick("profileAndTastes")}>
-          수정
-        </button>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   return (
     <div id="mypage">

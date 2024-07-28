@@ -31,6 +31,8 @@ const Join = () => {
 
   // 버튼 활성화 상태 설정
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  // 회원가입 완료 여부 상태
+  const [isRegistrationComplete, setIsRegistrationComplete] = useState(false);
 
   useEffect(() => {
     const isPasswordValid = passwordError === "";
@@ -39,6 +41,12 @@ const Join = () => {
 
     setIsButtonEnabled(isPasswordValid && isNicknameValid && isAgreementValid);
   }, [passwordError, isNicknameAvailable, agreements]);
+
+  useEffect(() => {
+    if (isRegistrationComplete) {
+      navigate("/taste", { state: { email, password } });
+    }
+  }, [isRegistrationComplete, navigate, email, password]);
 
   // onChangeHandler - 사용자가 input 값 입력할 때마다 변화 감지 및 업데이트
 
@@ -133,7 +141,7 @@ const Join = () => {
 
   // 회원가입 요청 핸들러
   const handleJoinSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // 폼 제출 기본 동작 방지
 
     if (!isNicknameAvailable) {
       setNicknameError("닉네임을 확인해주세요.");
@@ -154,8 +162,10 @@ const Join = () => {
           agreements,
         });
         if (response.status === 200) {
+          const { token } = response.data; // 회원가입 시 토큰이 반환된다고 가정
+          localStorage.setItem("authToken", token); // 토큰 저장
           alert("회원가입이 완료되었습니다.");
-          navigate("/taste", { state: { email, password } });
+          setIsRegistrationComplete(true); // 회원가입 완료 상태로 설정
         } else {
           const errorData = response.data;
           alert(`회원가입 실패: ${errorData.message}`);

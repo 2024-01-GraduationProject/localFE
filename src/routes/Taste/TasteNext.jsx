@@ -6,9 +6,17 @@ import useAuth from "routes/Login/UseAuth";
 import api from "../../api";
 
 const TasteNext = () => {
-  //useAuth();
-
+  const token = localStorage.getItem("authToken");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
+  useAuth();
+
   const location = useLocation();
   const { email, password } = location.state || {}; // Join 컴포넌트에서 전달된 email과 password
 
