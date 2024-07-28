@@ -5,7 +5,7 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("authtoken");
+    const token = localStorage.getItem("authToken");
     if (!token) {
       navigate("/login");
     }

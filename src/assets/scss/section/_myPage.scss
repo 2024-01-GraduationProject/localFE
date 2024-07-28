@@ -32,7 +32,7 @@
 
       .camera_icon {
         position: absolute;
-        bottom: 0;
+        bottom: 5;
         right: 0;
         background: white;
         border-radius: 50%;
@@ -99,6 +99,11 @@
     flex-direction: column;
     gap: 10px;
     margin-bottom: 40px;
+
+    small {
+      color: red;
+      font-weight: 500;
+    }
 
     label {
       display: flex;

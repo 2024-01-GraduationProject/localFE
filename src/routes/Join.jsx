@@ -5,15 +5,11 @@ import api from "../api"; // Axios 인스턴스 import
 
 const Join = () => {
   const navigate = useNavigate();
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
-
   // Intro에서 입력한 이메일 값 받아오기
   const { state } = useLocation();
   const initialEmail = state?.value || ""; // 값 가져오지 못했을 때를 대비
 
-  // 이메일, 패스워드 상태 설정
+  // 상태 변수 설정
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
@@ -21,19 +17,15 @@ const Join = () => {
   const [passwordError, setPasswordError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
-
-  // 이용약관 상태초기화
   const [allAgreed, setAllAgreed] = useState(false);
   const [agreements, setAgreements] = useState({
     personalInfo: false,
     eventAlarm: false,
   });
-
-  // 버튼 활성화 상태 설정
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  // 회원가입 완료 여부 상태
   const [isRegistrationComplete, setIsRegistrationComplete] = useState(false);
 
+  // 버튼 활성화 여부 결정
   useEffect(() => {
     const isPasswordValid = passwordError === "";
     const isNicknameValid = isNicknameAvailable;
@@ -42,14 +34,14 @@ const Join = () => {
     setIsButtonEnabled(isPasswordValid && isNicknameValid && isAgreementValid);
   }, [passwordError, isNicknameAvailable, agreements]);
 
+  // 회원가입 완료 시 로그인 페이지로 이동
   useEffect(() => {
     if (isRegistrationComplete) {
-      navigate("/taste", { state: { email, password } });
+      navigate("/login", { state: { email, password } });
     }
   }, [isRegistrationComplete, navigate, email, password]);
 
   // onChangeHandler - 사용자가 input 값 입력할 때마다 변화 감지 및 업데이트
-
   const onChangePwHandler = (e) => {
     const value = e.target.value.replace(/\s/g, ""); // 공백 제거
 
@@ -57,6 +49,7 @@ const Join = () => {
     passwordCheckHandler(value);
   };
 
+  // 닉네임 변경 핸들러
   const onChangeNicknameHandler = (e) => {
     const nicknameValue = e.target.value.replace(/\s/g, ""); // 공백 제거
     setNickname(nicknameValue);
@@ -114,7 +107,7 @@ const Join = () => {
     }
   };
 
-  // 이용약관 이벤트 핸들러
+  // 이용약관 체크 핸들러
   const handleAgreementChange = (e) => {
     const { name, checked } = e.target;
 
@@ -125,6 +118,7 @@ const Join = () => {
     setAllAgreed(allChecked);
   };
 
+  // 전체 동의 핸들러
   const handleAllAgreementChange = (e) => {
     const { checked } = e.target;
     setAgreements((prev) =>
@@ -181,7 +175,7 @@ const Join = () => {
   return (
     <>
       <div id="join">
-        <span onClick={() => handleNavigate("/")}>
+        <span onClick={() => navigate("/")}>
           <img src={logo} alt="로고"></img>
         </span>
 

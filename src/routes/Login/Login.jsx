@@ -3,7 +3,7 @@ import logo from "assets/img/logo.jpg";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import KakaoLogin from "./KakaoLogin";
 import GoogleLogin from "./GoogleLogin";
 import api from "../../api";
@@ -56,7 +56,13 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("email", response.data.email); // 이메일 저장
         console.log("로그인 성공, 이메일 주소: " + response.data.email);
-        navigate("/mainview");
+
+        // 새로운 사용자에 따라 리다이렉션 처리
+        if (response.data.isNewUser) {
+          navigate("/taste", { state: { email, password } });
+        } else {
+          navigate("/mainview");
+        }
       } else {
         // 로그인 실패 시
         setLoginCheck(true);
@@ -71,7 +77,12 @@ const Login = () => {
     <>
       <div id="login">
         <span>
-          <img src={logo} alt="로고" className="logo" />
+          <img
+            src={logo}
+            alt="로고"
+            className="logo"
+            onClick={() => navigate("/")}
+          />
         </span>
         <div>
           <form className="login_form" onSubmit={handleLogin}>

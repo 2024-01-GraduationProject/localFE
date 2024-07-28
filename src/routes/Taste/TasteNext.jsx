@@ -6,14 +6,7 @@ import useAuth from "routes/Login/UseAuth";
 import api from "../../api";
 
 const TasteNext = () => {
-  const token = localStorage.getItem("authToken");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
-  }, [token, navigate]);
 
   useAuth();
 

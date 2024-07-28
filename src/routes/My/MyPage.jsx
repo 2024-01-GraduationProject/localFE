@@ -17,8 +17,10 @@ const MyPage = () => {
     email: "",
     loginType: "book-mind 자체 로그인",
     profilePicture: boogi3,
-    age: "",
-    gender: "",
+    currentAge: "",
+    newAge: "",
+    currentGender: "",
+    newGender: "",
     currentPassword: "",
     newPassword: "",
   });
@@ -26,12 +28,17 @@ const MyPage = () => {
   // 기존 사용자 정보를 저장하는 상태
   const [originalData, setOriginalData] = useState({
     nickname: "",
-    newPassword: "",
+    profilePicture: "",
+    age: "",
+    gender: "",
+    selectedTastes: [],
   });
 
   // 관심 분야와 전체 카테고리 정보를 저장하는 상태
   const [selectedTastes, setSelectedTastes] = useState("");
   const [allTastes, setAllTastes] = useState([]);
+
+  const [userPicture, setUserPictures] = useState("");
 
   // 연령과 성별 드롭다운에 사용할 데이터를 저장하는 상태
   const [ages, setAges] = useState([]);
@@ -49,6 +56,13 @@ const MyPage = () => {
   // 오류 메시지를 저장하는 상태
   const [error, setError] = useState("");
 
+  const [currentPasswordError, setCurrentPasswordError] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
+
+  // 닉네임 중복 확인 결과와 상태 저장
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(null);
+  const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+
   // 컴포넌트가 처음 렌더링될 때 사용자 데이터를 가져오는 useEffect
   useEffect(() => {
     const fetchUserData = async () => {
@@ -56,22 +70,37 @@ const MyPage = () => {
         // 사용자 데이터 요청
         const userDataResponse = await api.get("/user-data");
         setUserData(userDataResponse.data);
-        setOriginalData({
+        setOriginalData((prevData) => ({
+          ...prevData,
           nickname: userDataResponse.data.nickname,
-          newPassword: "", // 초기에는 비밀번호가 빈 문자열임
-        });
+          age: userDataResponse.data.age,
+          gender: userDataResponse.data.gender,
+        }));
+        //console.log("original data after user-data: ", originalData);
 
         // (사용자) 관심 분야 데이터 요청
         const tastesResponse = await api.get("/user-taste");
-        console.log("User tastes response:", tastesResponse.data);
         setSelectedTastes(tastesResponse.data);
-        console.log(selectedTastes);
+        setOriginalData((prevData) => ({
+          ...prevData,
+          selectedTastes: tastesResponse.data,
+        }));
+        //console.log("original data after user-taste ", originalData);
 
+        /*
+        // 사용자 프로필 사진 데이터 요청
+        const userPictureResponse = await api.get("/user-profilePicture");
+        setUserPictures(userPictureResponse.data);
+        setOriginalData((prevData) => ({
+          ...prevData,
+          profilePicture: userPictureResponse.data,
+        }));
+        //console.log("original data after user-profilePicture ", originalData);
+*/
         // 전체 관심분야(카테고리) 데이터 요청
         const allTastesResponse = await api.get("/book-categories");
-        console.log("bookCategories response:", allTastesResponse.data);
         setAllTastes(allTastesResponse.data || []);
-        console.log(allTastesResponse);
+        console.log(allTastes);
 
         // 전체 연령 데이터 요청
         const ageResponse = await api.get("/ages");
@@ -88,6 +117,11 @@ const MyPage = () => {
     fetchUserData();
   }, []); // 빈 배열을 넣어 처음 마운트될 때만 실행
 
+  useEffect(() => {
+    // originalData가 업데이트된 후 콘솔 로그를 찍습니다
+    console.log("original data after update: ", originalData);
+  }, [originalData]);
+
   // 입력 필드값 변경 핸들러
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -95,27 +129,52 @@ const MyPage = () => {
       ...prevData,
       [name]: value,
     }));
+    if (name === "nickname") {
+      setIsNicknameAvailable(null); // 닉네임 변경 시 중복 확인 상태 초기화
+    }
   };
 
   // 현재 비밀번호 입력 필드값 변경 핸들러
   const handlePasswordChange = (e) => {
-    setInputPassword(e.target.value);
+    const value = e.target.value.replace(/\s/g, ""); // 공백 제거
+    setInputPassword(value);
   };
 
-  // 프로필 사진 변경 핸들러
+  // 패스워드 input에서 공백 입력하면 기호 보이지 않도록 설정
+  const handlePasswordInput = (e) => {
+    if (e.inputType === "insertText" && e.data === " ") {
+      e.preventDefault();
+    }
+  };
+
+  // 패스워드 유효성 검사 핸들러
+  const passwordCheckHandler = (password) => {
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@$&-_])(?=.*[0-9]).{8,16}$/;
+    if (!passwordRegex.test(password)) {
+      setNewPasswordError(
+        "* 비밀번호는 8~16자리 영문 대소문자 + 숫자 + ! @ $ & - _ 조합으로 입력해주세요."
+      );
+      return false;
+    } else {
+      setNewPasswordError("");
+      return true;
+    }
+  };
+
+  /* 프로필 사진 변경 핸들러
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUserData((prevData) => ({
+        setUserPictures((prevData) => ({
           ...prevData,
           profilePicture: reader.result,
         }));
       };
       reader.readAsDataURL(file);
     }
-  };
+  }; */
 
   // 수정 버튼 클릭 핸들러
   const handleEditClick = (section) => {
@@ -124,35 +183,134 @@ const MyPage = () => {
       [section]: !prev[section],
     }));
     setActiveTab(section); // 클릭한 탭으로 활성화
+    // 개인정보 섹션 수정 모드를 비활성화
+    if (section === "profileAndTastes") {
+      setEditMode((prev) => ({
+        ...prev,
+        profile: false,
+      }));
+    } else {
+      setEditMode((prev) => ({
+        ...prev,
+        profileAndTastes: false,
+      }));
+    }
   };
+
+  /*
+  const uploadProfilePicture = async (profilePicture) => {
+    const formData = new FormData();
+    formData.append("profilePicture", profilePicture);
+    try {
+      const response = await api.post("/update-profilePicture", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data.url;
+    } catch (error) {
+      console.error("프로필 사진 업로드 중 오류가 발생했습니다:", error);
+      return null;
+    }
+  }; */
 
   // 저장 버튼 클릭 핸들러
   const handleSaveChanges = async (section) => {
+    if (!inputPassword) {
+      alert("현재 비밀번호를 입력해 주세요.");
+      return;
+    }
+
     try {
       const changes = {};
-      if (userData.nickname !== originalData.nickname) {
-        changes.nickname = userData.nickname;
-      }
-      if (userData.newPassword !== originalData.newPassword) {
-        changes.newPassword = userData.newPassword;
-      }
-
       if (section === "profile") {
-        // 프로필 정보 저장 요청
-        if (Object.keys(changes).length > 0) {
+        if (
+          userData.nickname !== originalData.nickname ||
+          userData.newPassword
+        ) {
+          if (userData.nickname !== originalData.nickname) {
+            changes.nickname = userData.nickname;
+          }
+          if (userData.newPassword) {
+            if (!passwordCheckHandler(userData.newPassword)) {
+              return;
+            }
+            changes.newPassword = userData.newPassword;
+          }
           await api.post("/update-userData", {
             ...changes,
             currentPassword: inputPassword,
           });
+        } else {
+          alert("수정된 부분이 없습니다.");
+          return;
         }
       } else if (section === "profileAndTastes") {
-        // 관심 분야 저장 요청
-        await api.post("/update-tastes", { tastes: selectedTastes });
+        if (
+          selectedTastes.length !== originalData.selectedTastes.length ||
+          userData.age !== originalData.age ||
+          userData.gender !== originalData.gender
+          //userPicture.profilePicture !== originalData.profilePicture
+        ) {
+          if (userData.age !== originalData.age) {
+            changes.newAge = userData.age;
+          }
+          if (userData.gender !== originalData.gender) {
+            changes.newGender = userData.gender;
+          }
+          if (selectedTastes.length !== originalData.selectedTastes.length) {
+            changes.newSelectedTastes = selectedTastes;
+          }
+          /*if (userPicture.profilePicture !== originalData.profilePicture) {
+            const profilePictureUrl = await uploadProfilePicture(
+              userPicture.profilePicture
+            );
+            if (profilePictureUrl) {
+              changes.newProfilePicture = profilePictureUrl;
+            } else {
+              alert("프로필 사진 업로드에 실패했습니다.");
+              return;
+            }
+          }*/
+          await api.post("/update-tastes", {
+            ...changes,
+            currentPassword: inputPassword,
+          });
+        } else {
+          alert("수정된 부분이 없습니다.");
+          return;
+        }
       }
       handleEditClick(section); // 저장 후 편집 모드 종료
     } catch (error) {
-      setError("변경 사항 저장 중 오류가 발생했습니다.");
+      if (error.response && error.response.status === 400) {
+        setCurrentPasswordError("* 비밀번호가 일치하지 않습니다.");
+      } else {
+        alert("* 변경 사항 저장 중 오류가 발생했습니다.");
+      }
     }
+  };
+
+  // 닉네임 중복 확인 함수
+  const checkNicknameDuplication = async () => {
+    setIsCheckingNickname(true);
+    setIsNicknameAvailable(null); // Resetting the state for new check
+
+    try {
+      const response = await api.post("/validate-nickname", {
+        nickname: userData.nickname,
+      });
+      if (response.data.isDuplicate) {
+        setIsNicknameAvailable(false);
+      } else {
+        setIsNicknameAvailable(true);
+      }
+    } catch (error) {
+      console.error("* 닉네임 중복 확인 중 오류가 발생했습니다:", error);
+      setIsNicknameAvailable(false);
+    }
+
+    setIsCheckingNickname(false);
   };
 
   // 관심 분야 선택 핸들러
@@ -184,13 +342,21 @@ const MyPage = () => {
           {editMode.profile && (
             <button
               type="button"
-              onClick={() => {}} // 아직 중복 확인 핸들러 만들지 않음.
+              onClick={checkNicknameDuplication} // 아직 중복 확인 핸들러 만들지 않음.
               className="check_nickname_button"
+              disabled={isCheckingNickname}
             >
               중복 확인
             </button>
           )}
         </div>
+        {isNicknameAvailable !== null && (
+          <small>
+            {isNicknameAvailable
+              ? "* 사용 가능한 닉네임입니다."
+              : "* 이미 사용 중인 닉네임입니다."}
+          </small>
+        )}
       </label>
       <label>
         이메일:
@@ -221,18 +387,27 @@ const MyPage = () => {
               name="currentPassword"
               value={inputPassword}
               onChange={handlePasswordChange}
-              className="editable"
+              onInput={handlePasswordInput}
+              readOnly={!editMode.profile}
+              className={`editable ${editMode.profile ? "" : "readonly"}`}
             />
-          </label>
-          <label>
-            새 비밀번호:
-            <input
-              type="password"
-              name="newPassword"
-              value={userData.newPassword}
-              onChange={handleInputChange}
-              className="editable"
-            />
+            {currentPasswordError && (
+              <small className="error_message">{currentPasswordError}</small>
+            )}
+            <label>
+              새 비밀번호:
+              <input
+                type="password"
+                name="newPassword"
+                value={userData.newPassword}
+                onInput={handlePasswordInput}
+                onChange={handleInputChange}
+                className="editable"
+              />
+              {newPasswordError && (
+                <small className="error_message">{newPasswordError}</small>
+              )}
+            </label>
           </label>
           <button onClick={() => handleSaveChanges("profile")}>저장</button>
           {error && <div className="error_message">{error}</div>}
@@ -298,7 +473,7 @@ const MyPage = () => {
             }`}
           >
             {(ages || []).map((ageObj) => (
-              <option key={ageObj.id} value={ageObj.age}>
+              <option key={ageObj.age_id} value={ageObj.age}>
                 {ageObj.age}
               </option>
             ))}
@@ -316,7 +491,7 @@ const MyPage = () => {
             }`}
           >
             {(genders || []).map((genderObj) => (
-              <option key={genderObj.id} value={genderObj.gender}>
+              <option key={genderObj.gender_id} value={genderObj.gender}>
                 {genderObj.gender}
               </option>
             ))}
@@ -335,6 +510,9 @@ const MyPage = () => {
                 onChange={handlePasswordChange}
                 className="editable"
               />
+              {currentPasswordError && (
+                <small className="error_message">{currentPasswordError}</small>
+              )}
             </label>
             <button onClick={() => handleSaveChanges("profileAndTastes")}>
               저장
@@ -358,16 +536,17 @@ const MyPage = () => {
       <Header2>마이 페이지</Header2>
       <div className="profile_container">
         <div className="profile_img">
-          <img src={userData.profilePicture} alt="Profile" />
-          {editMode.profile && (
+          <img src={userPicture.profilePicture} alt="Profile" />
+          {editMode.profileAndTastes && (
             <div className="profile_picture_container">
               <label className="camera_icon">
                 <FaCamera />
-                <input type="file" onChange={handleImageChange} />
+                <input type="file" />
               </label>
             </div>
           )}
         </div>
+
         <div className="profile_title">
           {userData.nickname}
           <span>님</span>
@@ -384,7 +563,7 @@ const MyPage = () => {
           onClick={() => setActiveTab("profileAndTastes")}
           className={activeTab === "profileAndTastes" ? "active" : ""}
         >
-          관심분야
+          개인설정
         </li>
       </ul>
       <div className="mypage_content">
