@@ -241,6 +241,15 @@ const MyPage = () => {
             ...changes,
             currentPassword: inputPassword,
           });
+          // 비밀번호가 성공적으로 변경된 경우
+          if (changes.newPassword) {
+            setUserData((prevData) => ({
+              ...prevData,
+              currentPassword: changes.newPassword,
+              newPassword: "",
+            }));
+            setInputPassword(""); // 입력 필드 초기화
+          }
         } else {
           alert("수정된 부분이 없습니다.");
           return;
