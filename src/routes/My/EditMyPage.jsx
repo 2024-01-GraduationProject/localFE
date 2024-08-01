@@ -16,6 +16,7 @@ const EditMyPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
   const [initialData, setInitialData] = useState({});
@@ -57,6 +58,7 @@ const EditMyPage = () => {
           newMood: userData.data.mood,
           //newProfilePic: userData.data.profilePic,
           newPassword: "", // 초기에는 비밀번호를 변경하지 않음
+          agreements: userData.data.agreements,
         });
 
         setAgeOptions(agesData.data);
@@ -71,19 +73,28 @@ const EditMyPage = () => {
     fetchInitialData();
   }, []);
 
+  useEffect(() => {
+    console.log("currentPassword has changed:", currentPassword);
+  }, [currentPassword]);
+
   const hasChanges = () => {
     return (
       user.newNickname !== initialData.newNickname ||
-      user.newEmail !== initialData.newEmail ||
       user.newAge !== initialData.newAge ||
       user.newGender !== initialData.newGender ||
       JSON.stringify(user.newMood) !== JSON.stringify(initialData.newMood) ||
       //user.newProfilePic !== initialData.newProfilePic ||
-      newPassword !== ""
+      newPassword !== "" ||
+      user.agreements !== initialData.agreements
     );
   };
 
   const handleSave = async () => {
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("currentPassword:", currentPassword);
+    console.log("isPasswordVerified:", isPasswordVerified);
+    console.log("hasChanges:", hasChanges());
+
     if (!isAuthenticated) {
       alert("로그인이 필요합니다.");
       return;
@@ -98,8 +109,6 @@ const EditMyPage = () => {
       alert("현재 비밀번호 확인을 진행해주세요.");
       return;
     }
-
-    console.log("현재 비밀번호:", currentPassword);
 
     if (!hasChanges()) {
       alert("수정된 항목이 없습니다.");
@@ -209,11 +218,11 @@ const EditMyPage = () => {
   const passwordCheckHandler = (password) => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@$&-_])(?=.*[0-9]).{8,16}$/;
     if (!passwordRegex.test(password)) {
-      setPasswordError(
+      setNewPasswordError(
         "비밀번호는 8~16자리 영문 대소문자 + 숫자 + ! @ $ & - _ 조합으로 입력해주세요."
       );
     } else {
-      setPasswordError("");
+      setNewPasswordError("");
     }
   };
 
@@ -300,8 +309,8 @@ const EditMyPage = () => {
               onChange={onChangeNewPasswordHandler}
             />
           </label>
-          {passwordError && (
-            <small className="PasswordError">* {passwordError}</small>
+          {newPasswordError && (
+            <small className="PasswordError">* {newPasswordError}</small>
           )}
           <label>
             연령대:
@@ -387,7 +396,7 @@ const EditMyPage = () => {
               </label>
             </div>
           </div>
-          <button onClick={handleSave} disabled={!isPasswordVerified}>
+          <button className="saveBtn" onClick={handleSave}>
             저장
           </button>
         </div>

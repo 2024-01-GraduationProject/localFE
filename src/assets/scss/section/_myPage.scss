@@ -99,7 +99,8 @@
   .form-section {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 100%;
+    max-width: 500px;
     margin-top: 20px;
 
     .confirmBtn {
@@ -175,6 +176,7 @@
       flex-wrap: wrap;
       gap: 10px;
       padding-bottom: 15px;
+      margin-top: 10px;
 
       button {
         padding: 10px 15px;
@@ -195,7 +197,7 @@
       }
     }
 
-    button {
+    .saveBtn {
       margin-top: 20px;
       padding: 12px;
       border: none;

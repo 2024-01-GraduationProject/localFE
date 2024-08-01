@@ -12,6 +12,7 @@ const Join = () => {
   const { login } = useAuth();
 
   // 상태 변수 설정
+  /* eslint-disable no-unused-vars */
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
