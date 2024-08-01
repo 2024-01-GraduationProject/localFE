@@ -60,9 +60,9 @@ const MyPage = () => {
             </div>
             <div>
               <IoMdBook className="mypage-icon" size="28" />
-              {user.mood.map((mood, index) => (
-                <span key={index} className="mood-tag">
-                  #{mood}
+              {user.bookTaste.map((bookTaste, index) => (
+                <span key={index} className="bookTaste-tag">
+                  #{bookTaste}
                 </span>
               ))}
             </div>

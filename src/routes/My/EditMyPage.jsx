@@ -45,7 +45,7 @@ const EditMyPage = () => {
           newEmail: userData.data.email,
           newAge: userData.data.age,
           newGender: userData.data.gender,
-          newMood: userData.data.mood,
+          newBookTaste: userData.data.bookTaste,
           //newProfilePic: userData.data.profilePic,
           agreements: userData.data.agreements,
         });
@@ -55,7 +55,7 @@ const EditMyPage = () => {
           newEmail: userData.data.email,
           newAge: userData.data.age,
           newGender: userData.data.gender,
-          newMood: userData.data.mood,
+          newBookTaste: userData.data.bookTaste,
           //newProfilePic: userData.data.profilePic,
           newPassword: "", // 초기에는 비밀번호를 변경하지 않음
           agreements: userData.data.agreements,
@@ -82,7 +82,8 @@ const EditMyPage = () => {
       user.newNickname !== initialData.newNickname ||
       user.newAge !== initialData.newAge ||
       user.newGender !== initialData.newGender ||
-      JSON.stringify(user.newMood) !== JSON.stringify(initialData.newMood) ||
+      JSON.stringify(user.newBookTaste) !==
+        JSON.stringify(initialData.newBookTaste) ||
       //user.newProfilePic !== initialData.newProfilePic ||
       newPassword !== "" ||
       user.agreements !== initialData.agreements
@@ -122,7 +123,7 @@ const EditMyPage = () => {
         newEmail: user.newEmail,
         newAge: user.newAge,
         newGender: user.newGender,
-        newMood: user.newMood,
+        newBookTaste: user.newBookTaste,
         //newProfilePic: user.newProfilePic,
         newPassword,
         agreements: user.agreements,
@@ -345,18 +346,20 @@ const EditMyPage = () => {
                 <button
                   key={category.category}
                   className={
-                    user.newMood.includes(category.category) ? "selected" : ""
+                    user.newBookTaste.includes(category.category)
+                      ? "selected"
+                      : ""
                   }
                   onClick={() =>
                     setUser((prevState) => {
-                      const newMood = prevState.newMood.includes(
+                      const newBookTaste = prevState.newBookTaste.includes(
                         category.category
                       )
-                        ? prevState.newMood.filter(
+                        ? prevState.newBookTaste.filter(
                             (id) => id !== category.category
                           )
-                        : [...prevState.newMood, category.category];
-                      return { ...prevState, newMood };
+                        : [...prevState.newBookTaste, category.category];
+                      return { ...prevState, newBookTaste };
                     })
                   }
                 >

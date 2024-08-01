@@ -12,13 +12,13 @@ const Taste = () => {
   const location = useLocation();
   const { email, password } = location.state || {};
 
-  const [selectedMoods, setSelectedMoods] = useState([]); // 선택된 분위기 저장
+  const [selectedBookTastes, setSelectedBookTastes] = useState([]); // 선택된 분위기 저장
   const [selectedAge, setSelectedAge] = useState(""); // 선택된 연령 저장
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별 저장
 
   const [ageOptions, setAgeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
-  const [moodOptions, setMoodOptions] = useState([]);
+  const [bookTasteOptions, setBookTasteOptions] = useState([]);
 
   useEffect(() => {
     // 연령 데이터 가져오기
@@ -42,11 +42,11 @@ const Taste = () => {
     };
 
     // 취향 데이터 가져오기
-    const fetchMoods = async () => {
+    const fetchBookTastes = async () => {
       try {
         const response = await api.get("/categories");
-        console.log("Mood options:", response.data);
-        setMoodOptions(response.data);
+        console.log("bookTaste options:", response.data);
+        setBookTasteOptions(response.data);
       } catch (error) {
         console.log("취향 데이터를 가져오는 중 오류가 발생했습니다.");
       }
@@ -54,15 +54,17 @@ const Taste = () => {
 
     fetchAges();
     fetchGenders();
-    fetchMoods();
+    fetchBookTastes();
   }, []);
 
   // 분위기 버튼 클릭 핸들러
-  const handleMoodClick = (title) => {
-    if (selectedMoods.includes(title)) {
-      setSelectedMoods(selectedMoods.filter((mood) => mood !== title));
+  const handleBookTasteClick = (title) => {
+    if (selectedBookTastes.includes(title)) {
+      setSelectedBookTastes(
+        selectedBookTastes.filter((taste) => taste !== title)
+      );
     } else {
-      setSelectedMoods([...selectedMoods, title]);
+      setSelectedBookTastes([...selectedBookTastes, title]);
     }
   };
 
@@ -85,7 +87,7 @@ const Taste = () => {
           email,
           age: selectedAge,
           gender: selectedGender,
-          mood: selectedMoods,
+          bookTaste: selectedBookTastes,
         },
         {
           headers: {
@@ -140,14 +142,14 @@ const Taste = () => {
 
         <div className="mood">
           <div>유형(분위기)</div>
-          {moodOptions.length > 0 ? (
-            moodOptions.map((taste) => (
+          {bookTasteOptions.length > 0 ? (
+            bookTasteOptions.map((taste) => (
               <button
                 key={taste.category_id}
                 className={
-                  selectedMoods.includes(taste.category) ? "selected" : ""
+                  selectedBookTastes.includes(taste.category) ? "selected" : ""
                 }
-                onClick={() => handleMoodClick(taste.category)}
+                onClick={() => handleBookTasteClick(taste.category)}
               >
                 #{taste.category}
               </button>

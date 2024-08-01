@@ -35,14 +35,14 @@ const MainNav = () => {
     const englishFileNames = {
       로맨스: "Romance",
       스릴러: "Thriller",
-      //"공포/호러": "Horror",
+      "공포/호러": "Horror",
       SF: "SF",
       판타지: "Fantasy",
       고전: "Classic",
       역사: "History",
       경제: "Economy",
       철학: "Philosophy",
-      //"드라마/영화 원작": "Original",
+      "드라마/영화 원작": "Original",
     };
 
     return `/${
