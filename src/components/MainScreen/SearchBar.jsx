@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import search from "assets/img/ico/search.ico";
-import useAuth from "routes/Login/UseAuth";
+import { useAuth } from "AuthContext";
+
 const SearchBar = () => {
-  useAuth();
   const [searchBtn, setSearchBtn] = useState("");
   const onSearchChange = (e) => {
     setSearchBtn(e.target.value);

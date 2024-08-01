@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header2 from "components/Header/Header2";
 import api from "../../api"; // Axios 인스턴스 import
-import useAuth from "routes/Login/UseAuth";
+import { useAuth } from "AuthContext";
 
 const Taste = () => {
-  useAuth();
-
   const navigate = useNavigate();
+  const { authToken } = useAuth();
 
   // Join에서 이메일 값 받아오기
   const location = useLocation();
@@ -45,7 +44,8 @@ const Taste = () => {
     // 취향 데이터 가져오기
     const fetchMoods = async () => {
       try {
-        const response = await api.get("/book-categories");
+        const response = await api.get("/categories");
+        console.log("Mood options:", response.data);
         setMoodOptions(response.data);
       } catch (error) {
         console.log("취향 데이터를 가져오는 중 오류가 발생했습니다.");
@@ -79,12 +79,20 @@ const Taste = () => {
   // 다음으로 버튼 클릭 시 서버로 데이터 전송
   const handleTasteSubmit = async () => {
     try {
-      const response = await api.post("/save-taste", {
-        email,
-        age: selectedAge,
-        gender: selectedGender,
-        mood: selectedMoods,
-      });
+      const response = await api.post(
+        "/save-taste",
+        {
+          email,
+          age: selectedAge,
+          gender: selectedGender,
+          mood: selectedMoods,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // AuthContext에서 가져온 토큰을 헤더에 포함
+          },
+        }
+      );
       if (response.status === 200) {
         console.log("선택된 정보가 서버에 전송되었습니다.");
         navigate("/tastenext", { state: { email, password } });
@@ -110,7 +118,7 @@ const Taste = () => {
           >
             <option value="">연령 선택</option>
             {ageOptions.map((taste) => (
-              <option key={taste.age} value={taste.age}>
+              <option key={taste.age_id} value={taste.age}>
                 {taste.age}
               </option>
             ))}
@@ -123,7 +131,7 @@ const Taste = () => {
           >
             <option value="">성별 선택</option>
             {genderOptions.map((taste) => (
-              <option key={taste.gender} value={taste.gender}>
+              <option key={taste.gender_id} value={taste.gender}>
                 {taste.gender}
               </option>
             ))}
@@ -132,17 +140,21 @@ const Taste = () => {
 
         <div className="mood">
           <div>유형(분위기)</div>
-          {moodOptions.map((taste) => (
-            <button
-              key={taste.id}
-              className={
-                selectedMoods.includes(taste.category) ? "selected" : ""
-              }
-              onClick={() => handleMoodClick(taste.category)}
-            >
-              #{taste.category}
-            </button>
-          ))}
+          {moodOptions.length > 0 ? (
+            moodOptions.map((taste) => (
+              <button
+                key={taste.category_id}
+                className={
+                  selectedMoods.includes(taste.category) ? "selected" : ""
+                }
+                onClick={() => handleMoodClick(taste.category)}
+              >
+                #{taste.category}
+              </button>
+            ))
+          ) : (
+            <div>취향 옵션을 불러오는 중...</div>
+          )}
         </div>
 
         <div>

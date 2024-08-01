@@ -9,11 +9,9 @@ import {
   FamousBook,
   Recommend,
 } from "components";
-import useAuth from "routes/Login/UseAuth";
+import { useAuth } from "AuthContext";
 
 const MainView = () => {
-  useAuth();
-
   return (
     <>
       <Header2 />

@@ -3,11 +3,8 @@ import { MdOutlineMenu } from "react-icons/md";
 import { GiBookshelf } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import api from "../../api"; // Axios 인스턴스 import
-import useAuth from "routes/Login/UseAuth";
-
+import { useAuth } from "AuthContext";
 const MainNav = () => {
-  useAuth();
-
   const [showCategoryButtons, setShowCategoryButtons] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const navigate = useNavigate();
@@ -16,7 +13,7 @@ const MainNav = () => {
     // 책 카테고리 데이터 가져오기
     const fetchCategories = async () => {
       try {
-        const response = await api.get("/book-categories");
+        const response = await api.get("/categories");
         console.log(response.data);
         setCategoryOptions(response.data);
       } catch (error) {
@@ -38,14 +35,14 @@ const MainNav = () => {
     const englishFileNames = {
       로맨스: "Romance",
       스릴러: "Thriller",
-      "공포/호러": "Horror",
+      //"공포/호러": "Horror",
       SF: "SF",
       판타지: "Fantasy",
       고전: "Classic",
       역사: "History",
       경제: "Economy",
       철학: "Philosophy",
-      "드라마/영화 원작": "Original",
+      //"드라마/영화 원작": "Original",
     };
 
     return `/${
@@ -71,10 +68,10 @@ const MainNav = () => {
 
       {showCategoryButtons && (
         <div className="category_buttons">
-          {categoryOptions.map((categoryData, index) => (
+          {categoryOptions.map((categoryData) => (
             <button
               className="category_button"
-              key={index}
+              key={categoryData.category_id}
               onClick={() => handleCategoryButtonClick(categoryData.category)}
             >
               {categoryData.category}

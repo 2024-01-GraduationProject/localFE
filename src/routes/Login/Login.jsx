@@ -3,21 +3,22 @@ import logo from "assets/img/logo.jpg";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import naver from "assets/img/ico/naver.ico";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import KakaoLogin from "./KakaoLogin";
 import GoogleLogin from "./GoogleLogin";
 import api from "../../api";
+import { useAuth } from "AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailCheck, setEmailCheck] = useState("");
   const [loginCheck, setLoginCheck] = useState(false);
 
   const kakaoLoginRef = useRef(); // Reference to KakaoLogin component
   const googleLoginRef = useRef();
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onEmailHandler = (e) => {
     setEmail(e.target.value);
@@ -53,16 +54,11 @@ const Login = () => {
       if (response.status === 200) {
         // 로그인 성공 시
         setLoginCheck(false);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("email", response.data.email); // 이메일 저장
-        console.log("로그인 성공, 이메일 주소: " + response.data.email);
+        const { token } = response.data;
 
-        // 새로운 사용자에 따라 리다이렉션 처리
-        if (response.data.isNewUser) {
-          navigate("/taste", { state: { email, password } });
-        } else {
-          navigate("/mainview");
-        }
+        // AuthContext의 login 함수 호출
+        login(token);
+        navigate("/mainview");
       } else {
         // 로그인 실패 시
         setLoginCheck(true);

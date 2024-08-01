@@ -2,29 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "assets/img/logo.jpg";
 import api from "../../api";
-import useAuth from "routes/Login/UseAuth";
+import { useAuth } from "AuthContext";
 
 const Header2 = () => {
-  useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const response = await api.post(
-        "/logout",
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await api.post("/logout");
 
       if (response.status === 200) {
         // 로그아웃 성공
-        localStorage.removeItem("token");
-        localStorage.removeItem("email");
+        logout();
         // 페이지 이동
         navigate("/");
       } else {

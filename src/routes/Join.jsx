@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import logo from "assets/img/logo.jpg";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api"; // Axios 인스턴스 import
+import { useAuth } from "AuthContext";
 
 const Join = () => {
   const navigate = useNavigate();
   // Intro에서 입력한 이메일 값 받아오기
   const { state } = useLocation();
   const initialEmail = state?.value || ""; // 값 가져오지 못했을 때를 대비
+  const { login } = useAuth();
 
   // 상태 변수 설정
   const [email, setEmail] = useState(initialEmail);
@@ -34,10 +36,10 @@ const Join = () => {
     setIsButtonEnabled(isPasswordValid && isNicknameValid && isAgreementValid);
   }, [passwordError, isNicknameAvailable, agreements]);
 
-  // 회원가입 완료 시 로그인 페이지로 이동
+  // 회원가입 완료 시 취향 선택 페이지로 이동
   useEffect(() => {
     if (isRegistrationComplete) {
-      navigate("/login", { state: { email, password } });
+      navigate("/taste", { state: { email, password } });
     }
   }, [isRegistrationComplete, navigate, email, password]);
 
@@ -158,6 +160,7 @@ const Join = () => {
         if (response.status === 200) {
           const { token } = response.data; // 회원가입 시 토큰이 반환된다고 가정
           localStorage.setItem("authToken", token); // 토큰 저장
+          login(token);
           alert("회원가입이 완료되었습니다.");
           setIsRegistrationComplete(true); // 회원가입 완료 상태로 설정
         } else {

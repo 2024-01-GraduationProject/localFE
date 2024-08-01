@@ -7,6 +7,7 @@ import api from "../api"; // Axios 인스턴스 import
 import KakaoLogin from "../routes/Login/KakaoLogin";
 import GoogleLogin from "../routes/Login/GoogleLogin";
 import NaverLogin from "../routes/Login/NaverLogin";
+import { debounce } from "lodash"; // 사용자 입력이 자주 발생할 경우 API 호출 최적화
 
 const Intro = () => {
   // 입력한 이메일 값 저장
@@ -26,7 +27,7 @@ const Intro = () => {
   };
 
   // 이메일 유효성, 중복 검사 핸들러
-  const emailCheckHandler = async (email) => {
+  const emailCheckHandler = debounce(async (email) => {
     const emailRegex =
       /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
@@ -56,7 +57,7 @@ const Intro = () => {
         setIsEmailAvailable(false);
       }
     }
-  };
+  }, 300);
 
   const handleStartClick = () => {
     if (introEmail) {
@@ -106,7 +107,7 @@ const Intro = () => {
           던져줍니다!
         </div>
       </div>
-      <form className="intro__start" onSubmit={(e) => e.preventDefault()}>
+      <form className="intro__start" onSubmit={handleStartClick}>
         <div className="intro__input">
           <input
             type="text"
