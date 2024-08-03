@@ -18,7 +18,7 @@ const Taste = () => {
 
   const [ageOptions, setAgeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
-  const [bookTasteOptions, setBookTasteOptions] = useState([]);
+  const [bookCategoryOptions, setBookCategoryOptions] = useState([]);
 
   useEffect(() => {
     // 연령 데이터 가져오기
@@ -42,11 +42,11 @@ const Taste = () => {
     };
 
     // 취향 데이터 가져오기
-    const fetchBookTastes = async () => {
+    const fetchBookCategory = async () => {
       try {
         const response = await api.get("/categories");
-        console.log("bookTaste options:", response.data);
-        setBookTasteOptions(response.data);
+        console.log("bookCategory options:", response.data);
+        setBookCategoryOptions(response.data);
       } catch (error) {
         console.log("취향 데이터를 가져오는 중 오류가 발생했습니다.");
       }
@@ -54,7 +54,7 @@ const Taste = () => {
 
     fetchAges();
     fetchGenders();
-    fetchBookTastes();
+    fetchBookCategory();
   }, []);
 
   // 분위기 버튼 클릭 핸들러
@@ -142,8 +142,8 @@ const Taste = () => {
 
         <div className="mood">
           <div>유형(분위기)</div>
-          {bookTasteOptions.length > 0 ? (
-            bookTasteOptions.map((taste) => (
+          {bookCategoryOptions.length > 0 ? (
+            bookCategoryOptions.map((taste) => (
               <button
                 key={taste.category_id}
                 className={

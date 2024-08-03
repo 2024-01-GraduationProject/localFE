@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Switch } from "react-router-dom";
 
 import HomeView from "./views/HomeView";
 import {
@@ -10,6 +10,11 @@ import {
   EditMyPage,
   Taste,
   TasteNext,
+  GoogleLogin,
+  NaverLogin,
+  KakaoLogin,
+} from "routes";
+import {
   Romance,
   Thriller,
   Horror,
@@ -20,10 +25,8 @@ import {
   Economy,
   Philosophy,
   Original,
-  GoogleLogin,
-  NaverLogin,
-  KakaoLogin,
-} from "routes";
+  BookDetail,
+} from "components";
 import MainView from "views/MainView";
 import { AuthProvider } from "./AuthContext";
 
@@ -56,6 +59,7 @@ const App = () => {
           <Route path="/Economy" element={<Economy />} />
           <Route path="/Philosophy" element={<Philosophy />} />
           <Route path="/Original" element={<Original />} />
+          <Route path="/books/:book_id" element={<BookDetail />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

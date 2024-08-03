@@ -264,7 +264,7 @@ const EditMyPage = () => {
         </div>
         <div className="form-section">
           <label>
-            닉네임:
+            닉 네 임 :
             <input
               type="text"
               value={user.newNickname}
@@ -283,9 +283,11 @@ const EditMyPage = () => {
               * {nicknameError}
             </small>
           )}
-          <label>이메일: {user.newEmail}</label>
           <label>
-            현재 비밀번호:
+            이 메 일 : <span className="user-email">{user.newEmail}</span>
+          </label>
+          <label>
+            현재 비밀번호 :
             <input
               type="password"
               value={currentPassword}
@@ -303,7 +305,7 @@ const EditMyPage = () => {
             <small className="PasswordError">* {passwordError}</small>
           )}
           <label>
-            새 비밀번호:
+            새 비밀번호 :
             <input
               type="password"
               value={newPassword}
@@ -314,7 +316,7 @@ const EditMyPage = () => {
             <small className="PasswordError">* {newPasswordError}</small>
           )}
           <label>
-            연령대:
+            연 령 대 :
             <select
               value={user.newAge}
               onChange={(e) => setUser({ ...user, newAge: e.target.value })}
@@ -327,7 +329,7 @@ const EditMyPage = () => {
             </select>
           </label>
           <label>
-            성별:
+            성 별 :
             <select
               value={user.newGender}
               onChange={(e) => setUser({ ...user, newGender: e.target.value })}
@@ -340,7 +342,7 @@ const EditMyPage = () => {
             </select>
           </label>
           <div>
-            <label>관심 분야: </label>
+            <label>관심 분야 : </label>
             <div className="preferences">
               {bookCategories.map((category) => (
                 <button
@@ -369,7 +371,7 @@ const EditMyPage = () => {
             </div>
           </div>
           <div className="eventAlarm-group">
-            <label>이벤트 알림 수신:</label>
+            <label>이벤트 알림 수신 :</label>
             <div className="radio-group">
               <label>
                 <input

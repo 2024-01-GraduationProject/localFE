@@ -1,0 +1,30 @@
+#book-detail {
+  display: flex;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .book-cover {
+    img {
+      width: 200px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 20px;
+    }
+  }
+
+  .book-info {
+    display: flex;
+    flex-direction: column;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin: 5px 0;
+    }
+  }
+}

@@ -103,9 +103,15 @@
     max-width: 500px;
     margin-top: 20px;
 
+    .user-email {
+      font-weight: 400;
+      margin-left: 30px;
+      margin-right: 10px;
+    }
+
     .confirmBtn {
       margin-left: 15px;
-      margin-top: 20px;
+      margin-top: 5px;
       padding: 10px;
       border: none;
       border-radius: 5px;
@@ -123,13 +129,18 @@
     }
 
     label {
+      display: flex;
+      align-items: center;
+      justify-content: baseline;
       margin-bottom: 15px;
-      font-weight: bold;
+      font-weight: 550;
     }
+
     input,
     select {
       flex: 1;
       padding: 10px;
+      max-width: 150px;
       margin-top: 5px;
       margin-left: 20px;
       border: 1px solid #ccc;
