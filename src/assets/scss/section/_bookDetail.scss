@@ -3,28 +3,120 @@
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
+  margin-top: 130px;
+  align-items: flex-start;
 
   .book-cover {
+    margin-right: 20px;
     img {
       width: 200px;
       height: auto;
       object-fit: cover;
       border-radius: 10px;
-      margin-right: 20px;
+      margin-right: 22px;
     }
   }
 
   .book-info {
-    display: flex;
-    flex-direction: column;
+    flex: 1;
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
+    .info-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+
+      h1 {
+        font-size: 2rem;
+        margin: 0;
+        flex: 1;
+      }
+
+      .book-actions {
+        display: flex;
+        align-items: center;
+
+        button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background-color 0.3s, color 0.3s;
+          margin-left: 10px;
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+
+        .download-button {
+          background-color: #b6dc80;
+          color: #fff;
+
+          &:hover {
+            background-color: #9acc6d;
+          }
+        }
+
+        .favorite-button {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+
+          &.active {
+            color: #ff6f61; // 색상 변경 (하트 활성화 시)
+          }
+        }
+      }
     }
 
-    p {
-      margin: 5px 0;
+    .info-item {
+      margin-top: 20px;
+
+      &.summary {
+        p {
+          margin: 0;
+          line-height: 1.6;
+          font-size: 13.5px;
+          max-width: 350px;
+          color: #555;
+        }
+      }
+
+      &.author {
+        p {
+          margin: 0;
+          color: #4a4949;
+          font-size: 14px;
+        }
+      }
+      &.publisher {
+        p {
+          margin: 0;
+          color: #747474;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  .read-button-container {
+    margin-top: 20px;
+
+    .read-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: #fff;
+
+      &:hover {
+        background-color: #45a049;
+      }
     }
   }
 }

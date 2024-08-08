@@ -26,6 +26,7 @@ import {
   Philosophy,
   Original,
   BookDetail,
+  BookReader,
 } from "components";
 import MainView from "views/MainView";
 import { AuthProvider } from "./AuthContext";
@@ -60,6 +61,7 @@ const App = () => {
           <Route path="/Philosophy" element={<Philosophy />} />
           <Route path="/Original" element={<Original />} />
           <Route path="/books/:book_id" element={<BookDetail />} />
+          <Route path="/reader/:book_id" element={<BookReader />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

@@ -22,7 +22,9 @@ const Recommend = () => {
 
   return (
     <>
-      <div id="recommend">{nickname}님, 이런 책 어떠세요?</div>
+      <div id="recommend">
+        <strong>{nickname}</strong>님, 이런 책 어떠세요?
+      </div>
     </>
   );
 };
