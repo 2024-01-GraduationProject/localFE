@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header2 } from "components";
+import { BestNew } from "components";
 import api from "../../api";
 
 const BookDetail = () => {
@@ -71,7 +72,7 @@ const BookDetail = () => {
       <Header2 />
 
       <div id="book-detail">
-        <div className="book-cover">
+        <div className="bookDetail-cover">
           <img src={book.coverImageUrl} alt={`${book.title} cover`} />
         </div>
 
@@ -112,6 +113,8 @@ const BookDetail = () => {
           </div>
         )}
       </div>
+
+      <BestNew />
     </>
   );
 };
