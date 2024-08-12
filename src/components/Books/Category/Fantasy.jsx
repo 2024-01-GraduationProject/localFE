@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header2, MainNav, SearchBar } from "components";
 import api from "../../../api";
 
@@ -6,6 +7,7 @@ const Fantasy = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -36,6 +38,10 @@ const Fantasy = () => {
     fetchBooks();
   }, []);
 
+  const goToBookDetail = (id) => {
+    navigate(`/books/${id}`);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading books: {error.message}</p>;
 
@@ -51,7 +57,11 @@ const Fantasy = () => {
             <p>No fantasy books found.</p>
           ) : (
             books.map((book) => (
-              <div key={book.book_id} className="bookCG-item">
+              <div
+                key={book.book_id}
+                className="bookCG-item"
+                onClick={() => goToBookDetail(book.id)}
+              >
                 <img
                   src={book.coverImageUrl}
                   alt={`Cover of ${book.title}`}
