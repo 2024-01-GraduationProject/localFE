@@ -1,0 +1,56 @@
+.bookCG-list-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 90%; /* 전체 컨테이너의 넓이 */
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+.bookCG-list {
+  display: flex;
+  flex-wrap: wrap; /* 컨텐츠가 줄 바꿈되도록 설정 */
+  margin: 0 auto; /* 가운데 정렬 */
+  width: 80%; /* 전체 컨테이너 넓이 조정 */
+}
+
+.bookCG-item {
+  //width: calc(
+  //25% - 1em
+  //); /* 4개의 아이템을 한 줄에 배치, 간격을 고려하여 너비 조정 */
+  width: 150px;
+  margin: 2em;
+  flex-shrink: 0; /* 고정된 크기로 유지 */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bookCG-cover {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bookCG-details {
+  margin-top: 0.8em;
+  height: auto; /* 텍스트 영역의 높이를 자동으로 조정 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.bookCG-title {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.bookCG-author {
+  font-size: 13px;
+  color: #555;
+}

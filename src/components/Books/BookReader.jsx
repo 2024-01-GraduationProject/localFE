@@ -6,15 +6,15 @@ import api from "../../api"; // Axios 인스턴스 import
 const BookReader = () => {
   const { book_id } = useParams();
   const bookRef = useRef(null);
-  const [book, setBook] = useState(null);
   const [rendition, setRendition] = useState(null);
   const [progress, setProgress] = useState(0);
   const [highlights, setHighlights] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
+  const fileUrlRef = useRef(null); // 추가된 부분: fileUrl 생성 상태 추적
 
-  /* 파일 다운로드해서 정상인지 보기 위함 --> 확인됨
+  /*파일 다운로드해서 정상인지 보기 위함 --> 확인됨
   const downloadBlob = async (url) => {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -29,20 +29,19 @@ const BookReader = () => {
   }; */
 
   useEffect(() => {
-    console.log("Current book_id:", book_id);
-
     const fetchBook = async () => {
       console.log("Fetching book data...");
       try {
-        /* const response = await api.get(`/books/${book_id}`);
-        console.log("Fetched book data:", response.data);
-        setBook(response.data); */
-
-        // Fetch the .epub file
-        //const timestamp = new Date().getTime(); ?ts=${timestamp} // 항상 새로운 요청으로 되도록(캐시 방지)
         const contentResponse = await api.get(`/books/${book_id}/content`, {
-          responseType: "blob", // Make sure to set responseType to 'blob'
+          responseType: "blob", // Ensure responseType is 'blob'
+          headers: {
+            Accept: "application/epub+zip", // Expect EPUB file
+          },
         });
+
+        // 파일의 MIME 타입 확인
+        console.log("Content-Type:", contentResponse.headers["content-type"]);
+        console.log("Blob Size:", contentResponse.data.size);
 
         // 응답 상태 확인
         if (
@@ -50,23 +49,15 @@ const BookReader = () => {
           contentResponse.headers["content-type"] === "application/epub+zip"
         ) {
           const blob = contentResponse.data;
-          //console.log(blob.type);
 
           // Check if blob is empty or not
           if (blob.size > 0) {
-            /*const fileUrl = URL.createObjectURL(blob);
-            console.log("fileUrl: ", fileUrl); // URL 생성 후 로그 출력
-            setFileUrl(fileUrl);*/
             const newFileUrl = URL.createObjectURL(blob);
-            // fileUrl이 바뀌지 않도록 추가 조건 추가
-            if (fileUrl !== newFileUrl) {
+            // fileUrl이 이미 생성되었는지 확인하고, 생성되지 않았다면 생성
+            if (!fileUrlRef.current) {
               console.log("Setting fileUrl: ", newFileUrl);
-              if (fileUrl) {
-                URL.revokeObjectURL(fileUrl); // 이전 URL 해제
-              }
+              fileUrlRef.current = newFileUrl;
               setFileUrl(newFileUrl);
-            } else {
-              console.log("fileUrl has not changed");
             }
             //downloadBlob(fileUrl);
           } else {
@@ -92,35 +83,76 @@ const BookReader = () => {
     };
   }, [book_id]);
 
+  useEffect(() => {
+    const validateBlobUrl = async (blobUrl) => {
+      try {
+        const response = await fetch(blobUrl);
+        if (response.ok) {
+          const blob = await response.blob();
+          console.log("Blob URL is valid and file size is:", blob.size);
+        } else {
+          console.error("Failed to fetch Blob URL:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching Blob URL:", error);
+      }
+    };
+
+    if (fileUrl) {
+      validateBlobUrl(fileUrl);
+    }
+  }, [fileUrl]);
+
   // 전자책 렌더링
   useEffect(() => {
     const renderBook = async () => {
       if (fileUrl && bookRef.current) {
         try {
+          if (rendition) {
+            rendition.destroy(); // 기존 rendition 제거
+            setRendition(null);
+          }
+
           const bookInstance = ePub(fileUrl);
-          console.log("Book Instance:", bookInstance);
+          console.log("Book Instance created:", bookInstance);
 
-          await bookInstance.opened.catch((error) => {
-            console.error("Error opening book:", error);
+          // 에러 핸들링
+          bookInstance.on("error", (error) => {
+            console.error("ePub error:", error);
           });
-          console.log("Book opened successfully");
 
-          await bookInstance.ready.catch((error) => {
-            console.error("Error getting book ready:", error);
-          });
-          console.log("Book is ready");
+          // opened, ready 등 주요 promise 처리 확인
+          await bookInstance.opened
+            .then(() => {
+              console.log("Book opened successfully");
+            })
+            .catch((error) => {
+              console.error("Error opening book:", error);
+            });
+
+          await bookInstance.ready
+            .then(() => {
+              console.log("Book is ready");
+            })
+            .catch((error) => {
+              console.error("Error getting book ready:", error);
+            });
 
           const renditionInstance = bookInstance.renderTo(bookRef.current, {
+            flow: "scrolled-doc",
             width: "100%",
             height: "100%",
+            allowScriptedContent: true,
           });
 
-          await renditionInstance.started.catch((error) => {
-            console.error("Error starting rendition:", error);
-          });
-          console.log("Rendition started successfully");
+          await renditionInstance.started
+            .then(() => {
+              console.log("Rendition started successfully");
+            })
+            .catch((error) => {
+              console.error("Error starting rendition:", error);
+            });
 
-          // Handle page rendering and progress updates
           const updateLocation = () => {
             const location = renditionInstance.currentLocation();
             setCurrentLocation(location);
@@ -132,7 +164,7 @@ const BookReader = () => {
           };
 
           renditionInstance.on("rendered", updateLocation);
-          renditionInstance.display(); // Display the first page or section
+          renditionInstance.display(); // 첫 페이지 또는 섹션 표시
           setRendition(renditionInstance);
         } catch (error) {
           console.error("Error in rendering book:", error);

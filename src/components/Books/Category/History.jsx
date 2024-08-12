@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Header2, MainNav, SearchBar } from "components";
 import api from "../../../api";
 
@@ -11,12 +11,21 @@ const History = () => {
     const fetchBooks = async () => {
       try {
         const response = await api.get("/books");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+        if (response.status !== 200) {
+          throw new Error(
+            `Network response was not ok. Status: ${response.status}`
+          );
         }
-        const data = await response.json();
-        const historyBooks = data.filter((book) => book.genre === "History");
-        setBooks(historyBooks);
+        const data = response.data;
+
+        if (Array.isArray(data)) {
+          const historyBooks = data.filter(
+            (book) => book.category === "History"
+          );
+          setBooks(historyBooks);
+        } else {
+          throw new Error("Unexpected data format.");
+        }
       } catch (error) {
         setError(error);
       } finally {
@@ -35,24 +44,29 @@ const History = () => {
       <Header2 />
       <SearchBar />
       <MainNav />
-      <div>
+      <div className="bookCG-list-wrapper">
         <h1>History Books</h1>
-        {books.length === 0 ? (
-          <p>No History books found.</p>
-        ) : (
-          <ul>
-            {books.map((book) => (
-              <li key={book.id}>
-                <img src={book.coverImageUrl} alt={`Cover of ${book.title}`} />
-                <h2>{book.title}</h2>
-                <p>{book.author}</p>
-                <p>{book.publisher}</p>
-                <p>{book.publicationDate}</p>
-                <p>{book.summary}</p>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="bookCG-list">
+          {books.length === 0 ? (
+            <p>No history books found.</p>
+          ) : (
+            books.map((book) => (
+              <div key={book.book_id} className="bookCG-item">
+                <img
+                  src={book.coverImageUrl}
+                  alt={`Cover of ${book.title}`}
+                  className="book-cover"
+                />
+                <div className="bookCG-details">
+                  <h2 className="bookCG-title">{book.title}</h2>
+                  <p className="bookCG-author">
+                    {book.author} | {book.publisher}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </>
   );
