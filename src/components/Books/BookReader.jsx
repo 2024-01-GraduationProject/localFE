@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import ePub from "epubjs";
-import api from "../../api"; // Axios 인스턴스 import
+import api from "../../api";
+import { debounce } from "debounce";
 
 const BookReader = () => {
   const { book_id } = useParams();
@@ -9,60 +10,29 @@ const BookReader = () => {
   const [rendition, setRendition] = useState(null);
   const [progress, setProgress] = useState(0);
   const [highlights, setHighlights] = useState([]);
-  const [bookmarks, setBookmarks] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
-  const [fileUrl, setFileUrl] = useState(null);
-  const fileUrlRef = useRef(null); // 추가된 부분: fileUrl 생성 상태 추적
-
-  /*파일 다운로드해서 정상인지 보기 위함 --> 확인됨
-  const downloadBlob = async (url) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const blobUrl = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = "your_book.epub"; // 원하는 파일 이름
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }; */
+  const [bookInstance, setBookInstance] = useState(null);
 
   useEffect(() => {
     const fetchBook = async () => {
-      console.log("Fetching book data...");
       try {
-        const contentResponse = await api.get(`/books/${book_id}/content`, {
-          responseType: "blob", // Ensure responseType is 'blob'
-          headers: {
-            Accept: "application/epub+zip", // Expect EPUB file
-          },
+        const response = await api.get(`/books/${book_id}/content`, {
+          responseType: "arraybuffer",
+          headers: { Accept: "application/epub+zip" },
         });
 
-        // 파일의 MIME 타입 확인
-        console.log("Content-Type:", contentResponse.headers["content-type"]);
-        console.log("Blob Size:", contentResponse.data.size);
+        if (response.status === 200) {
+          const arrayBuffer = response.data;
+          const book = ePub(arrayBuffer);
 
-        // 응답 상태 확인
-        if (
-          contentResponse.status === 200 &&
-          contentResponse.headers["content-type"] === "application/epub+zip"
-        ) {
-          const blob = contentResponse.data;
+          book.on("error", (error) => {
+            console.error("ePub error:", error);
+          });
 
-          // Check if blob is empty or not
-          if (blob.size > 0) {
-            const newFileUrl = URL.createObjectURL(blob);
-            // fileUrl이 이미 생성되었는지 확인하고, 생성되지 않았다면 생성
-            if (!fileUrlRef.current) {
-              console.log("Setting fileUrl: ", newFileUrl);
-              fileUrlRef.current = newFileUrl;
-              setFileUrl(newFileUrl);
-            }
-            //downloadBlob(fileUrl);
-          } else {
-            console.error("Blob is empty or not valid.");
-          }
+          await book.loaded.metadata;
+          console.log("Book metadata loaded.");
+
+          setBookInstance(book);
         } else {
           console.error("Invalid response type or status.");
         }
@@ -71,101 +41,124 @@ const BookReader = () => {
       }
     };
 
-    // book_id가 변경될 때만 fetchBook 호출
     if (book_id) {
       fetchBook();
     }
 
     return () => {
-      if (fileUrl) {
-        URL.revokeObjectURL(fileUrl); // 언마운트 시 Blob URL 해제
+      if (rendition) {
+        rendition.destroy();
+        setRendition(null); // Clean up the state
       }
     };
   }, [book_id]);
 
   useEffect(() => {
-    const validateBlobUrl = async (blobUrl) => {
-      try {
-        const response = await fetch(blobUrl);
-        if (response.ok) {
-          const blob = await response.blob();
-          console.log("Blob URL is valid and file size is:", blob.size);
-        } else {
-          console.error("Failed to fetch Blob URL:", response.statusText);
+    const checkSpineItems = async () => {
+      if (bookInstance) {
+        try {
+          await bookInstance.spine.ready; // Ensure spine is loaded
+          const spineItems = bookInstance.spine.spineItems;
+          console.log("Spine items:", spineItems);
+
+          // Log details of each spine item
+          spineItems.forEach((item, index) => {
+            console.log(`Spine item ${index}:`, item);
+            console.log(`Href: ${item.href}`);
+            console.log(`ID: ${item.id}`);
+          });
+        } catch (error) {
+          console.error("Error loading spine items:", error);
         }
-      } catch (error) {
-        console.error("Error fetching Blob URL:", error);
       }
     };
 
-    if (fileUrl) {
-      validateBlobUrl(fileUrl);
-    }
-  }, [fileUrl]);
+    checkSpineItems();
+  }, [bookInstance]);
 
-  // 전자책 렌더링
   useEffect(() => {
     const renderBook = async () => {
-      if (fileUrl && bookRef.current) {
+      if (bookInstance && bookRef.current) {
         try {
           if (rendition) {
-            rendition.destroy(); // 기존 rendition 제거
-            setRendition(null);
+            console.log("Destroying previous rendition...");
+            rendition.destroy();
           }
 
-          const bookInstance = ePub(fileUrl);
-          console.log("Book Instance created:", bookInstance);
+          await bookInstance.ready;
+          console.log("Book ready.");
 
-          // 에러 핸들링
-          bookInstance.on("error", (error) => {
-            console.error("ePub error:", error);
-          });
-
-          // opened, ready 등 주요 promise 처리 확인
-          await bookInstance.opened
-            .then(() => {
-              console.log("Book opened successfully");
-            })
-            .catch((error) => {
-              console.error("Error opening book:", error);
-            });
-
-          await bookInstance.ready
-            .then(() => {
-              console.log("Book is ready");
-            })
-            .catch((error) => {
-              console.error("Error getting book ready:", error);
-            });
-
-          const renditionInstance = bookInstance.renderTo(bookRef.current, {
-            flow: "scrolled-doc",
+          const newRendition = bookInstance.renderTo(bookRef.current, {
+            //method: "continuous",
             width: "100%",
             height: "100%",
+            flow: "paginated", //"scrolled-doc", // Set flow to paginated
             allowScriptedContent: true,
+            //spread: "none",
           });
 
-          await renditionInstance.started
-            .then(() => {
-              console.log("Rendition started successfully");
-            })
-            .catch((error) => {
-              console.error("Error starting rendition:", error);
-            });
+          const handleResize = debounce(() => {
+            if (newRendition) {
+              newRendition.resize();
+            }
+          }, 200);
+
+          const resizeObserver = new ResizeObserver(() => {
+            handleResize();
+          });
+
+          resizeObserver.observe(bookRef.current);
 
           const updateLocation = () => {
-            const location = renditionInstance.currentLocation();
-            setCurrentLocation(location);
+            requestAnimationFrame(() => {
+              const location = newRendition.currentLocation();
+              console.log("Current Location:", location);
 
-            const progressPercentage =
-              bookInstance.locations.percentageFromCfi(location.start.cfi) *
-              100;
-            setProgress(progressPercentage);
+              if (location && location.start && location.start.cfi) {
+                setCurrentLocation(location);
+
+                const progressPercentage =
+                  bookInstance.locations.percentageFromCfi(location.start.cfi) *
+                  100;
+                setProgress(progressPercentage);
+              } else {
+                console.warn("Location or CFI is undefined.");
+              }
+            });
           };
 
-          renditionInstance.on("rendered", updateLocation);
-          renditionInstance.display(); // 첫 페이지 또는 섹션 표시
-          setRendition(renditionInstance);
+          newRendition.on("rendered", (section) => {
+            console.log("Section rendered:", section);
+            updateLocation();
+          });
+
+          newRendition.on("relocated", (location) => {
+            console.log("Relocated to:", location);
+            updateLocation();
+          });
+
+          console.log("Rendition instance created and listener attached.");
+
+          // Ensure spineItems are loaded and valid
+          await bookInstance.spine.ready;
+          const spineItems = bookInstance.spine.spineItems;
+          if (spineItems.length > 0) {
+            console.log("Displaying first spine item:", spineItems[0].href);
+            // Display the first spine item
+            await newRendition.display(spineItems[0].href);
+            console.log("Book displayed.");
+            setRendition(newRendition);
+          } else {
+            console.error("No spine items found.");
+          }
+
+          /* Display the first spine item
+          await newRendition.display();
+          console.log("First spine item displayed.");
+          setRendition(newRendition);
+
+          // Clean up observer
+          return () => resizeObserver.disconnect(); */
         } catch (error) {
           console.error("Error in rendering book:", error);
         }
@@ -173,65 +166,51 @@ const BookReader = () => {
     };
 
     renderBook();
-  }, [fileUrl]);
+  }, [bookInstance]);
 
-  // 형광펜
+  const handleNextPage = () => {
+    if (rendition) {
+      rendition.next();
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (rendition) {
+      rendition.prev();
+    }
+  };
+
   const handleHighlight = () => {
-    if (rendition && currentLocation) {
+    if (
+      rendition &&
+      currentLocation &&
+      currentLocation.start &&
+      currentLocation.start.cfi
+    ) {
+      console.log("Highlighting at CFI:", currentLocation.start.cfi);
       rendition.annotations.highlight(
         currentLocation.start.cfi,
         {},
-        (e) => {
+        () => {
           setHighlights([...highlights, currentLocation.start.cfi]);
+          console.log("Highlight added.");
         },
         "highlight"
       );
-    }
-  };
-
-  // 북마크, 배열로 관리됨
-  const handleBookmark = () => {
-    if (currentLocation) {
-      setBookmarks([...bookmarks, currentLocation.start.cfi]);
-    }
-  };
-
-  // 북마크로 이동
-  const goToBookmark = (cfi) => {
-    if (rendition) {
-      rendition.display(cfi);
+    } else {
+      console.warn("Cannot highlight: currentLocation or CFI is undefined.");
     }
   };
 
   return (
     <div className="book-reader">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "10px",
-        }}
-      >
-        <div>진도율: {progress.toFixed(2)}%</div>
-        <div>
-          <button onClick={handleHighlight}>형광펜</button>
-          <button onClick={handleBookmark}>북마크</button>
-        </div>
-      </div>
-      <div
-        ref={bookRef}
-        style={{ width: "100%", height: "600px", border: "1px solid #ddd" }}
-      ></div>
-      <div style={{ marginTop: "10px" }}>
-        <h3>북마크:</h3>
-        <ul>
-          {bookmarks.map((cfi, index) => (
-            <li key={index} onClick={() => goToBookmark(cfi)}>
-              북마크 {index + 1}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <button className="nav-button left" onClick={handlePreviousPage}>
+        이전
+      </button>
+      <div ref={bookRef} className="book-container"></div>
+      <button className="nav-button right" onClick={handleNextPage}>
+        다음
+      </button>
     </div>
   );
 };

@@ -61,7 +61,7 @@ const App = () => {
           <Route path="/Philosophy" element={<Philosophy />} />
           <Route path="/Original" element={<Original />} />
           <Route path="/books/:book_id" element={<BookDetail />} />
-          <Route path="/reader/:book_id" element={<BookReader />} />
+          <Route path="/books/:book_id/content" element={<BookReader />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
