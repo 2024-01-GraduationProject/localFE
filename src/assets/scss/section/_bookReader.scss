@@ -6,42 +6,70 @@
   justify-content: center; /* 수직 가운데 정렬 */
 
   .book-container {
-    width: 70%; /* 컨테이너 너비 설정 */
-    height: 80%; /* 컨테이너 높이 설정 */
+    width: 85%;
+    height: 85%;
     border: 1px solid #ddd;
     overflow: hidden; /* 내부 스크롤링 비활성화 */
     position: relative;
-    background-color: #f8f9fa; /* 배경색 설정 (필요에 따라 조정) */
-    flex-direction: column;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: row;
+    //box-sizing: border-box;
     align-items: center;
     justify-content: center;
     padding: 2px;
+    color: black;
+  }
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #b6dc80;
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+
+  &.left {
+    left: 20px;
   }
 
-  .nav-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #b6dc80;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 10;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-
-    &.left {
-      left: 20px;
-    }
-
-    &.right {
-      right: 20px;
-    }
-
-    &:hover {
-      background-color: #9ed353;
-    }
+  &.right {
+    right: 20px;
   }
+
+  &:hover {
+    background-color: #9ed353;
+  }
+}
+
+.progress-bar-container {
+  margin-top: 1em;
+  //bottom: 10px;
+  //left: 0;
+  width: 50%;
+  height: 10px;
+  background-color: #e0e0e0;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #9ed353;
+  transition: width 0.2s;
+}
+
+.progress-text {
+  position: absolute;
+  top: 12px; // 진도율 바로 밑에 숫자 위치
+  //left: 50%;
+  transform: translateX(-50%); // 가운데 정렬
+  font-size: 0.8rem;
+  color: #333;
 }

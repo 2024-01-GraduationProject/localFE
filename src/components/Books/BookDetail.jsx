@@ -3,39 +3,65 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Header2 } from "components";
 import { BestNew } from "components";
 import api from "../../api";
+import { useAuth } from "AuthContext";
 
 const BookDetail = () => {
-  const { book_id } = useParams();
+  const { book_id } = useParams(); // URL 파라미터로부터 book_id를 가져옴.
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
+
   const [book, setBook] = useState(null);
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [error, setError] = useState(null); // 에러 상태 추가
+  const [userbookId, setUserbookId] = useState(null);
+  const [userId, setUserId] = useState(null); // 사용자 ID 상태 추가
 
   useEffect(() => {
-    // 책 데이터 가져오는 함수
-    const fetchBook = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await api.get(`/books/${book_id}`);
-        setBook(response.data);
-        console.log(book);
-        // 초기화: 사용자 즐겨찾기 여부 확인
-        checkFavoriteStatus(response.data);
-      } catch (error) {
-        console.error("${book_id} 책 데이터 가져오기 실패: ", error);
+        const userResponse = await api.get("/user-data");
+        setUserId(userResponse.data.userId); // 사용자 ID 저장
+      } catch (err) {
+        console.error("사용자 데이터 가져오기 실패: ", err);
+        setError("사용자 데이터를 가져오는 데 실패했습니다.");
       }
     };
 
-    fetchBook();
-  }, [book_id]);
+    fetchUserData();
+  }, []);
 
-  const checkFavoriteStatus = async (book) => {
-    try {
-      const response = await api.get(`/user/favorites/${book_id}`);
-      setIsFavorite(response.data.isFavorite);
-    } catch (error) {
-      console.error("My Facorite 상태 확인 실패: ", error);
-    }
-  };
+  useEffect(() => {
+    if (userId === null) return; // 사용자 ID가 로드되지 않았으면 아무 작업도 하지 않음
+
+    const fetchBookAndUserbookId = async () => {
+      try {
+        // 책 정보를 가져오기
+        const bookResponse = await api.get(`/books/${book_id}`);
+        setBook(bookResponse.data);
+
+        // 사용자와 책 ID로 userbookId 가져오기
+        const userbookResponse = await api.get(`/bookmarks/userbook`, {
+          params: { userId, bookId: book_id },
+        });
+        setUserbookId(userbookResponse.data.userbookId);
+
+        // 즐겨찾기 상태 확인
+        if (isAuthenticated && userbookId) {
+          const bookmarkResponse = await api.get(
+            `/bookmarks/user/${userbookId}`
+          );
+          const bookmarks = bookmarkResponse.data;
+          setIsFavorite(bookmarks.some((b) => b.bookId === book_id));
+        }
+      } catch (err) {
+        console.error(`데이터 가져오기 실패: `, err);
+        setError("데이터를 가져오는 데 실패했습니다.");
+      }
+    };
+
+    fetchBookAndUserbookId();
+  }, [userId, book_id, isAuthenticated, userbookId]);
 
   const handleDownload = async () => {
     try {
@@ -47,22 +73,42 @@ const BookDetail = () => {
     }
   };
 
-  const handleRead = () => {
-    navigate(`/reader/${book_id}`);
+  const handleAddBookmark = async () => {
+    if (!isAuthenticated) {
+      navigate("/login"); // 로그인 페이지로 리다이렉트
+      return;
+    }
+
+    try {
+      await api.post(`/bookmarks/addBook`, null, {
+        params: { userbookId },
+      });
+      setIsFavorite(true);
+    } catch (error) {
+      console.error("즐겨찾기 추가 실패: ", error);
+      setError("즐겨찾기 추가에 실패했습니다.");
+    }
   };
 
-  const handleFavoriteToggle = async () => {
-    try {
-      if (isFavorite) {
-        await api.delete(`/user/favorites/${book_id}`);
-        setIsFavorite(false);
-      } else {
-        await api.post(`/user/favorites/${book_id}`);
-        setIsFavorite(true);
-      }
-    } catch (error) {
-      console.error("My Favorite 추가/제거 실패: ", error);
+  const handleRemoveBookmark = async () => {
+    if (!isAuthenticated) {
+      navigate("/login"); // 로그인 페이지로 리다이렉트
+      return;
     }
+
+    try {
+      await api.delete(`/bookmarks/remove`, {
+        params: { userbookId },
+      });
+      setIsFavorite(false);
+    } catch (error) {
+      console.error("즐겨찾기 제거 실패: ", error);
+      setError("즐겨찾기 제거에 실패했습니다.");
+    }
+  };
+
+  const handleRead = () => {
+    navigate(`/books/${book_id}/content`);
   };
 
   if (!book) return <p>Loading...</p>;
@@ -85,7 +131,7 @@ const BookDetail = () => {
               </button>
               <button
                 className={`favorite-button ${isFavorite ? "active" : ""}`}
-                onClick={handleFavoriteToggle}
+                onClick={isFavorite ? handleRemoveBookmark : handleAddBookmark}
               >
                 {isFavorite ? "❤️" : "🤍"}
               </button>

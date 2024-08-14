@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import ePub from "epubjs";
 import api from "../../api";
 import { debounce } from "debounce";
+import { useAuth } from "../../AuthContext";
 
 const BookReader = () => {
   const { book_id } = useParams();
@@ -12,7 +13,10 @@ const BookReader = () => {
   const [highlights, setHighlights] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [bookInstance, setBookInstance] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const { isAuthenticated } = useAuth(); // 인증 상태 가져오기
 
+  // 책 로드, 인스턴스 생성
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -48,34 +52,12 @@ const BookReader = () => {
     return () => {
       if (rendition) {
         rendition.destroy();
-        setRendition(null); // Clean up the state
+        setRendition(null); // 초기화
       }
     };
   }, [book_id]);
 
-  useEffect(() => {
-    const checkSpineItems = async () => {
-      if (bookInstance) {
-        try {
-          await bookInstance.spine.ready; // Ensure spine is loaded
-          const spineItems = bookInstance.spine.spineItems;
-          console.log("Spine items:", spineItems);
-
-          // Log details of each spine item
-          spineItems.forEach((item, index) => {
-            console.log(`Spine item ${index}:`, item);
-            console.log(`Href: ${item.href}`);
-            console.log(`ID: ${item.id}`);
-          });
-        } catch (error) {
-          console.error("Error loading spine items:", error);
-        }
-      }
-    };
-
-    checkSpineItems();
-  }, [bookInstance]);
-
+  // 책 렌더링
   useEffect(() => {
     const renderBook = async () => {
       if (bookInstance && bookRef.current) {
@@ -95,6 +77,9 @@ const BookReader = () => {
             flow: "paginated", //"scrolled-doc", // Set flow to paginated
             allowScriptedContent: true,
             //spread: "none",
+            interaction: {
+              enabled: true, // 상호작용 기능을 활성화
+            },
           });
 
           const handleResize = debounce(() => {
@@ -109,6 +94,7 @@ const BookReader = () => {
 
           resizeObserver.observe(bookRef.current);
 
+          //spineItem index 기반 진도율 -> 세세한 진도율 측정 불가
           const updateLocation = () => {
             requestAnimationFrame(() => {
               const location = newRendition.currentLocation();
@@ -117,10 +103,24 @@ const BookReader = () => {
               if (location && location.start && location.start.cfi) {
                 setCurrentLocation(location);
 
-                const progressPercentage =
-                  bookInstance.locations.percentageFromCfi(location.start.cfi) *
-                  100;
-                setProgress(progressPercentage);
+                // 진도율 계산
+                if (bookInstance.spine) {
+                  const spineItems = bookInstance.spine.spineItems;
+                  const currentIndex = spineItems.findIndex(
+                    (item) => item.href === location.start.href
+                  );
+                  if (currentIndex !== -1 && spineItems.length > 0) {
+                    const progressPercentage =
+                      (currentIndex / (spineItems.length - 1)) * 100;
+                    setProgress(progressPercentage);
+                  } else {
+                    console.warn(
+                      "Cannot determine current index in spine items."
+                    );
+                  }
+                } else {
+                  console.warn("Spine items are not available.");
+                }
               } else {
                 console.warn("Location or CFI is undefined.");
               }
@@ -144,21 +144,20 @@ const BookReader = () => {
           const spineItems = bookInstance.spine.spineItems;
           if (spineItems.length > 0) {
             console.log("Displaying first spine item:", spineItems[0].href);
-            // Display the first spine item
+            // 표지 [0] 부터 보여주기
             await newRendition.display(spineItems[0].href);
             console.log("Book displayed.");
             setRendition(newRendition);
+
+            // Apply existing highlights
+            highlights.forEach((highlight) => {
+              newRendition.annotations.highlight(highlight.cfi, {}, () => {
+                console.log("Highlight applied:", highlight.cfi);
+              });
+            });
           } else {
             console.error("No spine items found.");
           }
-
-          /* Display the first spine item
-          await newRendition.display();
-          console.log("First spine item displayed.");
-          setRendition(newRendition);
-
-          // Clean up observer
-          return () => resizeObserver.disconnect(); */
         } catch (error) {
           console.error("Error in rendering book:", error);
         }
@@ -168,19 +167,26 @@ const BookReader = () => {
     renderBook();
   }, [bookInstance]);
 
+  // 다음 페이지
   const handleNextPage = () => {
     if (rendition) {
       rendition.next();
+    } else {
+      console.warn("Rendition is not initialized.");
     }
   };
 
+  // 이전 페이지
   const handlePreviousPage = () => {
     if (rendition) {
       rendition.prev();
+    } else {
+      console.warn("Rendition is not initialized.");
     }
   };
 
-  const handleHighlight = () => {
+  /*하이라이팅
+  const handleHighlight = async () => {
     if (
       rendition &&
       currentLocation &&
@@ -188,19 +194,33 @@ const BookReader = () => {
       currentLocation.start.cfi
     ) {
       console.log("Highlighting at CFI:", currentLocation.start.cfi);
+
+      const highlight = {
+        cfi: currentLocation.start.cfi,
+        text: await rendition.getSelectionText(),
+      };
+
+      // Add highlight to state
+      setHighlights([...highlights, highlight]);
+
+      // Add highlight to the book with custom style
       rendition.annotations.highlight(
         currentLocation.start.cfi,
         {},
-        () => {
-          setHighlights([...highlights, currentLocation.start.cfi]);
-          console.log("Highlight added.");
-        },
+        () => console.log("Highlight added."),
         "highlight"
       );
+
+      // Optionally: Save the highlight to server
+      try {
+        await api.post("/highlights", highlight);
+      } catch (error) {
+        console.error("Failed to save highlight:", error);
+      }
     } else {
       console.warn("Cannot highlight: currentLocation or CFI is undefined.");
     }
-  };
+  }; */
 
   return (
     <div className="book-reader">
@@ -211,6 +231,13 @@ const BookReader = () => {
       <button className="nav-button right" onClick={handleNextPage}>
         다음
       </button>
+
+      <div className="progress-bar-container">
+        <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+        <div className="progress-text" style={{ left: `${progress}%` }}>
+          {Math.round(progress)}%
+        </div>
+      </div>
     </div>
   );
 };
