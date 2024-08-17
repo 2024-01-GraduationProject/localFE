@@ -14,7 +14,6 @@ const BookDetail = () => {
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [error, setError] = useState(null); // 에러 상태 추가
-  const [userbookId, setUserbookId] = useState(null);
   const [userId, setUserId] = useState(null); // 사용자 ID 상태 추가
 
   useEffect(() => {
@@ -40,20 +39,10 @@ const BookDetail = () => {
         const bookResponse = await api.get(`/books/${book_id}`);
         setBook(bookResponse.data);
 
-        // 사용자와 책 ID로 userbookId 가져오기
-        const userbookResponse = await api.get(`/bookmarks/userbook`, {
-          params: { userId, bookId: book_id },
-        });
-        setUserbookId(userbookResponse.data.userbookId);
-
         // 즐겨찾기 상태 확인
-        if (isAuthenticated && userbookId) {
-          const bookmarkResponse = await api.get(
-            `/bookmarks/user/${userbookId}`
-          );
-          const bookmarks = bookmarkResponse.data;
-          setIsFavorite(bookmarks.some((b) => b.bookId === book_id));
-        }
+        const userbookId = `${userId}-${book_id}`; // userbookId 생성
+        const isFav = await checkFavoriteStatus(userbookId);
+        setIsFavorite(isFav);
       } catch (err) {
         console.error(`데이터 가져오기 실패: `, err);
         setError("데이터를 가져오는 데 실패했습니다.");
@@ -61,15 +50,33 @@ const BookDetail = () => {
     };
 
     fetchBookAndUserbookId();
-  }, [userId, book_id, isAuthenticated, userbookId]);
+  }, [userId, book_id]);
+
+  const checkFavoriteStatus = async (userbookId) => {
+    try {
+      const bookmarkResponse = await api.get(`/bookmarks/user/${userbookId}`);
+      const bookmarks = bookmarkResponse.data;
+      return bookmarks.some((b) => b.bookId === book_id);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // 즐겨찾기 목록에 책이 없을 경우 에러를 발생시키지 않음
+        return false;
+      } else {
+        console.error("즐겨찾기 상태 확인 실패: ", error);
+        setError("즐겨찾기 상태를 확인하는 데 실패했습니다.");
+        return false; // 에러 발생 시 기본값 반환
+      }
+    }
+  };
 
   const handleDownload = async () => {
     try {
       // 책 다운로드 API 호출
-      await api.post(`/books/${book_id}/download`);
+      await api.post(`/user-isReading`, { userId, bookID: book_id });
       setIsDownloaded(true);
     } catch (error) {
       console.error(`${book_id} 책 다운로드 실패: `, error);
+      setError("책 다운로드에 실패했습니다.");
     }
   };
 
@@ -80,6 +87,7 @@ const BookDetail = () => {
     }
 
     try {
+      const userbookId = `${userId}-${book_id}`; // userbookId 생성
       await api.post(`/bookmarks/addBook`, null, {
         params: { userbookId },
       });
@@ -97,6 +105,7 @@ const BookDetail = () => {
     }
 
     try {
+      const userbookId = `${userId}-${book_id}`; // userbookId 생성
       await api.delete(`/bookmarks/remove`, {
         params: { userbookId },
       });
@@ -126,9 +135,15 @@ const BookDetail = () => {
           <div className="info-header">
             <h1>{book.title}</h1>
             <div className="book-actions">
-              <button className="download-button" onClick={handleDownload}>
-                다운로드
-              </button>
+              {!isDownloaded ? (
+                <button className="download-button" onClick={handleDownload}>
+                  다운로드
+                </button>
+              ) : (
+                <button className="read-button" onClick={handleRead}>
+                  바로 읽기
+                </button>
+              )}
               <button
                 className={`favorite-button ${isFavorite ? "active" : ""}`}
                 onClick={isFavorite ? handleRemoveBookmark : handleAddBookmark}
