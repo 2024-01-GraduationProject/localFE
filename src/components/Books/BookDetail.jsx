@@ -71,7 +71,7 @@ const BookDetail = () => {
 
   const handleDownload = async () => {
     try {
-      // 책 다운로드 API 호출
+      // 다운로드 누르면 [내 책장 - 독서 중]으로 전달
       await api.post(`/user-isReading`, { userId, bookID: book_id });
       setIsDownloaded(true);
     } catch (error) {
