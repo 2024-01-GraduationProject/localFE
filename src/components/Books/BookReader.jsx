@@ -10,11 +10,10 @@ const BookReader = () => {
   const bookRef = useRef(null);
   const [rendition, setRendition] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [highlights, setHighlights] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [bookInstance, setBookInstance] = useState(null);
-  const [totalPages, setTotalPages] = useState(0);
   const { isAuthenticated } = useAuth(); // 인증 상태 가져오기
+  const [bookmarks, setBookmarks] = useState([]);
 
   // 책 로드, 인스턴스 생성
   useEffect(() => {
@@ -34,6 +33,10 @@ const BookReader = () => {
           });
 
           await book.loaded.metadata;
+          console.log("Book metadata loaded.");
+
+          // 여기서 book.loaded를 사용하여 초기화가 완료되었는지 확인합니다.
+          await book.ready;
           console.log("Book metadata loaded.");
 
           setBookInstance(book);
@@ -82,9 +85,15 @@ const BookReader = () => {
             },
           });
 
+          setRendition(newRendition);
+
           const handleResize = debounce(() => {
             if (newRendition) {
-              newRendition.resize();
+              try {
+                newRendition.resize();
+              } catch (error) {
+                console.error("Failed to resize rendition:", error);
+              }
             }
           }, 200);
 
@@ -130,6 +139,7 @@ const BookReader = () => {
           newRendition.on("rendered", (section) => {
             console.log("Section rendered:", section);
             updateLocation();
+            restoreBookmarks(newRendition); // 페이지 로드 후 북마크 복구
           });
 
           newRendition.on("relocated", (location) => {
@@ -148,13 +158,6 @@ const BookReader = () => {
             await newRendition.display(spineItems[0].href);
             console.log("Book displayed.");
             setRendition(newRendition);
-
-            // Apply existing highlights
-            highlights.forEach((highlight) => {
-              newRendition.annotations.highlight(highlight.cfi, {}, () => {
-                console.log("Highlight applied:", highlight.cfi);
-              });
-            });
           } else {
             console.error("No spine items found.");
           }
@@ -166,6 +169,59 @@ const BookReader = () => {
 
     renderBook();
   }, [bookInstance]);
+
+  // 북마크 추가
+  const addBookmark = async () => {
+    if (rendition) {
+      const location = rendition.currentLocation();
+      if (location && location.start && location.start.cfi) {
+        const newBookmark = {
+          cfi: location.start.cfi,
+          title: `Bookmark at ${Math.round(progress)}%`, // 북마크 제목
+        };
+
+        // 북마크를 상태에 저장
+        setBookmarks((prev) => [...prev, newBookmark]);
+        console.log("Bookmark added:", newBookmark);
+      } else {
+        console.warn("Cannot determine current location.");
+      }
+    } else {
+      console.warn("Rendition is not initialized.");
+    }
+  };
+
+  // 북마크 복구
+  const restoreBookmarks = (rendition) => {
+    bookmarks.forEach((bookmark) => {
+      rendition.annotations.add(
+        bookmark.cfi,
+        "bookmark",
+        { ignoreClass: "" },
+        () => {
+          console.log("Bookmark restored:", bookmark);
+        }
+      );
+    });
+  };
+
+  /* 하이라이트 추가 - 텍스트 CFI 기반
+  const addHighlight = async () => {
+    if (rendition) {
+      const cfiRange = await rendition.getRange(); // 선택한 범위 가져오기
+      if (cfiRange) {
+        const highlight = {
+          cfiRange,
+          class: "highlight",
+        };
+        // 하이라이트 적용
+        rendition.annotations.add(highlight.cfiRange, { class: "highlight" });
+        setHighlights((prev) => [...prev, highlight]);
+      }
+    } else {
+      console.warn("Rendition is not initialized.");
+    }
+  }; */
 
   // 다음 페이지
   const handleNextPage = () => {
@@ -185,43 +241,6 @@ const BookReader = () => {
     }
   };
 
-  /*하이라이팅
-  const handleHighlight = async () => {
-    if (
-      rendition &&
-      currentLocation &&
-      currentLocation.start &&
-      currentLocation.start.cfi
-    ) {
-      console.log("Highlighting at CFI:", currentLocation.start.cfi);
-
-      const highlight = {
-        cfi: currentLocation.start.cfi,
-        text: await rendition.getSelectionText(),
-      };
-
-      // Add highlight to state
-      setHighlights([...highlights, highlight]);
-
-      // Add highlight to the book with custom style
-      rendition.annotations.highlight(
-        currentLocation.start.cfi,
-        {},
-        () => console.log("Highlight added."),
-        "highlight"
-      );
-
-      // Optionally: Save the highlight to server
-      try {
-        await api.post("/highlights", highlight);
-      } catch (error) {
-        console.error("Failed to save highlight:", error);
-      }
-    } else {
-      console.warn("Cannot highlight: currentLocation or CFI is undefined.");
-    }
-  }; */
-
   return (
     <div className="book-reader">
       <button className="nav-button left" onClick={handlePreviousPage}>
@@ -231,6 +250,13 @@ const BookReader = () => {
       <button className="nav-button right" onClick={handleNextPage}>
         다음
       </button>
+      <button className="bookmark-button" onClick={addBookmark}>
+        북마크 추가
+      </button>
+
+      {/*<button className="highlight-button" onClick={addHighlight}>
+        하이라이트 추가
+      </button> */}
 
       <div className="progress-bar-container">
         <div className="progress-bar" style={{ width: `${progress}%` }}></div>

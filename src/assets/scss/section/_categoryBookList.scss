@@ -15,10 +15,7 @@
 }
 
 .bookCG-item {
-  //width: calc(
-  //25% - 1em
-  //); /* 4개의 아이템을 한 줄에 배치, 간격을 고려하여 너비 조정 */
-  width: 150px;
+  width: 160px;
   margin: 2em;
   flex-shrink: 0; /* 고정된 크기로 유지 */
   text-align: center;

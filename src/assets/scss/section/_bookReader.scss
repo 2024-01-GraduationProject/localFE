@@ -19,6 +19,14 @@
     justify-content: center;
     padding: 2px;
     color: black;
+
+    &:hover {
+      color: black;
+    }
+  }
+  .highlight {
+    background-color: yellow;
+    display: inline;
   }
 }
 
@@ -72,4 +80,9 @@
   transform: translateX(-50%); // 가운데 정렬
   font-size: 0.8rem;
   color: #333;
+}
+
+.highlight {
+  background-color: yellow !important;
+  fill: yellow !important;
 }

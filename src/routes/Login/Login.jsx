@@ -14,7 +14,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loginCheck, setLoginCheck] = useState(false);
 
-  const kakaoLoginRef = useRef(); // Reference to KakaoLogin component
+  const kakaoLoginRef = useRef();
   const googleLoginRef = useRef();
 
   const navigate = useNavigate();
@@ -123,11 +123,6 @@ const Login = () => {
 
             <button onClick={() => handleSocialLogin("kakao")}>
               <img src={kakao} alt="카카오"></img>
-            </button>
-
-            {/* 네이버 미완성 */}
-            <button>
-              <img src={naver} alt="네이버"></img>
             </button>
           </div>
         </div>

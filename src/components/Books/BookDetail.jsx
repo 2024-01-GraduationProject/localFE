@@ -40,7 +40,7 @@ const BookDetail = () => {
         setBook(bookResponse.data);
 
         // 즐겨찾기 상태 확인
-        const userbookId = `${userId}-${book_id}`; // userbookId 생성
+        const userbookId = `${userId}${book_id}`; // userbookId 생성
         const isFav = await checkFavoriteStatus(userbookId);
         setIsFavorite(isFav);
       } catch (err) {
@@ -87,7 +87,7 @@ const BookDetail = () => {
     }
 
     try {
-      const userbookId = `${userId}-${book_id}`; // userbookId 생성
+      const userbookId = `${userId}${book_id}`; // userbookId 생성
       await api.post(`/bookmarks/addBook`, null, {
         params: { userbookId },
       });
@@ -105,7 +105,7 @@ const BookDetail = () => {
     }
 
     try {
-      const userbookId = `${userId}-${book_id}`; // userbookId 생성
+      const userbookId = `${userId}${book_id}`; // userbookId 생성
       await api.delete(`/bookmarks/remove`, {
         params: { userbookId },
       });

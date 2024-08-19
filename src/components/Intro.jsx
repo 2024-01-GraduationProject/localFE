@@ -81,20 +81,6 @@ const Intro = () => {
     }
   };
 
-  /*const openNaverLoginPopup = () => {
-    const popup = window.open(
-      "/login/naver",
-      "naverLoginPopup",
-      "width=350,height=400"
-    );
-    if (popup) {
-      popup.focus();
-    } else {
-      console.error("팝업 차단됨 - 네이버 로그인 팝업을 열 수 없습니다.");
-      // 팝업이 차단된 경우 대체할 수 있는 처리 추가
-    }
-  }; */
-
   return (
     <section id="intro">
       <div className="intro__text">
@@ -145,11 +131,6 @@ const Intro = () => {
 
           <button onClick={() => handleSocialLogin("kakao")}>
             <img src={kakao} alt="카카오"></img>
-          </button>
-
-          {/* 네이버 미완성 */}
-          <button onClick={() => handleSocialLogin("naver")}>
-            <img src={naver} alt="네이버"></img>
           </button>
         </div>
       </div>

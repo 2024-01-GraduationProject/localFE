@@ -11,9 +11,11 @@ const MyLib = () => {
   const [completedBooks, setCompletedBooks] = useState([]);
   const [nickname, setNickname] = useState("");
   const [favorites, setFavorites] = useState([]);
+  const [userbookId, setUserbookId] = useState(null);
 
   const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
   const navigate = useNavigate();
+
   useEffect(() => {
     // 사용자 데이터 가져오기
     const fetchUserData = async () => {
@@ -27,6 +29,10 @@ const MyLib = () => {
         const nicknameResponse = await api.get("/user-nickname");
         console.log(nicknameResponse);
         setNickname(nicknameResponse.data);
+
+        // userbookId 가져오기
+        const userbookIdResponse = await api.get(`/bookmarks/userbook`);
+        setUserbookId(userbookIdResponse.data);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
@@ -53,7 +59,7 @@ const MyLib = () => {
       // 즐겨찾기 목록 가져오기
       const fetchFavorites = async () => {
         try {
-          const response = await api.get("/user/favorites");
+          const response = await api.get(`/bookmarks/user/${userbookId}`);
           setFavorites(response.data);
         } catch (error) {
           alert("즐겨찾기 목록을 가져오는 중 오류가 발생했습니다.");
