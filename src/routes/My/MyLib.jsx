@@ -11,8 +11,7 @@ const MyLib = () => {
   const [completedBooks, setCompletedBooks] = useState([]);
   const [nickname, setNickname] = useState("");
   const [favorites, setFavorites] = useState([]);
-  const [userbookId, setUserbookId] = useState(null);
-
+  const [userId, setUserId] = useState(null);
   const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
   const navigate = useNavigate();
 
@@ -25,14 +24,11 @@ const MyLib = () => {
       }
 
       try {
-        // 닉네임 가져오기
-        const nicknameResponse = await api.get("/user-nickname");
-        console.log(nicknameResponse);
-        setNickname(nicknameResponse.data);
-
-        // userbookId 가져오기
-        const userbookIdResponse = await api.get(`/bookmarks/userbook`);
-        setUserbookId(userbookIdResponse.data);
+        // 닉네임 및 사용자 ID 가져오기
+        const userDataResponse = await api.get("/user-data");
+        const { userId, nickname } = userDataResponse.data;
+        setUserId(userId);
+        setNickname(nickname);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
@@ -41,13 +37,33 @@ const MyLib = () => {
   }, []);
 
   useEffect(() => {
+    if (!userId) return; // userId가 로드되지 않았으면 아무 작업도 하지 않음
+
     if (activeTab === "책장") {
       // "독서 중" 책과 "독서 완료" 책 가져오기
       const fetchBooks = async () => {
         try {
-          const readingResponse = await api.get("/user-isReading");
-          const completedResponse = await api.get("/user-alreadyRead");
-          setReadingBooks(readingResponse.data);
+          const readingResponse = await api.get(
+            `/bookshelf/reading?userId=${userId}`
+          );
+          const completedResponse = await api.get("/bookshelf/completed");
+
+          // 독서 중인 책에 대한 추가 정보 가져오기
+          const readingBooksWithDetails = await Promise.all(
+            readingResponse.data.map(async (userBook) => {
+              const bookDetailsResponse = await api.get(
+                `/books/${userBook.bookId}`
+              );
+              const bookDetails = bookDetailsResponse.data;
+
+              return {
+                ...userBook,
+                ...bookDetails,
+              };
+            })
+          );
+
+          setReadingBooks(readingBooksWithDetails);
           setCompletedBooks(completedResponse.data);
         } catch (error) {
           alert("책 데이터를 가져오는 중 오류가 발생했습니다.");
@@ -59,8 +75,24 @@ const MyLib = () => {
       // 즐겨찾기 목록 가져오기
       const fetchFavorites = async () => {
         try {
-          const response = await api.get(`/bookmarks/user/${userbookId}`);
-          setFavorites(response.data);
+          // 즐겨찾기 목록을 가져오기
+          const favoritesResponse = await api.get(
+            `/bookmarks/list?userId=${userId}`
+          );
+          const favoriteBookIds = favoritesResponse.data.map(
+            (favorite) => favorite.bookId
+          );
+
+          // 모든 책 목록을 가져와 userbookId를 생성하고, 해당 책이 즐겨찾기인지 확인
+          const booksResponse = await api.get("/books");
+          const allBooks = booksResponse.data;
+
+          // 즐겨찾기 책 목록 필터링
+          const favoriteBooks = allBooks.filter((book) =>
+            favoriteBookIds.includes(book.book_id)
+          );
+
+          setFavorites(favoriteBooks);
         } catch (error) {
           alert("즐겨찾기 목록을 가져오는 중 오류가 발생했습니다.");
         }
@@ -68,18 +100,29 @@ const MyLib = () => {
 
       fetchFavorites();
     }
-  }, [activeTab]);
+  }, [activeTab, userId]);
 
   const renderBookList = (books) => {
     return books.length > 0 ? (
       books.map((book) => (
-        <li key={book.id}>
+        <li
+          key={book.book_id}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
+        >
           <img
             src={book.coverImageUrl}
             alt={book.title}
-            style={{ width: "50px", height: "auto" }}
+            style={{ width: "50px", height: "auto", marginRight: "10px" }}
           />
-          <span>{book.title}</span>
+          <div>
+            <span style={{ fontWeight: "bold" }}>{book.title}</span>
+            <p>{book.author}</p>
+            <p>Started on: {book.startDate}</p>
+          </div>
         </li>
       ))
     ) : (

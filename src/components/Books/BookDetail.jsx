@@ -40,7 +40,7 @@ const BookDetail = () => {
         setBook(bookResponse.data);
 
         // 즐겨찾기 상태 확인
-        const userbookId = `${userId}${book_id}`; // userbookId 생성
+        const userbookId = `${userId}-${book_id}`; // userbookId 생성
         const isFav = await checkFavoriteStatus(userbookId);
         setIsFavorite(isFav);
       } catch (err) {
@@ -71,8 +71,32 @@ const BookDetail = () => {
 
   const handleDownload = async () => {
     try {
+      const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜를 가져옴 (yyyy-mm-dd)
+      const requestData = {
+        userbookId: `${userId}-${book_id}`, // userId와 book_id를 결합하여 userbookId 생성
+        userId: parseInt(userId),
+        bookId: parseInt(book_id),
+        status: "READING",
+        //favorite: false,
+        //lastReadPage: 0,
+        startDate: currentDate,
+        //endDate: null,
+        //rating: null,
+        //createdAt: currentDate + "T00:00:00",
+        //updatedAt: currentDate + "T00:00:00",
+      };
+
+      // URL에 userId와 bookId를 쿼리 파라미터로 포함
+      const url = `/bookshelf/add-to-reading?userId=${userId}&bookId=${book_id}`;
+
       // 다운로드 누르면 [내 책장 - 독서 중]으로 전달
-      await api.post(`/user-isReading`, { userId, bookID: book_id });
+      const response = await api.post(url, requestData);
+
+      // 응답 데이터에서 필요한 정보 가져오기
+      const responseData = response.data;
+      console.log("응답 데이터: ", responseData);
+
+      // 필요한 후속 작업 수행
       setIsDownloaded(true);
     } catch (error) {
       console.error(`${book_id} 책 다운로드 실패: `, error);
@@ -87,7 +111,7 @@ const BookDetail = () => {
     }
 
     try {
-      const userbookId = `${userId}${book_id}`; // userbookId 생성
+      const userbookId = `${userId}-${book_id}`; // userbookId 생성
       await api.post(`/bookmarks/addBook`, null, {
         params: { userbookId },
       });
@@ -105,7 +129,7 @@ const BookDetail = () => {
     }
 
     try {
-      const userbookId = `${userId}${book_id}`; // userbookId 생성
+      const userbookId = `${userId}-${book_id}`; // userbookId 생성
       await api.delete(`/bookmarks/remove`, {
         params: { userbookId },
       });

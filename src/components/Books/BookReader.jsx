@@ -14,6 +14,7 @@ const BookReader = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const { isAuthenticated } = useAuth();
+  const [highlights, setHighlights] = useState([]);
 
   useEffect(() => {
     const fetchBook = async () => {
