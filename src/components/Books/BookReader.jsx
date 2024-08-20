@@ -8,13 +8,14 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 
 const BookReader = () => {
   const { book_id } = useParams();
+
   const bookRef = useRef(null);
   const [rendition, setRendition] = useState(null);
   const [progress, setProgress] = useState(0);
   const [bookInstance, setBookInstance] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,11 +59,11 @@ const BookReader = () => {
 
     return () => {
       if (rendition) {
-        try {
-          rendition.destroy();
-        } catch (error) {
-          console.error("Error destroying rendition:", error);
-        }
+        //try {
+        rendition.destroy();
+        //} catch (error) {
+        //console.error("Error destroying rendition:", error);
+        //}
         setRendition(null);
       }
     };
@@ -75,6 +76,7 @@ const BookReader = () => {
           if (rendition) {
             console.log("Destroying previous rendition...");
             rendition.destroy();
+            setRendition(null);
           }
 
           await bookInstance.ready;
@@ -113,7 +115,7 @@ const BookReader = () => {
               const location = newRendition.currentLocation();
               console.log("Current Location:", location);
 
-              if (location && location.start && location.start.cfi) {
+              if (location?.start?.cfi) {
                 const currentPage = bookInstance.locations.percentageFromCfi(
                   location.start.cfi
                 );
@@ -140,12 +142,12 @@ const BookReader = () => {
           console.log("Rendition instance created and listener attached.");
 
           await bookInstance.spine.ready;
-          const spineItems = bookInstance.spine.spineItems;
-          if (spineItems.length > 0) {
+          const spineItems = bookInstance.spine?.spineItems;
+          if (spineItems?.length > 0) {
             console.log("Displaying first spine item:", spineItems[0].href);
-            await newRendition.display(spineItems[0].href);
+            await newRendition.display(spineItems[0]?.href);
             console.log("Book displayed.");
-            setRendition(newRendition);
+            //setRendition(newRendition);
           } else {
             console.error("No spine items found.");
           }
@@ -158,9 +160,27 @@ const BookReader = () => {
     renderBook();
   }, [bookInstance]);
 
+  useEffect(() => {
+    if (progress === 100 && isAuthenticated && user) {
+      const markBookAsCompleted = async () => {
+        try {
+          await api.put(`/bookshelf/completeBook`, {
+            userId: user.id,
+            bookId: book_id,
+          });
+          console.log("Book marked as completed.");
+        } catch (error) {
+          console.error("Error marking book as completed:", error);
+        }
+      };
+
+      markBookAsCompleted();
+    }
+  }, [progress, isAuthenticated, user, book_id]);
+
   const handleNextPage = () => {
     if (rendition) {
-      rendition.next();
+      rendition?.next();
     } else {
       console.warn("Rendition is not initialized.");
     }
@@ -168,7 +188,7 @@ const BookReader = () => {
 
   const handlePreviousPage = () => {
     if (rendition) {
-      rendition.prev();
+      rendition?.prev();
     } else {
       console.warn("Rendition is not initialized.");
     }

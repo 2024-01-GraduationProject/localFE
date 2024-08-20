@@ -7,6 +7,7 @@ import { useAuth } from "AuthContext";
 
 const MyLib = () => {
   const [activeTab, setActiveTab] = useState("책장");
+  const [subTab, setSubTab] = useState("독서 중");
   const [readingBooks, setReadingBooks] = useState([]);
   const [completedBooks, setCompletedBooks] = useState([]);
   const [nickname, setNickname] = useState("");
@@ -46,6 +47,7 @@ const MyLib = () => {
           const readingResponse = await api.get(
             `/bookshelf/reading?userId=${userId}`
           );
+
           /*const completedResponse = await api.get(
             "/bookshelf/completed?userId=${userId}"
           );*/
@@ -55,10 +57,10 @@ const MyLib = () => {
             (userBook) => userBook.status === "READING"
           );
 
-          /* 독서 중인 책 중 status가 'READING'인 책만 필터링
-         const completedBooksFiltered = readingResponse.data.filter(
-          (userBook) => userBook.status === "COMPLETED"
-        );*/
+          /*독서 중인 책 중 status가 'COMPLETED'인 책만 필터링
+          const completedBooksFiltered = readingResponse.data.filter(
+            (userBook) => userBook.status === "COMPLETED"
+          );*/
 
           // 독서 중인 책에 대한 추가 정보 가져오기
           const readingBooksWithDetails = await Promise.all(
@@ -71,9 +73,25 @@ const MyLib = () => {
               return {
                 ...userBook,
                 ...bookDetails,
+                startDate: userBook.startDate, // 독서 중 시작 날짜
               };
             })
           );
+
+          /*const completedBooksWithDetails = await Promise.all(
+            completedResponse.data.map(async (userBook) => {
+              const bookDetailsResponse = await api.get(
+                `/books/${userBook.bookId}`
+              );
+              const bookDetails = bookDetailsResponse.data;
+
+              return {
+                ...userBook,
+                ...bookDetails,
+                endDate: userBook.endDate, // 독서 완료 종료 날짜
+              };
+            })
+          );*/
 
           setReadingBooks(readingBooksWithDetails);
           //setCompletedBooks(completedResponse.data);
@@ -118,7 +136,7 @@ const MyLib = () => {
     navigate(`/books/${bookId}`); // 클릭된 책의 세부 페이지로 이동
   };
 
-  const renderBookList = (books) => {
+  const renderBookList = (books, tab) => {
     return books.length > 0 ? (
       books.map((book) => (
         <li
@@ -139,7 +157,12 @@ const MyLib = () => {
           <div>
             <span style={{ fontWeight: "bold" }}>{book.title}</span>
             <p>{book.author}</p>
-            <p>Started on: {book.startDate}</p>
+            {tab === "독서 중" && (
+              <>
+                <p>Started on: {book.startDate}</p>
+              </>
+            )}
+            {tab === "독서 완료" && <p>Completed on: {book.endDate}</p>}
           </div>
         </li>
       ))
@@ -154,12 +177,25 @@ const MyLib = () => {
         return (
           <div>
             <div>
-              <h3>독서 중</h3>
-              <ul>{renderBookList(readingBooks)}</ul>
+              <ul className="subtab_menu">
+                {["독서 중", "독서 완료"].map((tab) => (
+                  <li
+                    key={tab}
+                    className={tab === subTab ? "active" : ""}
+                    onClick={() => setSubTab(tab)}
+                  >
+                    {tab}
+                  </li>
+                ))}
+              </ul>
             </div>
             <div>
-              <h3>독서 완료</h3>
-              <ul>{renderBookList(completedBooks)}</ul>
+              <ul>
+                {renderBookList(
+                  subTab === "독서 중" ? readingBooks : completedBooks,
+                  subTab
+                )}
+              </ul>
             </div>
           </div>
         );
@@ -167,7 +203,7 @@ const MyLib = () => {
         return (
           <div>
             <h2>My Favorite</h2>
-            <ul>{renderBookList(favorites)}</ul>
+            <ul>{renderBookList(favorites, "My Favorite")}</ul>
           </div>
         );
       default:
