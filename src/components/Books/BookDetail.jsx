@@ -15,6 +15,7 @@ const BookDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [error, setError] = useState(null); // 에러 상태 추가
   const [userId, setUserId] = useState(null); // 사용자 ID 상태 추가
+  const [isLoading, setIsLoading] = useState(true); // 로드 상태 추가
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -39,33 +40,80 @@ const BookDetail = () => {
         const bookResponse = await api.get(`/books/${book_id}`);
         setBook(bookResponse.data);
 
-        // 즐겨찾기 상태 확인
-        const userbookId = `${userId}-${book_id}`; // userbookId 생성
-        const isFav = await checkFavoriteStatus(userbookId);
-        setIsFavorite(isFav);
+        // 로컬 스토리지에서 즐겨찾기 상태 확인
+        const storedFavoriteStatus = localStorage.getItem(
+          `favorite-${userId}-${book_id}`
+        );
+        if (storedFavoriteStatus !== null) {
+          setIsFavorite(JSON.parse(storedFavoriteStatus));
+        } else {
+          // 즐겨찾기 상태 확인
+          const isFav = await checkFavoriteStatus(`${userId}-${book_id}`);
+          setIsFavorite(isFav);
+        }
+
+        // 다운로드 상태 확인
+        const downloadStatus = await checkDownloadStatus(
+          `${userId}-${book_id}`
+        );
+        setIsDownloaded(downloadStatus);
       } catch (err) {
         console.error(`데이터 가져오기 실패: `, err);
         setError("데이터를 가져오는 데 실패했습니다.");
+      } finally {
+        setIsLoading(false); // 데이터 로드 완료 후 로딩 상태 false로 설정
       }
     };
 
     fetchBookAndUserbookId();
   }, [userId, book_id]);
 
-  const checkFavoriteStatus = async (userbookId) => {
+  const checkFavoriteStatus = async () => {
     try {
-      const bookmarkResponse = await api.get(`/bookmarks/user/${userbookId}`);
+      // 새로운 북마크 목록 조회 엔드포인트
+      const bookmarkResponse = await api.get("/bookmarks/list", {
+        params: { userId },
+      });
       const bookmarks = bookmarkResponse.data;
-      return bookmarks.some((b) => b.bookId === book_id);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        // 즐겨찾기 목록에 책이 없을 경우 에러를 발생시키지 않음
-        return false;
+
+      // 현재 book_id와 일치하는 책을 찾고, favorite 상태 확인
+      const currentBook = bookmarks.find((b) => b.bookId === parseInt(book_id));
+
+      if (currentBook) {
+        const isFavorite = currentBook.favorite;
+        // 로컬 스토리지에 즐겨찾기 상태 저장
+        localStorage.setItem(
+          `favorite-${userId}-${book_id}`,
+          JSON.stringify(isFavorite)
+        );
+        return isFavorite;
       } else {
-        console.error("즐겨찾기 상태 확인 실패: ", error);
-        setError("즐겨찾기 상태를 확인하는 데 실패했습니다.");
-        return false; // 에러 발생 시 기본값 반환
+        return false; // 북마크 목록에 해당 책이 없으면 false 반환
       }
+    } catch (error) {
+      console.error("즐겨찾기 상태 확인 실패: ", error);
+      setError("즐겨찾기 상태를 확인하는 데 실패했습니다.");
+      return false; // 에러 발생 시 기본값 반환
+    }
+  };
+
+  // 다운로드 상태 확인 함수 추가
+  const checkDownloadStatus = async () => {
+    try {
+      const readingResponse = await api.get(`/bookshelf/reading`, {
+        params: { userId },
+      });
+      const readingBooks = readingResponse.data;
+
+      // 현재 책이 "READING" 상태인지 확인
+      const isReading = readingBooks.some(
+        (book) => book.bookId === parseInt(book_id) && book.status === "READING"
+      );
+
+      return isReading;
+    } catch (error) {
+      console.error("다운로드 상태 확인 실패: ", error);
+      return false; // 에러 발생 시 기본값 반환
     }
   };
 
@@ -89,14 +137,9 @@ const BookDetail = () => {
       // URL에 userId와 bookId를 쿼리 파라미터로 포함
       const url = `/bookshelf/add-to-reading?userId=${userId}&bookId=${book_id}`;
 
-      // 다운로드 누르면 [내 책장 - 독서 중]으로 전달
+      // 다운로드 누르면 '독서 중'에 저장
       const response = await api.post(url, requestData);
 
-      // 응답 데이터에서 필요한 정보 가져오기
-      const responseData = response.data;
-      console.log("응답 데이터: ", responseData);
-
-      // 필요한 후속 작업 수행
       setIsDownloaded(true);
     } catch (error) {
       console.error(`${book_id} 책 다운로드 실패: `, error);
@@ -111,11 +154,14 @@ const BookDetail = () => {
     }
 
     try {
-      const userbookId = `${userId}-${book_id}`; // userbookId 생성
       await api.post(`/bookmarks/addBook`, null, {
-        params: { userbookId },
+        params: { userId, bookId: book_id },
       });
       setIsFavorite(true);
+      localStorage.setItem(
+        `favorite-${userId}-${book_id}`,
+        JSON.stringify(true)
+      ); // 로컬 스토리지에 즐겨찾기 상태 저장
     } catch (error) {
       console.error("즐겨찾기 추가 실패: ", error);
       setError("즐겨찾기 추가에 실패했습니다.");
@@ -129,11 +175,14 @@ const BookDetail = () => {
     }
 
     try {
-      const userbookId = `${userId}-${book_id}`; // userbookId 생성
       await api.delete(`/bookmarks/remove`, {
-        params: { userbookId },
+        params: { userId, bookId: book_id },
       });
       setIsFavorite(false);
+      localStorage.setItem(
+        `favorite-${userId}-${book_id}`,
+        JSON.stringify(true)
+      ); // 로컬 스토리지에 즐겨찾기 상태 저장
     } catch (error) {
       console.error("즐겨찾기 제거 실패: ", error);
       setError("즐겨찾기 제거에 실패했습니다.");
@@ -141,10 +190,15 @@ const BookDetail = () => {
   };
 
   const handleRead = () => {
-    navigate(`/books/${book_id}/content`);
+    if (book && book.content) {
+      navigate(`/books/${book_id}/content`);
+    } else {
+      setError("책의 내용을 로드하는 데 실패했습니다.");
+    }
   };
 
-  if (!book) return <p>Loading...</p>;
+  //if (!isLoading) return <p>Loading...</p>;
+  if (!book) return <p>책 정보를 불러오지 못했습니다.</p>;
 
   return (
     <>
@@ -189,14 +243,6 @@ const BookDetail = () => {
             </p>
           </div>
         </div>
-
-        {isDownloaded && (
-          <div className="read-button-container">
-            <button className="read-button" onClick={handleRead}>
-              바로 읽기
-            </button>
-          </div>
-        )}
       </div>
 
       <BestNew />

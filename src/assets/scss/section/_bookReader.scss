@@ -18,10 +18,10 @@
     align-items: center;
     justify-content: center;
     padding: 2px;
-    color: black;
+    color: black !important;
 
     &:hover {
-      color: black;
+      color: black !important;
     }
   }
   .highlight {
@@ -54,6 +54,24 @@
 
   &:hover {
     background-color: #9ed353;
+  }
+}
+
+.back-button {
+  position: absolute;
+  top: 20px; /* 상단으로부터의 거리 */
+  left: 20px; /* 좌측으로부터의 거리 */
+  background-color: transparent; /* 배경색 */
+  color: lightgray; /* 글자색 */
+  border: none;
+  padding: 10px 15px; /* 패딩 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  font-size: 1.5em; /* 글자 크기 */
+  cursor: pointer; /* 마우스 커서 모양 */
+  z-index: 20; /* nav-button보다 위에 위치하도록 설정 */
+
+  &:hover {
+    background-color: #999; /* 호버시 배경색 */
   }
 }
 

@@ -46,7 +46,19 @@ const MyLib = () => {
           const readingResponse = await api.get(
             `/bookshelf/reading?userId=${userId}`
           );
-          const completedResponse = await api.get("/bookshelf/completed");
+          /*const completedResponse = await api.get(
+            "/bookshelf/completed?userId=${userId}"
+          );*/
+
+          // 독서 중인 책 중 status가 'READING'인 책만 필터링
+          const readingBooksFiltered = readingResponse.data.filter(
+            (userBook) => userBook.status === "READING"
+          );
+
+          /* 독서 중인 책 중 status가 'READING'인 책만 필터링
+         const completedBooksFiltered = readingResponse.data.filter(
+          (userBook) => userBook.status === "COMPLETED"
+        );*/
 
           // 독서 중인 책에 대한 추가 정보 가져오기
           const readingBooksWithDetails = await Promise.all(
@@ -64,7 +76,7 @@ const MyLib = () => {
           );
 
           setReadingBooks(readingBooksWithDetails);
-          setCompletedBooks(completedResponse.data);
+          //setCompletedBooks(completedResponse.data);
         } catch (error) {
           alert("책 데이터를 가져오는 중 오류가 발생했습니다.");
         }
@@ -102,6 +114,10 @@ const MyLib = () => {
     }
   }, [activeTab, userId]);
 
+  const handleBookClick = (bookId) => {
+    navigate(`/books/${bookId}`); // 클릭된 책의 세부 페이지로 이동
+  };
+
   const renderBookList = (books) => {
     return books.length > 0 ? (
       books.map((book) => (
@@ -111,7 +127,9 @@ const MyLib = () => {
             display: "flex",
             alignItems: "center",
             marginBottom: "10px",
+            cursor: "pointer",
           }}
+          onClick={() => handleBookClick(book.book_id)} // 클릭 시 세부 페이지로 이동
         >
           <img
             src={book.coverImageUrl}

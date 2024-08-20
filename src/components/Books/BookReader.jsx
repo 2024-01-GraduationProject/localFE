@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ePub from "epubjs";
 import api from "../../api";
 import { debounce } from "debounce";
 import { useAuth } from "../../AuthContext";
+import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 
 const BookReader = () => {
   const { book_id } = useParams();
@@ -14,7 +15,7 @@ const BookReader = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const { isAuthenticated } = useAuth();
-  const [highlights, setHighlights] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -57,7 +58,11 @@ const BookReader = () => {
 
     return () => {
       if (rendition) {
-        rendition.destroy();
+        try {
+          rendition.destroy();
+        } catch (error) {
+          console.error("Error destroying rendition:", error);
+        }
         setRendition(null);
       }
     };
@@ -92,7 +97,7 @@ const BookReader = () => {
               try {
                 newRendition.resize();
               } catch (error) {
-                console.error("Failed to resize rendition:", error);
+                console.warn("Failed to resize rendition:", error);
               }
             }
           }, 200);
@@ -169,8 +174,15 @@ const BookReader = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1); // 이전 페이지로 돌아가기
+  };
+
   return (
     <div className="book-reader">
+      <button className="back-button" onClick={handleBack}>
+        <FaRegArrowAltCircleLeft />
+      </button>
       <button className="nav-button left" onClick={handlePreviousPage}>
         이전
       </button>
