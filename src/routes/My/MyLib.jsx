@@ -132,7 +132,7 @@ const MyLib = () => {
   }, [activeTab, userId]);
 
   const handleBookClick = (bookId) => {
-    navigate(`/books/${bookId}`); // 클릭된 책의 세부 페이지로 이동
+    navigate(`/books/details/${bookId}`); // 클릭된 책의 세부 페이지로 이동
   };
 
   const renderBookList = (books, tab) => {
