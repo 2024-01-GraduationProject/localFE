@@ -61,15 +61,10 @@ const Intro = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    switch (provider) {
-      case "google":
-        googleLoginRef.current.triggerGoogleLogin();
-        break;
-      case "kakao":
-        kakaoLoginRef.current.loginWithKakao();
-        break;
-      default:
-        break;
+    if (provider === "google" && googleLoginRef.current) {
+      googleLoginRef.current.triggerGoogleLogin?.();
+    } else if (provider === "kakao" && kakaoLoginRef.current) {
+      kakaoLoginRef.current.loginWithKakao?.();
     }
   };
 

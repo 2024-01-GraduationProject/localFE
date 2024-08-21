@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("authToken", token);
 
     // 사용자 정보를 API에서 가져옵니다
-    fetchUserInfo();
+    fetchUserInfo(token);
   };
 
   const logout = () => {
