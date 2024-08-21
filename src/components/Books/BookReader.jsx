@@ -4,7 +4,11 @@ import ePub from "epubjs";
 import api from "../../api";
 import { debounce } from "debounce";
 import { useAuth } from "../../AuthContext";
-import { FaRegArrowAltCircleLeft } from "react-icons/fa";
+import {
+  FaRegArrowAltCircleLeft,
+  FaBookmark,
+  FaRegBookmark,
+} from "react-icons/fa"; // 아이콘 임포트
 
 const BookReader = () => {
   const { book_id } = useParams();
@@ -15,6 +19,8 @@ const BookReader = () => {
   const [bookInstance, setBookInstance] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [indexes, setIndexes] = useState([]);
+  const [showIndexes, setShowIndexes] = useState(false);
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
@@ -160,6 +166,7 @@ const BookReader = () => {
     renderBook();
   }, [bookInstance]);
 
+  // 진도율 100이면 독서 완료
   useEffect(() => {
     if (progress === 100 && isAuthenticated && user) {
       const markBookAsCompleted = async () => {
@@ -198,6 +205,41 @@ const BookReader = () => {
     navigate(-1); // 이전 페이지로 돌아가기
   };
 
+  const toggleIndex = () => {
+    if (!isAuthenticated) {
+      console.warn("User must be authenticated to bookmark.");
+      return;
+    }
+
+    const newIndex = { progress }; // 현재 페이지 진도율 저장
+
+    setIndexes((prevIndexes) => {
+      // 북마크 추가 또는 제거
+      const index = prevIndexes.findIndex(
+        (b) => b.progress === newIndex.progress
+      );
+      if (index > -1) {
+        return prevIndexes.filter((_, i) => i !== index); // 북마크 제거
+      } else {
+        return [...prevIndexes, newIndex]; // 북마크 추가
+      }
+    });
+  };
+
+  const handleViewIndexes = () => {
+    setShowIndexes((prev) => !prev); // 북마크 메뉴 표시 상태 토글
+  };
+
+  const isIndex = indexes.some((b) => b.progress === progress);
+
+  const handleIndexClick = async (indexProgress) => {
+    if (bookInstance && rendition) {
+      const cfi = bookInstance.locations.cfiFromPercentage(indexProgress / 100);
+      await rendition.display(cfi);
+      setProgress(indexProgress);
+    }
+  };
+
   return (
     <div className="book-reader">
       <button className="back-button" onClick={handleBack}>
@@ -206,10 +248,40 @@ const BookReader = () => {
       <button className="nav-button left" onClick={handlePreviousPage}>
         이전
       </button>
-      <div ref={bookRef} className="book-container"></div>
+      <div ref={bookRef} className="book-container">
+        <button
+          className={`index-button ${isIndex ? "active" : ""}`}
+          onClick={toggleIndex}
+          disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
+        >
+          {isIndex ? <FaBookmark /> : <FaRegBookmark />}
+        </button>
+      </div>
       <button className="nav-button right" onClick={handleNextPage}>
         다음
       </button>
+      <button
+        className={`view-indexes ${showIndexes ? "active" : ""}`}
+        onClick={handleViewIndexes}
+      >
+        {showIndexes ? "-" : "+"}
+      </button>
+      {showIndexes && (
+        <div className="indexes-list">
+          <div>Index List</div>
+          <ul>
+            {indexes.map((id, index) => (
+              <li
+                key={index}
+                className="index-progress"
+                onClick={() => handleIndexClick(id.progress)}
+              >
+                - {Math.round(id.progress.toFixed(2))}%
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="progress-bar-container">
         <div className="progress-bar" style={{ width: `${progress}%` }}></div>
         <div className="progress-text" style={{ left: `${progress}%` }}>

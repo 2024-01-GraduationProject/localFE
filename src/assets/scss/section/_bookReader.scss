@@ -24,10 +24,6 @@
       color: black !important;
     }
   }
-  .highlight {
-    background-color: yellow;
-    display: inline;
-  }
 }
 
 .nav-button {
@@ -87,7 +83,7 @@
 
 .progress-bar {
   height: 100%;
-  background-color: #9ed353;
+  background-color: rgb(245, 245, 123);
   transition: width 0.2s;
 }
 
@@ -98,4 +94,84 @@
   transform: translateX(-50%); // 가운데 정렬
   font-size: 0.8rem;
   color: #333;
+}
+
+// 인덱스 버튼 스타일
+.index-button {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: gray; // 기본 색상
+  z-index: 15;
+
+  &.active {
+    color: #9ed353; // 활성화된 북마크 색상
+  }
+
+  &:hover {
+    color: #9ed353; // 호버시 색상
+  }
+
+  &::selection {
+    color: #9ed353;
+  }
+}
+
+// 인덱스 보기 버튼 스타일
+.view-indexes {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #9ed353;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 15;
+
+  &.active {
+    background-color: #999;
+  }
+}
+
+// 인덱스 리스트 스타일
+.indexes-list {
+  position: absolute;
+  //top: 8%;
+  bottom: 13%;
+  right: 1.5%;
+  width: 200px; /* 북마크 메뉴의 폭 */
+  background-color: ivory;
+  border-left: 1px solid #ddd;
+  padding: 10px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 20; /* 가장 위에 표시되도록 설정 */
+
+  div {
+    font-size: 1.2em;
+    margin: 0 0 10px 0;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .index-progress {
+      cursor: pointer;
+      margin-bottom: 10px;
+      font-size: 14px;
+      &:hover {
+        font-weight: bold;
+      }
+    }
+  }
 }
