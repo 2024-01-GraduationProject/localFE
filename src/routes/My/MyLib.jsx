@@ -12,8 +12,8 @@ const MyLib = () => {
   const [completedBooks, setCompletedBooks] = useState([]);
   const [nickname, setNickname] = useState("");
   const [favorites, setFavorites] = useState([]);
-  const [userId, setUserId] = useState(null);
-  const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
+  //const [userId, setUserId] = useState(null);
+  const { isAuthenticated, userId } = useAuth(); // 로그인 상태 가져오기
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +28,6 @@ const MyLib = () => {
         // 닉네임 및 사용자 ID 가져오기
         const userDataResponse = await api.get("/user-data");
         const { userId, nickname } = userDataResponse.data;
-        setUserId(userId);
         setNickname(nickname);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
@@ -139,32 +138,26 @@ const MyLib = () => {
   const renderBookList = (books, tab) => {
     return books.length > 0 ? (
       books.map((book) => (
-        <li
-          key={book.book_id}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "10px",
-            cursor: "pointer",
-          }}
-          onClick={() => handleBookClick(book.book_id)} // 클릭 시 세부 페이지로 이동
-        >
+        <span key={book.book_id} className="book-item">
           <img
             src={book.coverImageUrl}
             alt={book.title}
-            style={{ width: "50px", height: "auto", marginRight: "10px" }}
+            className="book-cover"
+            onClick={() => handleBookClick(book.book_id)}
           />
-          <div>
-            <span style={{ fontWeight: "bold" }}>{book.title}</span>
-            <p>{book.author}</p>
+          <span className="book-details">
+            <span className="book-title">{book.title}</span>
+            <span className="book-author">{book.author}</span>
             {tab === "독서 중" && (
               <>
-                <p>Started on: {book.startDate}</p>
+                <span className="start_on">Started on: {book.startDate}</span>
               </>
             )}
-            {tab === "독서 완료" && <p>Completed on: {book.endDate}</p>}
-          </div>
-        </li>
+            {tab === "독서 완료" && (
+              <p className="completed_on">Completed on: {book.endDate}</p>
+            )}
+          </span>
+        </span>
       ))
     ) : (
       <p>목록이 비어 있습니다.</p>
@@ -190,7 +183,7 @@ const MyLib = () => {
               </ul>
             </div>
             <div>
-              <ul>
+              <ul className="mybook-list">
                 {renderBookList(
                   subTab === "독서 중" ? readingBooks : completedBooks,
                   subTab
@@ -203,7 +196,9 @@ const MyLib = () => {
         return (
           <div>
             <h2>My Favorite</h2>
-            <ul>{renderBookList(favorites, "My Favorite")}</ul>
+            <ul className="mybook-list">
+              {renderBookList(favorites, "My Favorite")}
+            </ul>
           </div>
         );
       default:

@@ -13,22 +13,27 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     if (token) {
       setIsAuthenticated(true);
-      fetchUserInfo();
+      fetchUserInfo(token);
     } else {
       setIsAuthenticated(false);
     }
   }, []);
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = async (token) => {
     try {
-      const response = await api.get("/user-data"); // 사용자 정보 API 엔드포인트
+      const response = await api.get("/user-data", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.status === 200) {
         setUserId(response.data.userId); // 사용자 ID 설정
       } else {
-        console.error("Failed to fetch user info.");
+        throw new Error("Failed to fetch user info.");
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
+      logout();
     }
   };
 
