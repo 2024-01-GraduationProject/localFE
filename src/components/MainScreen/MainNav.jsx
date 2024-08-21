@@ -29,25 +29,11 @@ const MainNav = () => {
   };
 
   const getLinkPath = (category) => {
+    console.log("Category: ", category); // 한글인지 확인
     // category 값이 undefined일 경우 빈 문자열을 반환
     if (!category) return "/";
-
-    const categoryRoutes = {
-      로맨스: "romance",
-      스릴러: "thriller",
-      "공포/호러": "horror",
-      SF: "sf",
-      판타지: "fantasy",
-      고전: "classic",
-      역사: "history",
-      경제: "economy",
-      철학: "philosophy",
-      "드라마/영화 원작": "original",
-    };
-
-    return `/books/${
-      categoryRoutes[category] || category.toLowerCase().replace(/ /g, "-")
-    }`;
+    // 한글 카테고리 이름을 URL에 사용하도록 변경
+    return `/books/${encodeURIComponent(category)}`; // 한글을 안전하게 인코딩
   };
 
   const handleCategoryButtonClick = (category) => {

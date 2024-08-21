@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Header2, MainNav, SearchBar } from "components";
 import api from "../../api";
 
-const BookCategory = ({ categoryName }) => {
+const BookCategory = () => {
+  const { categoryName } = useParams();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,41 +13,14 @@ const BookCategory = ({ categoryName }) => {
   useEffect(() => {
     const fetchBooksByCategory = async () => {
       try {
-        // category data 가져오기
-        const categoryResponse = await api.get("/categories");
-        if (categoryResponse.status !== 200) {
-          throw new Error(
-            `Network response was not ok. Status: ${categoryResponse.status}`
-          );
-        }
-        const categoryData = categoryResponse.data;
-
-        // 지정된 카테고리 이름의 category_id를 찾음
-        const category = categoryData.find(
-          (cat) => cat.category === categoryName
-        );
-        if (!category) {
-          throw new Error(`Category '${categoryName}' not found.`);
-        }
-
-        // 책 목록 가져와서 category_id로 필터링
-
-        const booksResponse = await api.get("/books");
+        // 백엔드에서 해당 카테고리의 책 목록을 가져옵니다.
+        const booksResponse = await api.get(`/books/category/${categoryName}`);
         if (booksResponse.status !== 200) {
           throw new Error(
             `Network response was not ok. Status: ${booksResponse.status}`
           );
         }
-        const booksData = booksResponse.data;
-
-        if (Array.isArray(booksData)) {
-          const categoryBooks = booksData.filter(
-            (book) => book.category === categoryName
-          );
-          setBooks(categoryBooks);
-        } else {
-          throw new Error("Unexpected data format.");
-        }
+        setBooks(booksResponse.data); // 가져온 데이터를 상태에 저장합니다.
       } catch (error) {
         setError(error);
       } finally {
@@ -54,8 +28,8 @@ const BookCategory = ({ categoryName }) => {
       }
     };
 
-    fetchBooksByCategory();
-  }, [categoryName]);
+    fetchBooksByCategory(); // 컴포넌트가 마운트되면 API를 호출합니다.
+  }, [categoryName]); // categoryName이 변경될 때마다 데이터를 다시 가져옵니다.
 
   const goToBookDetail = (id) => {
     navigate(`/books/${id}`);
@@ -77,9 +51,9 @@ const BookCategory = ({ categoryName }) => {
           ) : (
             books.map((book) => (
               <div
-                key={book.book_id}
+                key={book.id}
                 className="bookCG-item"
-                onClick={() => goToBookDetail(book.book_id)}
+                onClick={() => goToBookDetail(book.id)}
               >
                 <img
                   src={book.coverImageUrl}
