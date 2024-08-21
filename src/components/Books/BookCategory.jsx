@@ -32,7 +32,8 @@ const BookCategory = () => {
   }, [categoryName]); // categoryName이 변경될 때마다 데이터를 다시 가져옵니다.
 
   const goToBookDetail = (id) => {
-    navigate(`/books/${id}`);
+    console.log("Navigating to book ID:", id);
+    navigate(`/books/details/${id}`);
   };
 
   if (loading) return <p>Loading...</p>;

@@ -33,7 +33,7 @@ const MainNav = () => {
     // category 값이 undefined일 경우 빈 문자열을 반환
     if (!category) return "/";
     // 한글 카테고리 이름을 URL에 사용하도록 변경
-    return `/books/${encodeURIComponent(category)}`; // 한글을 안전하게 인코딩
+    return `/books/category/${encodeURIComponent(category)}`; // 한글을 안전하게 인코딩
   };
 
   const handleCategoryButtonClick = (category) => {

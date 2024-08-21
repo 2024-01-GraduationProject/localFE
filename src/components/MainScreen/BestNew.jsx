@@ -51,7 +51,7 @@ const BestNew = () => {
   };
 
   const goToBookDetail = (id) => {
-    navigate(`/books/${id}`);
+    navigate(`/books/details/${id}`);
   };
 
   return (
