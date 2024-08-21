@@ -1,24 +1,21 @@
 import React, { useState, useRef } from "react";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
-import naver from "assets/img/ico/naver.ico";
 import { useNavigate } from "react-router-dom";
 import api from "../api"; // Axios 인스턴스 import
 import KakaoLogin from "../routes/Login/KakaoLogin";
 import GoogleLogin from "../routes/Login/GoogleLogin";
-import NaverLogin from "../routes/Login/NaverLogin";
 import { debounce } from "lodash"; // 사용자 입력이 자주 발생할 경우 API 호출 최적화
 
 const Intro = () => {
-  // 입력한 이메일 값 저장
   const [introEmail, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false); // 이메일 사용 가능 여부
+  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
 
   const navigate = useNavigate();
 
-  const kakaoLoginRef = useRef(); // Reference to KakaoLogin component
-  const googleLoginRef = useRef();
+  const kakaoLoginRef = useRef(null); // Reference to KakaoLogin component
+  const googleLoginRef = useRef(null);
 
   const onChangeEmail = (e) => {
     const emailValue = e.target.value;
@@ -26,7 +23,6 @@ const Intro = () => {
     emailCheckHandler(emailValue);
   };
 
-  // 이메일 유효성, 중복 검사 핸들러
   const emailCheckHandler = debounce(async (email) => {
     const emailRegex =
       /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -38,7 +34,6 @@ const Intro = () => {
       setEmailError("이메일 형식으로 입력해주세요.");
       setIsEmailAvailable(false);
     } else {
-      // 이메일 중복 확인 API 호출
       try {
         const response = await api.post("/validate-email", { email });
 
@@ -50,7 +45,7 @@ const Intro = () => {
           setIsEmailAvailable(true);
         }
       } catch (error) {
-        console.error("Error checking email: ", error);
+        console.error("Error checking email:", error);
         setEmailError(
           "이메일 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
         );
@@ -73,9 +68,6 @@ const Intro = () => {
       case "kakao":
         kakaoLoginRef.current.loginWithKakao();
         break;
-      case "naver":
-        navigate("/login/naver");
-        break;
       default:
         break;
     }
@@ -84,7 +76,7 @@ const Intro = () => {
   return (
     <section id="intro">
       <div className="intro__text">
-        <div className="text1"> 오래도록 책을 마음에 두고 싶다면? </div>
+        <div className="text1">오래도록 책을 마음에 두고 싶다면?</div>
         <div className="text2">
           <span className="boogi_text">부기</span>와 함께 밀도있는 독서생활,
         </div>
@@ -93,7 +85,13 @@ const Intro = () => {
           던져줍니다!
         </div>
       </div>
-      <form className="intro__start" onSubmit={handleStartClick}>
+      <form
+        className="intro__start"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleStartClick();
+        }}
+      >
         <div className="intro__input">
           <input
             type="text"
@@ -126,11 +124,11 @@ const Intro = () => {
 
         <div className="social">
           <button onClick={() => handleSocialLogin("google")}>
-            <img src={google} alt="구글"></img>
+            <img src={google} alt="구글" />
           </button>
 
           <button onClick={() => handleSocialLogin("kakao")}>
-            <img src={kakao} alt="카카오"></img>
+            <img src={kakao} alt="카카오" />
           </button>
         </div>
       </div>

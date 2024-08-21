@@ -11,8 +11,7 @@ const GoogleLogin = forwardRef((props, ref) => {
   const navigate = useNavigate();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const GOOGLE_CLIENT_ID =
-    "491761230617-h5s1hn3v0mvispddsttmdvjuh2b4rc1i.apps.googleusercontent.com";
+  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   // 구글 로그인 성공 시 호출
   const handleCredentialResponse = async (response) => {

@@ -40,22 +40,13 @@ const BookDetail = () => {
         const bookResponse = await api.get(`/books/${book_id}`);
         setBook(bookResponse.data);
 
-        // 로컬 스토리지에서 즐겨찾기 상태 확인
-        const storedFavoriteStatus = localStorage.getItem(
-          `favorite-${userId}-${book_id}`
-        );
-        if (storedFavoriteStatus !== null) {
-          setIsFavorite(JSON.parse(storedFavoriteStatus));
-        } else {
-          // 즐겨찾기 상태 확인
-          const isFav = await checkFavoriteStatus(`${userId}-${book_id}`);
-          setIsFavorite(isFav);
-        }
+        // 즐겨찾기 상태 확인
+        const isFav = await checkFavoriteStatus(`${userId}-${book_id}`);
+        setIsFavorite(isFav);
 
         // 다운로드 상태 확인
-        const downloadStatus = await checkDownloadStatus(
-          `${userId}-${book_id}`
-        );
+        const downloadStatus = await checkDownloadStatus();
+        // `${userId}-${book_id}`
         setIsDownloaded(downloadStatus);
       } catch (err) {
         console.error(`데이터 가져오기 실패: `, err);
@@ -79,17 +70,7 @@ const BookDetail = () => {
       // 현재 book_id와 일치하는 책을 찾고, favorite 상태 확인
       const currentBook = bookmarks.find((b) => b.bookId === parseInt(book_id));
 
-      if (currentBook) {
-        const isFavorite = currentBook.favorite;
-        // 로컬 스토리지에 즐겨찾기 상태 저장
-        localStorage.setItem(
-          `favorite-${userId}-${book_id}`,
-          JSON.stringify(isFavorite)
-        );
-        return isFavorite;
-      } else {
-        return false; // 북마크 목록에 해당 책이 없으면 false 반환
-      }
+      return currentBook ? currentBook.favorite : false; // 북마크 목록에 해당 책이 없으면 false 반환
     } catch (error) {
       console.error("즐겨찾기 상태 확인 실패: ", error);
       setError("즐겨찾기 상태를 확인하는 데 실패했습니다.");
@@ -158,10 +139,6 @@ const BookDetail = () => {
         params: { userId, bookId: book_id },
       });
       setIsFavorite(true);
-      localStorage.setItem(
-        `favorite-${userId}-${book_id}`,
-        JSON.stringify(true)
-      ); // 로컬 스토리지에 즐겨찾기 상태 저장
     } catch (error) {
       console.error("즐겨찾기 추가 실패: ", error);
       setError("즐겨찾기 추가에 실패했습니다.");
@@ -179,10 +156,6 @@ const BookDetail = () => {
         params: { userId, bookId: book_id },
       });
       setIsFavorite(false);
-      localStorage.setItem(
-        `favorite-${userId}-${book_id}`,
-        JSON.stringify(true)
-      ); // 로컬 스토리지에 즐겨찾기 상태 저장
     } catch (error) {
       console.error("즐겨찾기 제거 실패: ", error);
       setError("즐겨찾기 제거에 실패했습니다.");
