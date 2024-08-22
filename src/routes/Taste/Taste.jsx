@@ -6,7 +6,7 @@ import { useAuth } from "AuthContext";
 
 const Taste = () => {
   const navigate = useNavigate();
-  const { authToken } = useAuth();
+  const { isAuthenticated, login } = useAuth();
 
   // Join에서 이메일 값 받아오기
   const location = useLocation();
@@ -21,6 +21,12 @@ const Taste = () => {
   const [bookCategoryOptions, setBookCategoryOptions] = useState([]);
 
   useEffect(() => {
+    // 인증되지 않은 사용자가 접근할 수 없도록 리디렉션
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
     // 연령 데이터 가져오기
     const fetchAges = async () => {
       try {
@@ -81,20 +87,12 @@ const Taste = () => {
   // 다음으로 버튼 클릭 시 서버로 데이터 전송
   const handleTasteSubmit = async () => {
     try {
-      const response = await api.post(
-        "/save-taste",
-        {
-          email,
-          age: selectedAge,
-          gender: selectedGender,
-          bookTaste: selectedBookTastes,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`, // AuthContext에서 가져온 토큰을 헤더에 포함
-          },
-        }
-      );
+      const response = await api.post("/save-taste", {
+        email,
+        age: selectedAge,
+        gender: selectedGender,
+        bookTaste: selectedBookTastes,
+      });
       if (response.status === 200) {
         console.log("선택된 정보가 서버에 전송되었습니다.");
         navigate("/tastenext", { state: { email, password } });

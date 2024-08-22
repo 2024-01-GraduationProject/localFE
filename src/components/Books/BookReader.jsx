@@ -21,8 +21,23 @@ const BookReader = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [indexes, setIndexes] = useState([]);
   const [showIndexes, setShowIndexes] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const [userId, setUserId] = useState(null);
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userResponse = await api.get("/user-data");
+        setUserId(userResponse.data.userId); // 사용자 ID 저장
+      } catch (err) {
+        console.error("사용자 데이터 가져오기 실패: ", err);
+        alert("사용자 데이터를 가져오는 데 실패했습니다.");
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -65,17 +80,15 @@ const BookReader = () => {
 
     return () => {
       if (rendition) {
-        //try {
         rendition.destroy();
-        //} catch (error) {
-        //console.error("Error destroying rendition:", error);
-        //}
         setRendition(null);
       }
     };
   }, [book_id]);
 
   useEffect(() => {
+    let resizeObserver; // ResizeObserver 선언
+
     const renderBook = async () => {
       if (bookInstance && bookRef.current) {
         try {
@@ -108,7 +121,7 @@ const BookReader = () => {
                 console.warn("Failed to resize rendition:", error);
               }
             }
-          }, 200);
+          }, 500);
 
           const resizeObserver = new ResizeObserver(() => {
             handleResize();
@@ -153,7 +166,6 @@ const BookReader = () => {
             console.log("Displaying first spine item:", spineItems[0].href);
             await newRendition.display(spineItems[0]?.href);
             console.log("Book displayed.");
-            //setRendition(newRendition);
           } else {
             console.error("No spine items found.");
           }
@@ -164,15 +176,24 @@ const BookReader = () => {
     };
 
     renderBook();
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect(); // ResizeObserver 해제
+      }
+      if (rendition) {
+        rendition.destroy();
+      }
+    };
   }, [bookInstance]);
 
   // 진도율 100이면 독서 완료
   useEffect(() => {
-    if (progress === 100 && isAuthenticated && user) {
+    if (progress === 100 && isAuthenticated && userId) {
       const markBookAsCompleted = async () => {
         try {
           await api.put(`/bookshelf/completeBook`, {
-            userId: user.id,
+            userId: userId,
             bookId: book_id,
           });
           console.log("Book marked as completed.");
@@ -183,7 +204,7 @@ const BookReader = () => {
 
       markBookAsCompleted();
     }
-  }, [progress, isAuthenticated, user, book_id]);
+  }, [progress, isAuthenticated, userId, book_id]);
 
   const handleNextPage = () => {
     if (rendition) {
@@ -214,20 +235,20 @@ const BookReader = () => {
     const newIndex = { progress }; // 현재 페이지 진도율 저장
 
     setIndexes((prevIndexes) => {
-      // 북마크 추가 또는 제거
+      // 인덱스 추가 또는 제거
       const index = prevIndexes.findIndex(
         (b) => b.progress === newIndex.progress
       );
       if (index > -1) {
         return prevIndexes.filter((_, i) => i !== index); // 북마크 제거
       } else {
-        return [...prevIndexes, newIndex]; // 북마크 추가
+        return [...prevIndexes, newIndex]; // 인덱스 추가
       }
     });
   };
 
   const handleViewIndexes = () => {
-    setShowIndexes((prev) => !prev); // 북마크 메뉴 표시 상태 토글
+    setShowIndexes((prev) => !prev); // 인덱스 메뉴 표시 상태 토글
   };
 
   const isIndex = indexes.some((b) => b.progress === progress);

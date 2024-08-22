@@ -12,8 +12,8 @@ const MyLib = () => {
   const [completedBooks, setCompletedBooks] = useState([]);
   const [nickname, setNickname] = useState("");
   const [favorites, setFavorites] = useState([]);
-  //const [userId, setUserId] = useState(null);
-  const { isAuthenticated, userId } = useAuth(); // 로그인 상태 가져오기
+  const [userId, setUserId] = useState(null);
+  const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +29,7 @@ const MyLib = () => {
         const userDataResponse = await api.get("/user-data");
         const { userId, nickname } = userDataResponse.data;
         setNickname(nickname);
+        setUserId(userId);
       } catch (error) {
         alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
