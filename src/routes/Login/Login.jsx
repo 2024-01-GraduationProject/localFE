@@ -55,7 +55,7 @@ const Login = () => {
         // 로그인 성공 시
         setLoginCheck(false);
         const { token } = response.data;
-
+        localStorage.setItem("authToken", token);
         // AuthContext의 login 함수 호출
         login(token);
         navigate("/mainview");

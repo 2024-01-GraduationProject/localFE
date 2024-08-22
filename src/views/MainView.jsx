@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Header2,
@@ -13,22 +13,32 @@ import { useAuth } from "AuthContext";
 
 const MainView = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login"); // 인증되지 않은 경우 로그인 페이지로 이동
+    // 로컬 스토리지에서 로그인 상태 확인
+    const token = localStorage.getItem("authToken");
+
+    if (token) {
+      setIsAuthenticated(true); // 로그인 상태 유지
+    } else {
+      navigate("/login"); // 로그인 상태가 아니라면 로그인 페이지로 이동
     }
-  }, [isAuthenticated, navigate]);
+  }, [navigate]);
+
+  const handleSearchResults = (results) => {
+    // 검색 결과를 SearchList 페이지로 전달
+    navigate("/searchlist", { state: { searchResults: results } });
+  };
 
   if (!isAuthenticated) {
-    return <div>로딩 중...</div>; // 인증 상태 확인 중에는 로딩 메시지 표시
+    return <div>로딩 중...</div>; // 로딩 중 메시지 표시
   }
 
   return (
     <>
       <Header2 />
-      <SearchBar />
+      <SearchBar onSearch={handleSearchResults} />
       <MainNav />
 
       <div>

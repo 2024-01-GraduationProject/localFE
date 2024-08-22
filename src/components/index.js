@@ -10,7 +10,7 @@ export { default as FamousBook } from "./MainScreen/FamousBook";
 export { default as RecentBook } from "./MainScreen/RecentBook";
 export { default as Recommend } from "./MainScreen/Recommend";
 export { default as SearchBar } from "./MainScreen/SearchBar";
+export { default as SearchList } from "./MainScreen/SearchList";
 export { default as MainNav } from "./MainScreen/MainNav";
-export { default as useRandomAgeGender } from "./MainScreen/UseRandomAgeGender";
 
 export { default as Intro } from "./Intro";

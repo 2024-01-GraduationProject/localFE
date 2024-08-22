@@ -1,0 +1,71 @@
+/*#searchResults {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(180px, 1fr)
+  ); // 한 줄에 4권씩 보이도록 설정
+  gap: 3rem; // 아이템 사이의 간격
+  padding: 3rem;
+  margin: auto;
+  width: 75%;
+}*/
+#searchResults {
+  padding: 2rem;
+  text-align: center;
+  h2 {
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+  }
+}
+
+.booksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 3rem;
+  margin: auto;
+  padding: 3em;
+  width: 75%;
+}
+
+.noResultsMessage {
+  font-size: 1.3em;
+  font-weight: bold;
+  grid-column: span 4;
+}
+
+.bookItem {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.bookCover {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bookInfo {
+  padding: 0.5rem;
+  text-align: center;
+
+  h3 {
+    margin: 0.5rem 0;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 0.25rem 0;
+    font-size: 11px;
+    color: #555;
+  }
+}
