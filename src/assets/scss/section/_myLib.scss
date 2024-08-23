@@ -123,6 +123,7 @@
       &.selected {
         border: 2px solid red;
         opacity: 0.7;
+        transition: opacity 0.3s ease;
       }
     }
 
@@ -141,7 +142,8 @@
     }
 
     .book-author,
-    .start_on {
+    .start_on,
+    .completed_on {
       font-size: 12px;
       color: #555;
     }

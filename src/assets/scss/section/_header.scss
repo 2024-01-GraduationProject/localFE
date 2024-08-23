@@ -4,8 +4,7 @@
 }
 .header__inner {
   @include flex-between;
-  background-color: white; //rgba(116, 99, 99, 0.1);
-  //backdrop-filter: blur(14px);
+  background-color: white;
   padding: 1rem;
 
   .header__logo {

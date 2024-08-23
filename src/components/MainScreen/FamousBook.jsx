@@ -35,7 +35,7 @@ const FamousBook = () => {
         // 연령대 및 성별 정보 없이 추천 도서 가져오기
         const booksResponse = await api.get("/recommend/ageAndGender");
         const shuffledBooks = shuffleArray(booksResponse.data);
-        const selectedBooks = shuffledBooks.slice(0, 5); // 랜덤으로 4개의 책 선택
+        const selectedBooks = shuffledBooks.slice(0, 4); // 랜덤으로 4개의 책 선택
         setBooks(selectedBooks);
       } catch (err) {
         setError(err);

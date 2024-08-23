@@ -22,7 +22,7 @@ const BookReader = () => {
   const [indexes, setIndexes] = useState([]);
   const [showIndexes, setShowIndexes] = useState(false);
   const [userId, setUserId] = useState(null);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -187,7 +187,82 @@ const BookReader = () => {
     };
   }, [bookInstance]);
 
-  // 진도율 100이면 독서 완료
+  // 진도율이 변경될 때마다 저장하는 로직 추가
+  useEffect(() => {
+    const saveProgress = async () => {
+      if (progress > 0 && isAuthenticated && userId) {
+        try {
+          // 확인: 데이터가 올바른 형식인지 검토
+
+          const lastReadPage = (progress / 100) * 100;
+
+          const response = await api.put(`/bookshelf/completeBook`, null, {
+            params: {
+              userId: userId,
+              bookId: bookId,
+              lastReadPage: lastReadPage, // 데이터 형식 조정
+            },
+          });
+          console.log("Progress saved successfully.", response.data);
+        } catch (error) {
+          console.error(
+            "Error saving progress:",
+            error.response?.data || error.message
+          );
+        }
+      }
+    };
+
+    saveProgress();
+  }, [progress, isAuthenticated, userId, bookId]);
+
+  // 창을 나가기 전 또는 로그아웃 시 진도율 저장
+  useEffect(() => {
+    // `beforeunload` 이벤트 핸들러
+    const handleBeforeUnload = () => {
+      if (progress > 0 && isAuthenticated && userId) {
+        const lastReadPage = (progress / 100) * 100;
+
+        const url = new URL(`/bookshelf/completeBook`, window.location.origin);
+        url.searchParams.append("userId", userId);
+        url.searchParams.append("bookId", bookId);
+        url.searchParams.append("lastReadPage", lastReadPage); // float 형식으로 저장
+
+        // `sendBeacon`을 사용하여 데이터를 전송
+        navigator.sendBeacon(url, null); // `sendBeacon`은 본문을 지원하지 않으므로 URL로만 데이터 전송
+      }
+    };
+
+    // 로그아웃 시 호출될 함수
+    const wrappedLogout = async () => {
+      if (progress > 0 && isAuthenticated && userId) {
+        const lastReadPage = (progress / 100) * 100;
+        try {
+          await api.put(`/bookshelf/completeBook`, null, {
+            params: {
+              userId: userId,
+              bookId: bookId,
+              lastReadPage: lastReadPage, // float 형식으로 저장
+            },
+          });
+          console.log("Progress saved before logout.");
+        } catch (error) {
+          console.error("Error saving progress before logout:", error);
+        }
+      }
+      logout(); // 실제 로그아웃 수행
+    };
+
+    // 이벤트 리스너 등록
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [progress, isAuthenticated, userId, bookId, logout]);
+
+  /*진도율 100이면 독서 완료
   useEffect(() => {
     if (progress === 100 && isAuthenticated && userId) {
       const markBookAsCompleted = async () => {
@@ -204,7 +279,7 @@ const BookReader = () => {
 
       markBookAsCompleted();
     }
-  }, [progress, isAuthenticated, userId, bookId]);
+  }, [progress, isAuthenticated, userId, bookId]); */
 
   const handleNextPage = () => {
     if (rendition) {

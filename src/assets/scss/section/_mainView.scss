@@ -1,6 +1,6 @@
 // MainNav.jsx
 .main_nav {
-  margin-left: 4em;
+  margin-left: 11.5em;
   margin-top: 1em;
   display: flex;
 
@@ -12,10 +12,13 @@
   }
 
   .mylib {
-    //font-size: 14px;
+    font-size: 18px;
     background-color: transparent;
     border: 0;
     cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 6px;
   }
 }
 
@@ -51,5 +54,5 @@
 
 // MainView.jsx
 .mainview_line {
-  width: 90%;
+  width: 70%;
 }

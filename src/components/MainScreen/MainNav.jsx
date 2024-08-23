@@ -48,7 +48,7 @@ const MainNav = () => {
         </button>
 
         <button className="mylib" onClick={() => navigate("/mylib")}>
-          <GiBookshelf size="3em" />
+          {/*<GiBookshelf size="3em" />*/}내 서재📚
         </button>
       </div>
 

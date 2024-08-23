@@ -47,25 +47,10 @@ const MyLib = () => {
       // "독서 중" 책과 "독서 완료" 책 가져오기
       const fetchBooks = async () => {
         try {
-          const readingResponse = await api.get(
-            `/bookshelf/reading?userId=${userId}`
-          );
-
-          /*const completedResponse = await api.get(
-            "/bookshelf/completed?userId=${userId}"
-          );*/
-
-          // 독서 중인 책 중 status가 'READING'인 책만 필터링
-          const readingBooksFiltered = readingResponse.data.filter(
-            (userBook) => userBook.status === "READING"
-          );
-
-          /*독서 중인 책 중 status가 'COMPLETED'인 책만 필터링
-          const completedBooksFiltered = readingResponse.data.filter(
-            (userBook) => userBook.status === "COMPLETED"
-          );*/
-
-          // 독서 중인 책에 대한 추가 정보 가져오기
+          // 독서 중 책 가져오기
+          const readingResponse = await api.get(`/bookshelf/reading`, {
+            params: { userId },
+          });
           const readingBooksWithDetails = await Promise.all(
             readingResponse.data.map(async (userBook) => {
               const bookDetailsResponse = await api.get(
@@ -81,7 +66,11 @@ const MyLib = () => {
             })
           );
 
-          /*const completedBooksWithDetails = await Promise.all(
+          // 독서 완료 책 가져오기
+          const completedResponse = await api.get(`/bookshelf/completed`, {
+            params: { userId },
+          });
+          const completedBooksWithDetails = await Promise.all(
             completedResponse.data.map(async (userBook) => {
               const bookDetailsResponse = await api.get(
                 `/books/${userBook.bookId}`
@@ -94,10 +83,10 @@ const MyLib = () => {
                 endDate: userBook.endDate, // 독서 완료 종료 날짜
               };
             })
-          );*/
+          );
 
           setReadingBooks(readingBooksWithDetails);
-          //setCompletedBooks(completedResponse.data);
+          setCompletedBooks(completedBooksWithDetails);
         } catch (error) {
           alert("책 데이터를 가져오는 중 오류가 발생했습니다.");
         }
@@ -206,7 +195,11 @@ const MyLib = () => {
               </>
             )}
             {tab === "독서 완료" && (
-              <p className="completed_on">Completed on: {book.endDate}</p>
+              <>
+                <span className="completed_on">
+                  Completed on: {book.endDate}
+                </span>
+              </>
             )}
           </span>
         </span>
