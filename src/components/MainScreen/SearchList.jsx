@@ -34,11 +34,6 @@ const SearchList = () => {
     setSearchWord(query); // 검색어를 상태에 저장
   };
 
-  // 책 표지를 클릭하면 해당 책의 상세 페이지로 이동하는 함수
-  const handleBookClick = (bookId) => {
-    navigate(`/books/details/${bookId}`);
-  };
-
   if (!isAuthenticated) {
     return <div>로딩 중...</div>; // 로딩 중 메시지 표시
   }
@@ -63,7 +58,7 @@ const SearchList = () => {
                     src={book.coverImageUrl}
                     alt={book.title}
                     className="bookCover"
-                    onClick={() => navigate(`/books/details/${book.book_id}`)}
+                    onClick={() => navigate(`/books/details/${book.bookId}`)}
                   />
                   <div className="bookInfo">
                     <h3>{book.title}</h3>

@@ -91,6 +91,13 @@
         }
       }
 
+      .category-link {
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+          color: #4a4949;
+        }
+      }
       &.author {
         p {
           margin: 0;

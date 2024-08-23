@@ -7,7 +7,7 @@ const BestNew = () => {
   const [currentPage, setCurrentPage] = useState(0); // 현재 페이지를 저장하는 상태
   const booksPerPage = 4; // 한 번에 보여줄 책의 수
   const navigate = useNavigate();
-
+  /*
   useEffect(() => {
     // 컴포넌트가 마운트될 때 책 목록을 가져옴
     const fetchBooks = async () => {
@@ -53,11 +53,12 @@ const BestNew = () => {
   const goToBookDetail = (id) => {
     navigate(`/books/details/${id}`);
   };
-
+*/
   return (
     <div>
-      <div id="bestNew">베스트 / 신간</div>
-      <div className="book-list-wrapper">
+      <div className="main-booklist-component">베스트 / 신간</div>
+
+      {/*<div className="book-list-wrapper">
         <button
           className="pagebtn"
           onClick={prevPage}
@@ -93,7 +94,7 @@ const BestNew = () => {
         >
           {">"}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

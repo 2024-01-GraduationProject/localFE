@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Header2 } from "components";
+import { FamousBook, Header2 } from "components";
 import { BestNew } from "components";
 import api from "../../api";
 import { useAuth } from "AuthContext";
 
 const BookDetail = () => {
-  const { book_id } = useParams(); // URL 파라미터로부터 book_id를 가져옴.
+  const { bookId } = useParams(); // URL 파라미터로부터 book_id를 가져옴.
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
 
@@ -37,11 +37,11 @@ const BookDetail = () => {
     const fetchBookAndUserbookId = async () => {
       try {
         // 책 정보를 가져오기
-        const bookResponse = await api.get(`/books/${book_id}`);
+        const bookResponse = await api.get(`/books/${bookId}`);
         setBook(bookResponse.data);
 
         // 즐겨찾기 상태 확인
-        const isFav = await checkFavoriteStatus(`${userId}-${book_id}`);
+        const isFav = await checkFavoriteStatus(`${userId}-${bookId}`);
         setIsFavorite(isFav);
 
         // 다운로드 상태 확인
@@ -57,7 +57,7 @@ const BookDetail = () => {
     };
 
     fetchBookAndUserbookId();
-  }, [userId, book_id]);
+  }, [userId, bookId]);
 
   const checkFavoriteStatus = async () => {
     try {
@@ -68,7 +68,7 @@ const BookDetail = () => {
       const bookmarks = bookmarkResponse.data;
 
       // 현재 book_id와 일치하는 책을 찾고, favorite 상태 확인
-      const currentBook = bookmarks.find((b) => b.bookId === parseInt(book_id));
+      const currentBook = bookmarks.find((b) => b.bookId === parseInt(bookId));
 
       return currentBook ? currentBook.favorite : false; // 북마크 목록에 해당 책이 없으면 false 반환
     } catch (error) {
@@ -88,7 +88,7 @@ const BookDetail = () => {
 
       // 현재 책이 "READING" 상태인지 확인
       const isReading = readingBooks.some(
-        (book) => book.bookId === parseInt(book_id) && book.status === "READING"
+        (book) => book.bookId === parseInt(bookId) && book.status === "READING"
       );
 
       return isReading;
@@ -102,9 +102,9 @@ const BookDetail = () => {
     try {
       const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜를 가져옴 (yyyy-mm-dd)
       const requestData = {
-        userbookId: `${userId}-${book_id}`, // userId와 book_id를 결합하여 userbookId 생성
+        userbookId: `${userId}-${bookId}`, // userId와 book_id를 결합하여 userbookId 생성
         userId: parseInt(userId),
-        bookId: parseInt(book_id),
+        bookId: parseInt(bookId),
         status: "READING",
         //favorite: false,
         //lastReadPage: 0,
@@ -116,14 +116,14 @@ const BookDetail = () => {
       };
 
       // URL에 userId와 bookId를 쿼리 파라미터로 포함
-      const url = `/bookshelf/add-to-reading?userId=${userId}&bookId=${book_id}`;
+      const url = `/bookshelf/add-to-reading?userId=${userId}&bookId=${bookId}`;
 
       // 다운로드 누르면 '독서 중'에 저장
       const response = await api.post(url, requestData);
 
       setIsDownloaded(true);
     } catch (error) {
-      console.error(`${book_id} 책 다운로드 실패: `, error);
+      console.error(`${bookId} 책 다운로드 실패: `, error);
       setError("책 다운로드에 실패했습니다.");
     }
   };
@@ -136,7 +136,7 @@ const BookDetail = () => {
 
     try {
       await api.post(`/bookmarks/addBook`, null, {
-        params: { userId, bookId: book_id },
+        params: { userId, bookId: bookId },
       });
       setIsFavorite(true);
     } catch (error) {
@@ -153,7 +153,7 @@ const BookDetail = () => {
 
     try {
       await api.delete(`/bookmarks/remove`, {
-        params: { userId, bookId: book_id },
+        params: { userId, bookId: bookId },
       });
       setIsFavorite(false);
     } catch (error) {
@@ -164,7 +164,7 @@ const BookDetail = () => {
 
   const handleRead = () => {
     if (book && book.content) {
-      navigate(`/books/${book_id}/content`);
+      navigate(`/books/${bookId}/content`);
     } else {
       setError("책의 내용을 로드하는 데 실패했습니다.");
     }
@@ -212,13 +212,19 @@ const BookDetail = () => {
           </div>
           <div className="info-item publisher">
             <p>
-              {book.category} | {book.publisher} | {book.publicationDate}
+              <span
+                className="category-link"
+                onClick={() => navigate(`/books/category/${book.category}`)}
+              >
+                {book.category}
+              </span>{" "}
+              | {book.publisher} | {book.publicationDate}
             </p>
           </div>
         </div>
       </div>
 
-      <BestNew />
+      <FamousBook />
     </>
   );
 };

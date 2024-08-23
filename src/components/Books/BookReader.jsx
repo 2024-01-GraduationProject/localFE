@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa"; // 아이콘 임포트
 
 const BookReader = () => {
-  const { book_id } = useParams();
+  const { bookId } = useParams();
 
   const bookRef = useRef(null);
   const [rendition, setRendition] = useState(null);
@@ -42,7 +42,7 @@ const BookReader = () => {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await api.get(`/books/${book_id}/content`, {
+        const response = await api.get(`/books/${bookId}/content`, {
           responseType: "arraybuffer",
           headers: { Accept: "application/epub+zip" },
         });
@@ -74,7 +74,7 @@ const BookReader = () => {
       }
     };
 
-    if (book_id) {
+    if (bookId) {
       fetchBook();
     }
 
@@ -84,7 +84,7 @@ const BookReader = () => {
         setRendition(null);
       }
     };
-  }, [book_id]);
+  }, [bookId]);
 
   useEffect(() => {
     let resizeObserver; // ResizeObserver 선언
@@ -194,7 +194,7 @@ const BookReader = () => {
         try {
           await api.put(`/bookshelf/completeBook`, {
             userId: userId,
-            bookId: book_id,
+            bookId: bookId,
           });
           console.log("Book marked as completed.");
         } catch (error) {
@@ -204,7 +204,7 @@ const BookReader = () => {
 
       markBookAsCompleted();
     }
-  }, [progress, isAuthenticated, userId, book_id]);
+  }, [progress, isAuthenticated, userId, bookId]);
 
   const handleNextPage = () => {
     if (rendition) {

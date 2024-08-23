@@ -100,7 +100,7 @@
 .index-button {
   position: absolute;
   top: 20px;
-  right: 30px;
+  right: 15px;
   background-color: transparent;
   border: none;
   font-size: 24px;
@@ -147,11 +147,13 @@
   bottom: 13%;
   right: 1.5%;
   width: 200px; /* 북마크 메뉴의 폭 */
+  height: 150px;
   background-color: ivory;
   border-left: 1px solid #ddd;
   padding: 10px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
   z-index: 20; /* 가장 위에 표시되도록 설정 */
+  overflow-y: auto; /* 스크롤 기능 추가 */
 
   div {
     font-size: 1.2em;

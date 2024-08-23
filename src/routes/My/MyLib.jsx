@@ -119,7 +119,7 @@ const MyLib = () => {
 
           // 즐겨찾기 책 목록 필터링
           const favoriteBooks = allBooks.filter((book) =>
-            favoriteBookIds.includes(book.book_id)
+            favoriteBookIds.includes(book.bookId)
           );
 
           setFavorites(favoriteBooks);
@@ -139,12 +139,12 @@ const MyLib = () => {
   const renderBookList = (books, tab) => {
     return books.length > 0 ? (
       books.map((book) => (
-        <span key={book.book_id} className="book-item">
+        <span key={book.bookId} className="book-item">
           <img
             src={book.coverImageUrl}
             alt={book.title}
             className="book-cover"
-            onClick={() => handleBookClick(book.book_id)}
+            onClick={() => handleBookClick(book.bookId)}
           />
           <span className="book-details">
             <span className="book-title">{book.title}</span>

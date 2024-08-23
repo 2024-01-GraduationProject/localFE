@@ -35,12 +35,12 @@ const App = () => {
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/editmypage" element={<EditMyPage />} />
           <Route path="/tastenext" element={<TasteNext />} />
-          <Route path="/books/details/:book_id" element={<BookDetail />} />
+          <Route path="/books/details/:bookId" element={<BookDetail />} />
           <Route
             path="/books/category/:categoryName"
             element={<BookCategory />}
           />
-          <Route path="/books/:book_id/content" element={<BookReader />} />
+          <Route path="/books/:bookId/content" element={<BookReader />} />
           <Route path="/searchlist" element={<SearchList />} />
         </Routes>
       </AuthProvider>

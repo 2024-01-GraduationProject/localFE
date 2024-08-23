@@ -3,7 +3,7 @@ import { useAuth } from "AuthContext";
 const RecentBook = () => {
   return (
     <>
-      <div id="recent_book">최근 읽은 도서</div>
+      <div className="main-booklist-component">최근 읽은 도서</div>
     </>
   );
 };

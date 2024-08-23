@@ -22,7 +22,7 @@ const Recommend = () => {
 
   return (
     <>
-      <div id="recommend">
+      <div className="main-booklist-component">
         <strong>{nickname}</strong>님, 이런 책 어떠세요?
       </div>
     </>
