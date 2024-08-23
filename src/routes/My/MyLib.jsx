@@ -13,6 +13,9 @@ const MyLib = () => {
   const [nickname, setNickname] = useState("");
   const [favorites, setFavorites] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); // 편집 모드 상태
+  const [selectedBooks, setSelectedBooks] = useState([]); // 선택된 책 목록
+
   const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
   const navigate = useNavigate();
 
@@ -136,15 +139,56 @@ const MyLib = () => {
     navigate(`/books/details/${bookId}`); // 클릭된 책의 세부 페이지로 이동
   };
 
+  // 편집 모드일 때 책 선택
+  const handleSelectBook = (bookId) => {
+    setSelectedBooks((prevSelected) =>
+      prevSelected.includes(bookId)
+        ? prevSelected.filter((id) => id !== bookId)
+        : [...prevSelected, bookId]
+    );
+  };
+
+  // 선택된 책 삭제 기능
+  const handleDeleteBooks = async () => {
+    try {
+      await Promise.all(
+        selectedBooks.map(async (bookId) => {
+          const requestData = {
+            userbookId: `${userId}-${bookId}`,
+            status: null,
+            favorite: false,
+          };
+          await api.put(`/bookshelf/update-status`, requestData);
+        })
+      );
+      setReadingBooks((prevBooks) =>
+        prevBooks.filter((book) => !selectedBooks.includes(book.bookId))
+      );
+      setFavorites((prevFavorites) =>
+        prevFavorites.filter((book) => !selectedBooks.includes(book.bookId))
+      );
+      setSelectedBooks([]);
+      setIsEditing(false);
+    } catch (error) {
+      alert("책 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
   const renderBookList = (books, tab) => {
     return books.length > 0 ? (
       books.map((book) => (
-        <span key={book.bookId} className="book-item">
+        <span key={book.bookId} className="mylib-book-item">
           <img
             src={book.coverImageUrl}
             alt={book.title}
-            className="book-cover"
-            onClick={() => handleBookClick(book.bookId)}
+            className={`book-cover ${
+              isEditing && selectedBooks.includes(book.bookId) ? "selected" : ""
+            }`}
+            onClick={() =>
+              isEditing
+                ? handleSelectBook(book.bookId)
+                : handleBookClick(book.bookId)
+            }
           />
           <span className="book-details">
             <span className="book-title">{book.title}</span>
@@ -219,6 +263,14 @@ const MyLib = () => {
             {nickname}
             <span>님의 서재</span>
           </span>
+        </div>
+        <div className="edit-actions">
+          <button onClick={() => setIsEditing(!isEditing)}>
+            {isEditing ? "완료" : "편집"}
+          </button>
+          {isEditing && selectedBooks.length > 0 && (
+            <button onClick={handleDeleteBooks}>삭제</button>
+          )}
         </div>
         <div>
           <ul className="mylib_menu">

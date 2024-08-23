@@ -81,3 +81,20 @@
   font-size: 10px;
   color: #555;
 }
+
+// 연령, 성별 추천 컴포넌트
+.famousBook-list-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-between; /* 버튼이 양 끝에 위치하도록 설정 */
+  width: 85%; /* 전체 컨테이너의 넓이 */
+  margin: 0 auto; /* 가운데 정렬 */
+
+  .famousBook-list {
+    display: flex;
+    justify-content: flex-start;
+    width: 75%;
+    gap: 2em;
+  }
+}

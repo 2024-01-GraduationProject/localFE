@@ -94,7 +94,7 @@
       margin: 2em;
     }
 
-    .book-item {
+    .mylib-book-item {
       width: calc(45% - 10px); /* 각 책 항목의 너비를 조정 */
       max-width: calc(45% - 10px); /* 최대 너비 설정 */
       margin-bottom: 1em;
@@ -110,33 +110,38 @@
         max-width: 100%;
       }
     }
-  }
 
-  .book-cover {
-    width: 40%; /* 표지의 크기를 조정 */
-    height: auto;
-    object-fit: cover;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+    .book-cover {
+      width: 40%; /* 표지의 크기를 조정 */
+      height: auto;
+      object-fit: cover;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-  .book-details {
-    margin-top: 0.6em;
-    height: auto; /* 텍스트 영역의 고정된 높이 설정 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+      &.selected {
+        border: 2px solid red;
+        opacity: 0.7;
+      }
+    }
 
-  .book-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 0.8em;
-  }
+    .book-details {
+      margin-top: 0.6em;
+      height: auto; /* 텍스트 영역의 고정된 높이 설정 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  .book-author,
-  .start_on {
-    font-size: 12px;
-    color: #555;
+    .book-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 0.8em;
+    }
+
+    .book-author,
+    .start_on {
+      font-size: 12px;
+      color: #555;
+    }
   }
 }
