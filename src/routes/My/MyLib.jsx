@@ -135,6 +135,12 @@ const MyLib = () => {
     }
   }, [activeTab, userId]);
 
+  useEffect(() => {
+    // 탭이 변경될 때 편집 모드를 해제
+    setIsEditing(false);
+    setSelectedBooks([]);
+  }, [activeTab]);
+
   const handleBookClick = (bookId) => {
     navigate(`/books/details/${bookId}`); // 클릭된 책의 세부 페이지로 이동
   };
@@ -150,25 +156,26 @@ const MyLib = () => {
 
   // 선택된 책 삭제 기능
   const handleDeleteBooks = async () => {
+    if (selectedBooks.length === 0) {
+      alert("선택한 책이 없습니다.");
+      setIsEditing(false);
+      return;
+    }
     try {
       await Promise.all(
         selectedBooks.map(async (bookId) => {
-          const requestData = {
-            userbookId: `${userId}-${bookId}`,
-            status: null,
-            favorite: false,
-          };
-          await api.put(`/bookshelf/update-status`, requestData);
+          // 즐겨찾기에서 삭제
+          await api.delete(
+            `/bookmarks/remove?userId=${userId}&bookId=${bookId}`
+          );
         })
-      );
-      setReadingBooks((prevBooks) =>
-        prevBooks.filter((book) => !selectedBooks.includes(book.bookId))
       );
       setFavorites((prevFavorites) =>
         prevFavorites.filter((book) => !selectedBooks.includes(book.bookId))
       );
       setSelectedBooks([]);
       setIsEditing(false);
+      alert("My Favorite 목록에서 삭제되었습니다.");
     } catch (error) {
       alert("책 삭제 중 오류가 발생했습니다.");
     }
@@ -241,6 +248,27 @@ const MyLib = () => {
         return (
           <div>
             <h2>My Favorite</h2>
+            <div className="favorite-header">
+              <div className="favorite-actions">
+                {isEditing ? (
+                  <>
+                    <button
+                      className="favorite-delete-button"
+                      onClick={handleDeleteBooks}
+                    >
+                      삭제
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="favorite-edit-button"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    편집
+                  </button>
+                )}
+              </div>
+            </div>
             <ul className="mybook-list">
               {renderBookList(favorites, "My Favorite")}
             </ul>
@@ -263,14 +291,6 @@ const MyLib = () => {
             {nickname}
             <span>님의 서재</span>
           </span>
-        </div>
-        <div className="edit-actions">
-          <button onClick={() => setIsEditing(!isEditing)}>
-            {isEditing ? "완료" : "편집"}
-          </button>
-          {isEditing && selectedBooks.length > 0 && (
-            <button onClick={handleDeleteBooks}>삭제</button>
-          )}
         </div>
         <div>
           <ul className="mylib_menu">
