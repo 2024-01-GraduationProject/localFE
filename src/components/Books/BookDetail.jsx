@@ -102,10 +102,10 @@ const BookDetail = () => {
     try {
       const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜를 가져옴 (yyyy-mm-dd)
       const requestData = {
-        userbookId: `${userId}-${bookId}`, // userId와 book_id를 결합하여 userbookId 생성
+        //userbookId: `${userId}-${bookId}`, // userId와 book_id를 결합하여 userbookId 생성
         userId: parseInt(userId),
         bookId: parseInt(bookId),
-        status: "READING",
+        //status: "READING",
         //favorite: false,
         //lastReadPage: 0,
         startDate: currentDate,
@@ -116,7 +116,11 @@ const BookDetail = () => {
       };
 
       // URL에 userId와 bookId를 쿼리 파라미터로 포함
-      const url = `/bookshelf/add-to-reading?userId=${userId}&bookId=${bookId}`;
+      const url = `/bookshelf/add-to-reading?userId=${encodeURIComponent(
+        userId
+      )}&bookId=${encodeURIComponent(bookId)}&startDate=${encodeURIComponent(
+        currentDate
+      )}`;
 
       // 다운로드 누르면 '독서 중'에 저장
       const response = await api.post(url, requestData);
