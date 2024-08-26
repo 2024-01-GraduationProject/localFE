@@ -13,18 +13,14 @@ import { useAuth } from "AuthContext";
 
 const MainView = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // 로컬 스토리지에서 로그인 상태 확인
-    const token = localStorage.getItem("authToken");
-
-    if (token) {
-      setIsAuthenticated(true); // 로그인 상태 유지
-    } else {
-      navigate("/login"); // 로그인 상태가 아니라면 로그인 페이지로 이동
+    // 인증 상태가 false이면 로그인 페이지로 리디렉션
+    if (!isAuthenticated) {
+      navigate("/login");
     }
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleSearchResults = (results) => {
     // 검색 결과를 SearchList 페이지로 전달

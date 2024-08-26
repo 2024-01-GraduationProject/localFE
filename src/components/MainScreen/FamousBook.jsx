@@ -31,7 +31,7 @@ const FamousBook = () => {
       }
     };
 
-    const fetchRecommendedBooks = async () => {
+    const fetchFamousBooks = async () => {
       try {
         // 연령대 및 성별 정보 없이 추천 도서 가져오기
         const booksResponse = await api.get("/recommend/ageAndGender");
@@ -46,7 +46,7 @@ const FamousBook = () => {
     };
 
     fetchUserData();
-    fetchRecommendedBooks();
+    fetchFamousBooks();
   }, [isAuthenticated, navigate]);
 
   // 배열을 무작위로 섞는 함수
