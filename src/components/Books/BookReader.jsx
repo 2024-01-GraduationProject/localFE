@@ -201,9 +201,20 @@ const BookReader = () => {
               userId: userId,
               bookId: bookId,
               lastReadPage: lastReadPage, // 데이터 형식 조정
+              indices: indexes.map((index) => index.progress), // 인덱스 리스트
+            },
+            paramsSerializer: (params) => {
+              const queryString = new URLSearchParams();
+              queryString.append("userId", params.userId);
+              queryString.append("bookId", params.bookId);
+              queryString.append("lastReadPage", params.lastReadPage);
+              params.indices.forEach((index, i) => {
+                queryString.append(`indices[${i}]`, index); // 여기서 인덱스를 인코딩
+              });
+              return queryString.toString();
             },
           });
-          console.log("Progress saved successfully.", response.data);
+          console.log("Progress saved successfully.", response);
         } catch (error) {
           console.error(
             "Error saving progress:",
@@ -228,6 +239,14 @@ const BookReader = () => {
         url.searchParams.append("bookId", bookId);
         url.searchParams.append("lastReadPage", lastReadPage); // float 형식으로 저장
 
+        // 인덱스 리스트를 URL 파라미터로 추가하면서 인코딩
+        indexes.forEach((index, i) => {
+          url.searchParams.append(
+            `indices%5B${i}%5D`,
+            encodeURIComponent(index.progress)
+          );
+        });
+
         // `sendBeacon`을 사용하여 데이터를 전송
         navigator.sendBeacon(url, null); // `sendBeacon`은 본문을 지원하지 않으므로 URL로만 데이터 전송
       }
@@ -243,6 +262,18 @@ const BookReader = () => {
               userId: userId,
               bookId: bookId,
               lastReadPage: lastReadPage, // float 형식으로 저장
+              indices: indexes.map((index) => index.progress),
+            },
+
+            paramsSerializer: (params) => {
+              const queryString = new URLSearchParams();
+              queryString.append("userId", params.userId);
+              queryString.append("bookId", params.bookId);
+              queryString.append("lastReadPage", params.lastReadPage);
+              params.indices.forEach((index, i) => {
+                queryString.append(`indices[${i}]`, encodeURIComponent(index)); // 여기서 인코딩
+              });
+              return queryString.toString();
             },
           });
           console.log("Progress saved before logout.");
@@ -260,7 +291,7 @@ const BookReader = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [progress, isAuthenticated, userId, bookId, logout]);
+  }, [progress, indexes, isAuthenticated, userId, bookId, logout]);
 
   /*진도율 100이면 독서 완료
   useEffect(() => {

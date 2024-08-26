@@ -3,11 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Header2 } from "components";
 import boogi2 from "assets/img/boogi2.jpg";
 import { useAuth } from "AuthContext";
-import api from "../../api";
 
 const TasteNext = () => {
   const navigate = useNavigate();
-  const { authToken, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!isAuthenticated) {

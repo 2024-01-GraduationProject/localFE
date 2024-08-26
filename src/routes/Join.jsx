@@ -12,7 +12,6 @@ const Join = () => {
   const { login } = useAuth();
 
   // 상태 변수 설정
-  /* eslint-disable no-unused-vars */
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
@@ -26,7 +25,6 @@ const Join = () => {
     eventAlarm: false,
   });
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  //const [isRegistrationComplete, setIsRegistrationComplete] = useState(false);
 
   // 버튼 활성화 여부 결정
   useEffect(() => {
@@ -36,13 +34,6 @@ const Join = () => {
 
     setIsButtonEnabled(isPasswordValid && isNicknameValid && isAgreementValid);
   }, [passwordError, isNicknameAvailable, agreements]);
-
-  /* 회원가입 완료 시 취향 선택 페이지로 이동
-  useEffect(() => {
-    if (isRegistrationComplete) {
-      navigate("/taste", { state: { email, password } });
-    }
-  }, [isRegistrationComplete, navigate, email, password]);*/
 
   // onChangeHandler - 사용자가 input 값 입력할 때마다 변화 감지 및 업데이트
   const onChangePwHandler = (e) => {
@@ -164,7 +155,6 @@ const Join = () => {
           login(token);
           alert("회원가입이 완료되었습니다.");
           navigate("/taste", { state: { email, password } });
-          //setIsRegistrationComplete(true); // 회원가입 완료 상태로 설정
         } else {
           const errorData = response.data;
           alert(`회원가입 실패: ${errorData.message}`);

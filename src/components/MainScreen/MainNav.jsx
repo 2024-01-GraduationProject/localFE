@@ -3,7 +3,7 @@ import { MdOutlineMenu } from "react-icons/md";
 import { GiBookshelf } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import api from "../../api"; // Axios 인스턴스 import
-import { useAuth } from "AuthContext";
+
 const MainNav = () => {
   const [showCategoryButtons, setShowCategoryButtons] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);

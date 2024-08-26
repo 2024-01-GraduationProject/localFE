@@ -20,7 +20,7 @@ const EditMyPage = () => {
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
   const [initialData, setInitialData] = useState({});
-  const { isAuthenticated } = useAuth(); // 로그인 여부와 토큰 가져오기
+  const { isAuthenticated } = useAuth(); // 로그인 여부
 
   useEffect(() => {
     if (!isAuthenticated) {

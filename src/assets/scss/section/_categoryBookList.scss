@@ -12,6 +12,10 @@
   flex-wrap: wrap; /* 컨텐츠가 줄 바꿈되도록 설정 */
   margin: 0 auto; /* 가운데 정렬 */
   width: 80%; /* 전체 컨테이너 넓이 조정 */
+
+  .bookCG-no-books {
+    margin-left: 4em;
+  }
 }
 
 .bookCG-item {

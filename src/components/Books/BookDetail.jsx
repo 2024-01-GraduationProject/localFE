@@ -46,7 +46,6 @@ const BookDetail = () => {
 
         // 다운로드 상태 확인
         const downloadStatus = await checkDownloadStatus();
-        // `${userId}-${book_id}`
         setIsDownloaded(downloadStatus);
       } catch (err) {
         console.error(`데이터 가져오기 실패: `, err);
@@ -106,13 +105,8 @@ const BookDetail = () => {
         userId: parseInt(userId),
         bookId: parseInt(bookId),
         //status: "READING",
-        //favorite: false,
-        //lastReadPage: 0,
         startDate: currentDate,
-        //endDate: null,
         //rating: null,
-        //createdAt: currentDate + "T00:00:00",
-        //updatedAt: currentDate + "T00:00:00",
       };
 
       // URL에 userId와 bookId를 쿼리 파라미터로 포함
@@ -124,6 +118,7 @@ const BookDetail = () => {
 
       // 다운로드 누르면 '독서 중'에 저장
       const response = await api.post(url, requestData);
+      console.log("response: ", response);
 
       setIsDownloaded(true);
     } catch (error) {
@@ -174,7 +169,6 @@ const BookDetail = () => {
     }
   };
 
-  //if (!isLoading) return <p>Loading...</p>;
   if (!book) return <p>책 정보를 불러오지 못했습니다.</p>;
 
   return (

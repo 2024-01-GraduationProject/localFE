@@ -6,7 +6,7 @@ import { useAuth } from "AuthContext";
 
 const Taste = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Join에서 이메일 값 받아오기
   const location = useLocation();
@@ -19,6 +19,8 @@ const Taste = () => {
   const [ageOptions, setAgeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
   const [bookCategoryOptions, setBookCategoryOptions] = useState([]);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     // 인증되지 않은 사용자가 접근할 수 없도록 리디렉션
@@ -86,6 +88,20 @@ const Taste = () => {
 
   // 다음으로 버튼 클릭 시 서버로 데이터 전송
   const handleTasteSubmit = async () => {
+    // 연령과 성별이 선택되지 않았을 때
+    if (!selectedAge || !selectedGender) {
+      setErrorMessage("연령과 성별을 모두 선택해주세요.");
+      alert("연령과 성별을 모두 선택해주세요.");
+      return;
+    } else if (selectedBookTastes.length === 0) {
+      setErrorMessage("독서 취향을 선택해주세요.");
+      alert("독서 취향을 선택해주세요.");
+      return;
+    }
+
+    // 오류 메시지 초기화
+    setErrorMessage("");
+
     try {
       const response = await api.post("/save-taste", {
         email,
@@ -116,7 +132,9 @@ const Taste = () => {
             onChange={handleAgeChange}
             value={selectedAge}
           >
-            <option value="">연령 선택</option>
+            <option value="" disabled>
+              연령 선택
+            </option>
             {ageOptions.map((taste) => (
               <option key={taste.age_id} value={taste.age}>
                 {taste.age}
@@ -129,7 +147,9 @@ const Taste = () => {
             onChange={handleGenderChange}
             value={selectedGender}
           >
-            <option value="">성별 선택</option>
+            <option value="" disabled>
+              성별 선택
+            </option>
             {genderOptions.map((taste) => (
               <option key={taste.gender_id} value={taste.gender}>
                 {taste.gender}
@@ -139,7 +159,7 @@ const Taste = () => {
         </div>
 
         <div className="mood">
-          <div>유형(분위기)</div>
+          <div>취향(카테고리)</div>
           {bookCategoryOptions.length > 0 ? (
             bookCategoryOptions.map((taste) => (
               <button

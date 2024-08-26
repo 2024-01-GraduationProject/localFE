@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useAuth } from "AuthContext";
+
 const FamousBook = () => {
   const [books, setBooks] = useState([]); // 추천 책 목록 상태
   const [userData, setUserData] = useState(null);

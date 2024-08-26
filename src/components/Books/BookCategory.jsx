@@ -36,19 +36,24 @@ const BookCategory = () => {
     navigate(`/books/details/${id}`);
   };
 
+  const handleSearchResults = (results) => {
+    // 검색 결과를 SearchList 페이지로 전달
+    navigate("/searchlist", { state: { searchResults: results } });
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading books: {error.message}</p>;
 
   return (
     <>
       <Header2 />
-      <SearchBar />
+      <SearchBar onSearch={handleSearchResults} />
       <MainNav />
       <div className="bookCG-list-wrapper">
         <h2>{categoryName}</h2>
         <div className="bookCG-list">
           {books.length === 0 ? (
-            <p>No books found in this category.</p>
+            <p className="bookCG-no-books">No books found in this category.</p>
           ) : (
             books.map((book) => (
               <div
