@@ -33,7 +33,7 @@ const Recommend = () => {
     const fetchRecommendedBooks = async () => {
       try {
         // 추천 도서 가져오기
-        const booksResponse = await api.get("/preprocess");
+        const booksResponse = await api.get("/recommend/userTaste");
         const selectedBooks = booksResponse.data;
         setBooks(selectedBooks);
       } catch (err) {
