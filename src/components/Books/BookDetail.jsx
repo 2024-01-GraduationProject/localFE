@@ -109,20 +109,36 @@ const BookDetail = () => {
         //rating: null,
       };
 
-      // URL에 userId와 bookId를 쿼리 파라미터로 포함
+      /* URL에 userId와 bookId를 쿼리 파라미터로 포함
+      const url = `/bookshelf/add-to-reading?userId=${encodeURIComponent(
+        userId
+      )}&bookId=${encodeURIComponent(bookId)}&startDate=${encodeURIComponent(
+        currentDate
+      )}`;*/
+
+      // 다운로드 누르면 '독서 중'에 저장
+
+      // URL에 쿼리 파라미터로 userId, bookId, startDate를 포함
       const url = `/bookshelf/add-to-reading?userId=${encodeURIComponent(
         userId
       )}&bookId=${encodeURIComponent(bookId)}&startDate=${encodeURIComponent(
         currentDate
       )}`;
 
-      // 다운로드 누르면 '독서 중'에 저장
-      const response = await api.post(url, requestData);
+      // requestData 대신 URL에 쿼리 파라미터로 데이터를 전송
+      const response = await api.post(url);
       console.log("response: ", response);
 
       setIsDownloaded(true);
     } catch (error) {
-      console.error(`${bookId} 책 다운로드 실패: `, error);
+      if (error.response) {
+        console.error(
+          `책 다운로드 실패 (상태 코드: ${error.response.status}): `,
+          error.response.data
+        );
+      } else {
+        console.error("책 다운로드 실패: ", error.message);
+      }
       setError("책 다운로드에 실패했습니다.");
     }
   };
