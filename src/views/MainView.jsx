@@ -4,7 +4,7 @@ import {
   Header2,
   SearchBar,
   MainNav,
-  BestNew,
+  NewBook,
   RecentBook,
   FamousBook,
   Recommend,
@@ -39,7 +39,7 @@ const MainView = () => {
 
       <div>
         <hr className="mainview_line" />
-        <BestNew />
+        <NewBook />
       </div>
 
       <div>

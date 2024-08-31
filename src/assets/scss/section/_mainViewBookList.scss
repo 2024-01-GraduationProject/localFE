@@ -1,7 +1,7 @@
 .main-booklist-component {
   margin-left: 11.5em;
   margin-top: 1em;
-  margin-right: 9em;
+  margin-right: 11.5em;
   margin-bottom: 1em;
   font-size: 18px;
   //font-weight: bold;
@@ -19,10 +19,10 @@
     background-color: transparent;
     color: #555;
     border: none;
-    padding: 0.5em 1em;
+    padding: 0.5em 0.5em;
     margin: 0 0.5em;
     cursor: pointer;
-    font-size: 25px;
+    font-size: 20px;
 
     &:hover {
       background-color: #afe06b;
@@ -35,8 +35,8 @@
 .book-list {
   display: flex;
   justify-content: flex-start;
-  width: 70%;
-  gap: 3em;
+  width: 83%;
+  gap: 1em;
 }
 
 .book-item {

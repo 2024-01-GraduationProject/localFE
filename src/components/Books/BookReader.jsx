@@ -121,9 +121,9 @@ const BookReader = () => {
                 console.warn("Failed to resize rendition:", error);
               }
             }
-          }, 500);
+          }, 200);
 
-          const resizeObserver = new ResizeObserver(() => {
+          resizeObserver = new ResizeObserver(() => {
             handleResize();
           });
 
@@ -186,6 +186,23 @@ const BookReader = () => {
       }
     };
   }, [bookInstance]);
+
+  // 키보드 이벤트 리스너 추가
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowRight") {
+        handleNextPage(); // 오른쪽 화살표 키로 다음 페이지
+      } else if (event.key === "ArrowLeft") {
+        handlePreviousPage(); // 왼쪽 화살표 키로 이전 페이지
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [rendition]);
 
   // 진도율이 변경될 때마다 저장하는 로직 추가
   useEffect(() => {
