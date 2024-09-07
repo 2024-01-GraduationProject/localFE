@@ -18,7 +18,7 @@ const NewBook = () => {
           .sort(
             (a, b) => new Date(b.publicationDate) - new Date(a.publicationDate)
           )
-          .slice(0, 8); // 상위 10권만 추출
+          .slice(0, 8); // 상위 8권만 추출
 
         // 필요한 정보만 추출하여 상태에 저장
         const bookData = sortedBooks.map((book) => ({
@@ -68,7 +68,7 @@ const NewBook = () => {
         <strong>New! </strong> 새로 들어온 책
       </div>
 
-      <div className="book-list-wrapper">
+      <div className="newbook-list-wrapper">
         <button
           className="pagebtn"
           onClick={prevPage}
@@ -80,7 +80,7 @@ const NewBook = () => {
           {currentBooks.map((book) => (
             <div
               key={book.id}
-              className="book-item"
+              className="newbook-item"
               onClick={() => goToBookDetail(book.id)}
             >
               <img

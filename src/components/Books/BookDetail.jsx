@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FamousBook, Header2 } from "components";
-import { BestNew } from "components";
 import api from "../../api";
 import { useAuth } from "AuthContext";
 
@@ -33,7 +32,10 @@ const BookDetail = () => {
 
   useEffect(() => {
     if (userId === null) return; // 사용자 ID가 로드되지 않았으면 아무 작업도 하지 않음
-
+    if (!isAuthenticated) {
+      navigate("/login"); // 로그인 페이지로 리다이렉트
+      return;
+    }
     const fetchBookAndUserbookId = async () => {
       try {
         // 책 정보를 가져오기

@@ -66,7 +66,7 @@ const FamousBook = () => {
   return (
     <>
       <div className="main-booklist-component">
-        요즘 <strong>{age}</strong> <strong>{gender}</strong>이(가) 많이 보는 책{" "}
+        요즘 <strong>{age}</strong> <strong>{gender}</strong>이(가) 즐겨 보는 책{" "}
       </div>
       <div className="famousBook-list-wrapper">
         <div className="famousBook-list">

@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import logo from "assets/img/logo.jpg";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
-import naver from "assets/img/ico/naver.ico";
 import { useNavigate } from "react-router-dom";
 import KakaoLogin from "./KakaoLogin";
 import GoogleLogin from "./GoogleLogin";
@@ -57,7 +56,7 @@ const Login = () => {
         const { token } = response.data;
         localStorage.setItem("authToken", token);
         // AuthContext의 login 함수 호출
-        login(token);
+        await login(token);
         navigate("/mainview");
       } else {
         // 로그인 실패 시
@@ -115,6 +114,11 @@ const Login = () => {
               </button>
             </div>
           </form>
+
+          <div className="find_userdata">
+            <button className="find_email">아이디 찾기</button> |{" "}
+            <button className="find_pw">비밀번호 찾기</button>
+          </div>
 
           <div className="social">
             <button onClick={() => handleSocialLogin("google")}>

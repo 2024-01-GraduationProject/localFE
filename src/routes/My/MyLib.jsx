@@ -58,10 +58,14 @@ const MyLib = () => {
               );
               const bookDetails = bookDetailsResponse.data;
 
+              // lastReadPage 값을 소수점 첫째 자리에서 반올림
+              const progressRate = Math.round(userBook.lastReadPage * 10) / 10;
+
               return {
                 ...userBook,
                 ...bookDetails,
                 startDate: userBook.startDate, // 독서 중 시작 날짜
+                progressRate,
               };
             })
           );
@@ -192,6 +196,16 @@ const MyLib = () => {
             {tab === "독서 중" && (
               <>
                 <span className="start_on">Started on: {book.startDate}</span>
+                <div className="progress-bar-container">
+                  <div
+                    className="progress-bar"
+                    style={{ width: `${book.progressRate}%` }}
+                  />
+                </div>
+                <span className="progress-rate">
+                  {book.progressRate}%{" "}
+                  {/* 소수점 첫째 자리까지 반올림된 백분율 */}
+                </span>
               </>
             )}
             {tab === "독서 완료" && (

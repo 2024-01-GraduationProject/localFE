@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "AuthContext";
 import api from "../../api";
 
-const Recommend = () => {
+const RecommendBook = () => {
   const [books, setBooks] = useState([]); // 추천 책 목록 상태
-  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [nickname, setNickname] = useState("");
@@ -90,4 +89,4 @@ const Recommend = () => {
   );
 };
 
-export default Recommend;
+export default RecommendBook;
