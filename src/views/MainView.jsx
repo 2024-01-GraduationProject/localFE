@@ -4,10 +4,10 @@ import {
   Header2,
   SearchBar,
   MainNav,
-  BestNew,
-  RecentBook,
+  NewBook,
+  BestBook,
   FamousBook,
-  Recommend,
+  RecommendBook,
 } from "components";
 import { useAuth } from "AuthContext";
 
@@ -39,12 +39,12 @@ const MainView = () => {
 
       <div>
         <hr className="mainview_line" />
-        <BestNew />
+        <NewBook />
       </div>
 
       <div>
         <hr className="mainview_line" />
-        <RecentBook />
+        <BestBook />
       </div>
 
       <div>
@@ -54,7 +54,7 @@ const MainView = () => {
 
       <div>
         <hr className="mainview_line" />
-        <Recommend />
+        <RecommendBook />
       </div>
     </>
   );

@@ -3,39 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "AuthContext";
 import api from "../../api";
 
-const Recommend = () => {
+const BestBook = () => {
+  const [bestBooks, setBestBooks] = useState([]);
   const [books, setBooks] = useState([]); // 추천 책 목록 상태
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [nickname, setNickname] = useState("");
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // 인증 상태가 false이면 로그인 페이지로 리디렉션
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/login"); // 로그인 페이지로 리다이렉트
+      return;
     }
-
-    // 사용자 데이터 가져오기
-    const fetchUserData = async () => {
-      try {
-        // 닉네임 가져오기
-        const nicknameResponse = await api.get("/user-nickname");
-        console.log(nicknameResponse);
-        setNickname(nicknameResponse.data);
-      } catch (error) {
-        alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
-      }
-    };
-
-    const fetchRecommendedBooks = async () => {
+    const fetchBestBooks = async () => {
       try {
         // 추천 도서 가져오기
-        const booksResponse = await api.get("/recommend/userTaste");
-        const selectedBooks = booksResponse.data;
-        setBooks(selectedBooks);
+        const booksResponse = await api.get("/books/best");
+        const bestBooks = booksResponse.data;
+        setBooks(bestBooks);
       } catch (err) {
         setError(err);
       } finally {
@@ -43,30 +30,26 @@ const Recommend = () => {
       }
     };
 
-    fetchUserData();
-    fetchRecommendedBooks();
+    fetchBestBooks();
   }, [isAuthenticated, navigate]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
 
   const goToBookDetail = (id) => {
     navigate(`/books/details/${id}`);
   };
 
   return (
-    <>
+    <div>
       <div className="main-booklist-component">
-        <strong>{nickname}</strong>님, 이런 책 어떠세요?
+        <strong>Best</strong> 도서
       </div>
-      <div className="famousBook-list-wrapper">
-        <div className="famousBook-list">
+      <div className="bestBook-list-wrapper">
+        <div className="book-list">
           {books.length > 0 ? (
             books.map((book) => (
               <div
-                key={book.bookId}
-                className="book-item"
-                onClick={() => goToBookDetail(book.bookId)}
+                key={book.id}
+                className="bestbook-item"
+                onClick={() => goToBookDetail(book.id)}
               >
                 <img
                   src={book.coverImageUrl}
@@ -82,12 +65,12 @@ const Recommend = () => {
               </div>
             ))
           ) : (
-            <p>추천 책이 없습니다.</p>
+            <p>베스트 도서 준비 중!</p>
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default Recommend;
+export default BestBook;

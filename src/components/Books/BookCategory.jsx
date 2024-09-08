@@ -13,14 +13,14 @@ const BookCategory = () => {
   useEffect(() => {
     const fetchBooksByCategory = async () => {
       try {
-        // 백엔드에서 해당 카테고리의 책 목록을 가져옵니다.
+        // 해당 카테고리의 책 목록을 가져오기
         const booksResponse = await api.get(`/books/category/${categoryName}`);
         if (booksResponse.status !== 200) {
           throw new Error(
             `Network response was not ok. Status: ${booksResponse.status}`
           );
         }
-        setBooks(booksResponse.data); // 가져온 데이터를 상태에 저장합니다.
+        setBooks(booksResponse.data); // 가져온 데이터를 상태에 저장
       } catch (error) {
         setError(error);
       } finally {
@@ -28,8 +28,8 @@ const BookCategory = () => {
       }
     };
 
-    fetchBooksByCategory(); // 컴포넌트가 마운트되면 API를 호출합니다.
-  }, [categoryName]); // categoryName이 변경될 때마다 데이터를 다시 가져옵니다.
+    fetchBooksByCategory(); // 컴포넌트가 마운트되면 API를 호출
+  }, [categoryName]); // categoryName이 변경될 때마다 데이터를 다시 가져옴
 
   const goToBookDetail = (id) => {
     console.log("Navigating to book ID:", id);

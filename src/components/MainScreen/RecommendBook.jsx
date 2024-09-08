@@ -1,42 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api";
 import { useAuth } from "AuthContext";
+import api from "../../api";
 
-const FamousBook = () => {
+const RecommendBook = () => {
   const [books, setBooks] = useState([]); // 추천 책 목록 상태
-  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [nickname, setNickname] = useState("");
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 인증 상태가 false이면 로그인 페이지로 리디렉션
     if (!isAuthenticated) {
-      navigate("/login"); // 로그인 페이지로 리다이렉트
-      return;
+      navigate("/login");
     }
 
+    // 사용자 데이터 가져오기
     const fetchUserData = async () => {
       try {
-        // API 호출
-        const response = await api.get("/user-data", {});
-
-        // 사용자 데이터 설정
-        setUserData(response.data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
+        // 닉네임 가져오기
+        const nicknameResponse = await api.get("/user-nickname");
+        console.log(nicknameResponse);
+        setNickname(nicknameResponse.data);
+      } catch (error) {
+        alert("사용자 데이터를 가져오는 중 오류가 발생했습니다.");
       }
     };
 
-    const fetchFamousBooks = async () => {
+    const fetchRecommendedBooks = async () => {
       try {
-        // 연령대 및 성별 정보 없이 추천 도서 가져오기
-        const booksResponse = await api.get("/recommend/ageAndGender");
-        const shuffledBooks = shuffleArray(booksResponse.data);
-        const selectedBooks = shuffledBooks.slice(0, 4); // 랜덤으로 4개의 책 선택
+        // 추천 도서 가져오기
+        const booksResponse = await api.get("/recommend/userTaste");
+        const selectedBooks = booksResponse.data;
         setBooks(selectedBooks);
       } catch (err) {
         setError(err);
@@ -46,18 +43,11 @@ const FamousBook = () => {
     };
 
     fetchUserData();
-    fetchFamousBooks();
+    fetchRecommendedBooks();
   }, [isAuthenticated, navigate]);
-
-  // 배열을 무작위로 섞는 함수
-  const shuffleArray = (array) => {
-    return array.sort(() => Math.random() - 0.5);
-  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
-
-  const { age, gender } = userData;
 
   const goToBookDetail = (id) => {
     navigate(`/books/details/${id}`);
@@ -66,7 +56,7 @@ const FamousBook = () => {
   return (
     <>
       <div className="main-booklist-component">
-        요즘 <strong>{age}</strong> <strong>{gender}</strong>이(가) 즐겨 보는 책{" "}
+        <strong>{nickname}</strong>님, 이런 책 어떠세요?
       </div>
       <div className="famousBook-list-wrapper">
         <div className="famousBook-list">
@@ -99,4 +89,4 @@ const FamousBook = () => {
   );
 };
 
-export default FamousBook;
+export default RecommendBook;

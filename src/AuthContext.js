@@ -14,11 +14,10 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
-      //navigate("/login");
     }
   }, []);
 
-  const login = (token) => {
+  const login = async (token) => {
     setIsAuthenticated(true);
     localStorage.setItem("authToken", token);
   };

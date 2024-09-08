@@ -1,0 +1,123 @@
+.chatbot-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 500px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+}
+
+.messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 16px;
+  line-height: 1.4;
+
+  &.left {
+    background-color: #fff9b0;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    &:before {
+      content: "";
+      position: absolute;
+      left: -15px;
+      top: 15px;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 15px solid #fff9b0;
+    }
+  }
+
+  &.right {
+    background-color: #b4eeb4;
+    margin-left: auto;
+    &:after {
+      content: "";
+      position: absolute;
+      right: -15px;
+      top: 15px;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 15px solid #b4eeb4;
+    }
+  }
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  width: 50%;
+  margin-left: 20%;
+  margin-right: 20%;
+
+  input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 16px;
+    outline: none;
+  }
+
+  button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    background-color: #a6d9a6;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+}
+
+.next-question-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+
+  button {
+    padding: 10px 20px;
+    background-color: #ffcc80;
+    border: none;
+    border-radius: 20px;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+  }
+}
+
+.message-bubble.left .next-question-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+
+  button {
+    background-color: #ffcc80;
+    color: black;
+    padding: 5px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+}

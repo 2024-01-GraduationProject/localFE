@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FamousBook, Header2 } from "components";
-import { BestNew } from "components";
 import api from "../../api";
 import { useAuth } from "AuthContext";
 
@@ -33,7 +32,10 @@ const BookDetail = () => {
 
   useEffect(() => {
     if (userId === null) return; // 사용자 ID가 로드되지 않았으면 아무 작업도 하지 않음
-
+    if (!isAuthenticated) {
+      navigate("/login"); // 로그인 페이지로 리다이렉트
+      return;
+    }
     const fetchBookAndUserbookId = async () => {
       try {
         // 책 정보를 가져오기
@@ -109,20 +111,36 @@ const BookDetail = () => {
         //rating: null,
       };
 
-      // URL에 userId와 bookId를 쿼리 파라미터로 포함
+      /* URL에 userId와 bookId를 쿼리 파라미터로 포함
+      const url = `/bookshelf/add-to-reading?userId=${encodeURIComponent(
+        userId
+      )}&bookId=${encodeURIComponent(bookId)}&startDate=${encodeURIComponent(
+        currentDate
+      )}`;*/
+
+      // 다운로드 누르면 '독서 중'에 저장
+
+      // URL에 쿼리 파라미터로 userId, bookId, startDate를 포함
       const url = `/bookshelf/add-to-reading?userId=${encodeURIComponent(
         userId
       )}&bookId=${encodeURIComponent(bookId)}&startDate=${encodeURIComponent(
         currentDate
       )}`;
 
-      // 다운로드 누르면 '독서 중'에 저장
-      const response = await api.post(url, requestData);
+      // requestData 대신 URL에 쿼리 파라미터로 데이터를 전송
+      const response = await api.post(url);
       console.log("response: ", response);
 
       setIsDownloaded(true);
     } catch (error) {
-      console.error(`${bookId} 책 다운로드 실패: `, error);
+      if (error.response) {
+        console.error(
+          `책 다운로드 실패 (상태 코드: ${error.response.status}): `,
+          error.response.data
+        );
+      } else {
+        console.error("책 다운로드 실패: ", error.message);
+      }
       setError("책 다운로드에 실패했습니다.");
     }
   };

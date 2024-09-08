@@ -84,6 +84,17 @@
   }
 }
 
+.find_userdata {
+  padding-left: 9.5em;
+  .find_pw,
+  .find_email {
+    background: transparent;
+    border: 0;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
 .social {
   padding-top: 1.2rem;
   display: flex;

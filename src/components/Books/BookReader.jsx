@@ -9,6 +9,8 @@ import {
   FaBookmark,
   FaRegBookmark,
 } from "react-icons/fa"; // 아이콘 임포트
+import { BoogiChatbot } from "components";
+import { MdOutlineExpandCircleDown } from "react-icons/md";
 
 const BookReader = () => {
   const { bookId } = useParams();
@@ -22,7 +24,12 @@ const BookReader = () => {
   const [indexes, setIndexes] = useState([]);
   const [showIndexes, setShowIndexes] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [isBookReady, setIsBookReady] = useState(false);
+  const [bookTitle, setBookTitle] = useState(""); // 책 제목 상태 추가
+  const [showChatbot, setShowChatbot] = useState(false); // 챗봇 표시 여부 상태 추가
   const { isAuthenticated, logout } = useAuth();
+  const [lastReadCFI, setLastReadCFI] = useState(null);
+  const [isBookCompleted, setIsBookCompleted] = useState(false); // 책 완독 상태 추가
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,6 +54,9 @@ const BookReader = () => {
           headers: { Accept: "application/epub+zip" },
         });
 
+        const bookTitleResponse = await api.get(`/books/${bookId}`);
+        setBookTitle(bookTitleResponse.data.title);
+
         if (response.status === 200) {
           const arrayBuffer = response.data;
           const book = ePub(arrayBuffer);
@@ -66,8 +76,7 @@ const BookReader = () => {
           setTotalPages(book.locations.total);
 
           setBookInstance(book);
-        } else {
-          console.error("Invalid response type or status.");
+          setIsBookReady(true);
         }
       } catch (error) {
         console.error("Failed to fetch book data:", error);
@@ -80,26 +89,40 @@ const BookReader = () => {
 
     return () => {
       if (rendition) {
-        rendition.destroy();
+        if (rendition.destroy) {
+          rendition.destroy();
+        }
         setRendition(null);
       }
     };
   }, [bookId]);
 
   useEffect(() => {
-    let resizeObserver; // ResizeObserver 선언
+    if (isBookCompleted) {
+      navigate(`/books/${bookId}/boogi`, { state: { userId, bookTitle } });
+    }
+  }, [isBookCompleted, bookId, userId, bookTitle, navigate]);
+
+  useEffect(() => {
+    let resizeObserver = null; // ResizeObserver 선언
 
     const renderBook = async () => {
       if (bookInstance && bookRef.current) {
         try {
           if (rendition) {
             console.log("Destroying previous rendition...");
-            rendition.destroy();
+            if (rendition.destroy) {
+              rendition.destroy();
+            }
             setRendition(null);
           }
 
           await bookInstance.ready;
-          console.log("Book ready.");
+          console.log("Book instance is ready.");
+
+          // spine이 준비되었는지 확인
+          await bookInstance.spine.ready;
+          console.log("Book spine is ready.");
 
           const newRendition = bookInstance.renderTo(bookRef.current, {
             width: "100%",
@@ -113,6 +136,13 @@ const BookReader = () => {
 
           setRendition(newRendition);
 
+          try {
+            // 예를 들어, start() 호출 시 발생할 수 있는 예외 처리
+            await newRendition.start(); // (이 부분은 ePub.js 라이브러리의 API에 따라 다를 수 있음)
+          } catch (error) {
+            console.error("Error starting rendition:", error);
+          }
+
           const handleResize = debounce(() => {
             if (newRendition) {
               try {
@@ -121,13 +151,52 @@ const BookReader = () => {
                 console.warn("Failed to resize rendition:", error);
               }
             }
-          }, 500);
+          }, 200);
 
-          const resizeObserver = new ResizeObserver(() => {
+          resizeObserver = new ResizeObserver(() => {
             handleResize();
           });
 
           resizeObserver.observe(bookRef.current);
+
+          const fetchLastReadPage = async () => {
+            try {
+              /*if (!rendition || !bookInstance) {
+                console.warn("Rendition or BookInstance is not initialized.");
+                return;
+              }*/
+
+              const response = await api.get("/bookshelf/reading", {
+                params: { userId },
+              });
+
+              if (response.status === 200 && response.data.length > 0) {
+                const userBook = response.data.find(
+                  (book) => book.bookId === parseInt(bookId)
+                );
+
+                if (userBook) {
+                  const lastReadPage = userBook.lastReadPage / 100; // 페이지 비율로 변환
+                  const cfi =
+                    bookInstance.locations.cfiFromPercentage(lastReadPage);
+
+                  if (cfi) {
+                    setLastReadCFI(cfi); // CFI를 상태에 저장
+                    console.log("Calculated CFI:", cfi);
+                    //setProgress(lastReadPage * 100);
+                  } else {
+                    console.warn("Invalid CFI generated.");
+                  }
+                } else {
+                  console.log("No matching book found for this user.");
+                }
+              } else {
+                console.log("No reading progress data found.");
+              }
+            } catch (error) {
+              console.error("Failed to fetch last read page:", error);
+            }
+          };
 
           const updateLocation = () => {
             requestAnimationFrame(() => {
@@ -142,15 +211,28 @@ const BookReader = () => {
 
                 const progressPercentage = currentPage * 100;
                 setProgress(progressPercentage);
+
+                // 진도율이 100% 이면 완독
+                if (progressPercentage === 100) {
+                  setIsBookCompleted(true);
+                }
               } else {
                 console.warn("Location or CFI is undefined.");
               }
             });
           };
 
-          newRendition.on("rendered", (section) => {
+          newRendition.on("rendered", async (section) => {
             console.log("Section rendered:", section);
             updateLocation();
+
+            await bookInstance.ready;
+            console.log("Book instance is ready.");
+
+            setTimeout(async () => {
+              await fetchLastReadPage();
+            }, 1000); // Adjust delay if necessary
+            console.log("Fetch last read page initiated.");
           });
 
           newRendition.on("relocated", (location) => {
@@ -161,10 +243,12 @@ const BookReader = () => {
           console.log("Rendition instance created and listener attached.");
 
           await bookInstance.spine.ready;
+          console.log("Book spine is ready.");
           const spineItems = bookInstance.spine?.spineItems;
           if (spineItems?.length > 0) {
-            console.log("Displaying first spine item:", spineItems[0].href);
-            await newRendition.display(spineItems[0]?.href);
+            const cfiToDisplay = lastReadCFI || spineItems[0]?.href;
+            console.log(`Displaying page: ${cfiToDisplay}`);
+            await newRendition.display(cfiToDisplay);
             console.log("Book displayed.");
           } else {
             console.error("No spine items found.");
@@ -182,10 +266,36 @@ const BookReader = () => {
         resizeObserver.disconnect(); // ResizeObserver 해제
       }
       if (rendition) {
-        rendition.destroy();
+        try {
+          if (rendition.destroy) {
+            rendition.destroy();
+          }
+        } catch (error) {
+          console.error("Error destroying rendition:", error);
+        }
+        setRendition(null); // 상태 초기화
       }
     };
-  }, [bookInstance]);
+  }, [bookInstance, isBookReady, lastReadCFI]);
+  // isBookReady
+  // 키보드 이벤트 리스너 추가
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowRight") {
+        handleNextPage(); // 오른쪽 화살표 키로 다음 페이지
+      } else if (event.key === "ArrowLeft") {
+        handlePreviousPage(); // 왼쪽 화살표 키로 이전 페이지
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      if (window.removeEventListener) {
+        window.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, [rendition]);
 
   // 진도율이 변경될 때마다 저장하는 로직 추가
   useEffect(() => {
@@ -194,7 +304,7 @@ const BookReader = () => {
         try {
           // 확인: 데이터가 올바른 형식인지 검토
 
-          const lastReadPage = (progress / 100) * 100;
+          const lastReadPage = progress;
 
           const response = await api.put(`/bookshelf/completeBook`, null, {
             params: {
@@ -293,24 +403,41 @@ const BookReader = () => {
     };
   }, [progress, indexes, isAuthenticated, userId, bookId, logout]);
 
-  /*진도율 100이면 독서 완료
-  useEffect(() => {
-    if (progress === 100 && isAuthenticated && userId) {
-      const markBookAsCompleted = async () => {
-        try {
-          await api.put(`/bookshelf/completeBook`, {
-            userId: userId,
-            bookId: bookId,
-          });
-          console.log("Book marked as completed.");
-        } catch (error) {
-          console.error("Error marking book as completed:", error);
-        }
-      };
+  /*const handleGoToLastPage = async () => {
+    if (bookInstance && rendition) {
+      try {
+        const response = await api.get("/bookshelf/reading", {
+          params: { userId },
+        });
 
-      markBookAsCompleted();
+        if (response.status === 200 && response.data.length > 0) {
+          const userBook = response.data.find(
+            (book) => book.bookId === parseInt(bookId)
+          );
+          if (userBook) {
+            const lastReadPage = userBook.lastReadPage / 100; // 페이지 비율로 변환
+            const cfi = bookInstance.locations.cfiFromPercentage(lastReadPage);
+
+            if (cfi) {
+              console.log("Navigating to last read page CFI:", cfi);
+              await rendition.display(cfi); // CFI로 이동
+              setProgress(lastReadPage * 100); // 진도율 업데이트
+            } else {
+              console.warn("Invalid CFI generated.");
+            }
+          } else {
+            console.log("No matching book found for this user.");
+          }
+        } else {
+          console.log("No reading progress data found.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch last read page:", error);
+      }
+    } else {
+      console.warn("Book instance or rendition is not initialized.");
     }
-  }, [progress, isAuthenticated, userId, bookId]); */
+  };*/
 
   const handleNextPage = () => {
     if (rendition) {
@@ -369,52 +496,69 @@ const BookReader = () => {
 
   return (
     <div className="book-reader">
-      <button className="back-button" onClick={handleBack}>
-        <FaRegArrowAltCircleLeft />
-      </button>
-      <button className="nav-button left" onClick={handlePreviousPage}>
-        이전
-      </button>
-      <div ref={bookRef} className="book-container">
-        <button
-          className={`index-button ${isIndex ? "active" : ""}`}
-          onClick={toggleIndex}
-          disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
-        >
-          {isIndex ? <FaBookmark /> : <FaRegBookmark />}
-        </button>
-      </div>
-      <button className="nav-button right" onClick={handleNextPage}>
-        다음
-      </button>
-      <button
-        className={`view-indexes ${showIndexes ? "active" : ""}`}
-        onClick={handleViewIndexes}
-      >
-        {showIndexes ? "-" : "+"}
-      </button>
-      {showIndexes && (
-        <div className="indexes-list">
-          <div>Index List</div>
-          <ul>
-            {indexes.map((id, index) => (
-              <li
-                key={index}
-                className="index-progress"
-                onClick={() => handleIndexClick(id.progress)}
-              >
-                - {Math.round(id.progress.toFixed(2))}%
-              </li>
-            ))}
-          </ul>
-        </div>
+      {isBookCompleted ? (
+        <></>
+      ) : (
+        <>
+          <button className="back-button" onClick={handleBack}>
+            <FaRegArrowAltCircleLeft />
+          </button>
+          {/*<button
+            className="go-to-last-page"
+            onClick={handleGoToLastPage}
+            disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
+          >
+            마지막 읽은 페이지
+          </button> */}
+          <button className="nav-button left" onClick={handlePreviousPage}>
+            이전
+          </button>
+          <div ref={bookRef} className="book-container">
+            <button
+              className={`index-button ${isIndex ? "active" : ""}`}
+              onClick={toggleIndex}
+              disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
+            >
+              {isIndex ? <FaBookmark /> : <FaRegBookmark />}
+            </button>
+          </div>
+          <button className="nav-button right" onClick={handleNextPage}>
+            다음
+          </button>
+
+          <button
+            className={`view-indexes ${showIndexes ? "active" : ""}`}
+            onClick={handleViewIndexes}
+          >
+            {showIndexes ? "-" : "+"}
+          </button>
+          {showIndexes && (
+            <div className="indexes-list">
+              <div>Index List</div>
+              <ul>
+                {indexes.map((id, index) => (
+                  <li
+                    key={index}
+                    className="index-progress"
+                    onClick={() => handleIndexClick(id.progress)}
+                  >
+                    - {Math.round(id.progress.toFixed(2))}%
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="progress-bar-container">
+            <div
+              className="progress-bar"
+              style={{ width: `${progress}%` }}
+            ></div>
+            <div className="progress-text" style={{ left: `${progress}%` }}>
+              {Math.round(progress)}%
+            </div>
+          </div>
+        </>
       )}
-      <div className="progress-bar-container">
-        <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-        <div className="progress-text" style={{ left: `${progress}%` }}>
-          {Math.round(progress)}%
-        </div>
-      </div>
     </div>
   );
 };

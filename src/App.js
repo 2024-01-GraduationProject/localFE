@@ -13,7 +13,13 @@ import {
   GoogleLogin,
   KakaoLogin,
 } from "routes";
-import { BookDetail, BookReader, BookCategory, SearchList } from "components";
+import {
+  BookDetail,
+  BookReader,
+  BookCategory,
+  SearchList,
+  BoogiChatbot,
+} from "components";
 import MainView from "views/MainView";
 import { AuthProvider } from "./AuthContext";
 
@@ -41,6 +47,7 @@ const App = () => {
             element={<BookCategory />}
           />
           <Route path="/books/:bookId/content" element={<BookReader />} />
+          <Route path="/books/:bookId/boogi" element={<BoogiChatbot />} />
           <Route path="/searchlist" element={<SearchList />} />
         </Routes>
       </AuthProvider>

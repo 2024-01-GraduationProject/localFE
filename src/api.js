@@ -5,7 +5,7 @@ const api = axios.create({
   withCredentials: true, // 세션 쿠키를 전송
 });
 
-// 요청 인터셉터를 설정하여 동적으로 Authorization 헤더를 추가합니다.
+// 요청 인터셉터를 설정하여 동적으로 Authorization 헤더를 추가
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
