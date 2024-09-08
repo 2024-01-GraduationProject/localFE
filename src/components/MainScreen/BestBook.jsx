@@ -9,8 +9,6 @@ const BestBook = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0); // 현재 페이지를 저장하는 상태
-  const booksPerPage = 4; // 한 번에 보여줄 책의 수
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -22,9 +20,9 @@ const BestBook = () => {
     const fetchBestBooks = async () => {
       try {
         // 추천 도서 가져오기
-        const booksResponse = await api.get("/recommend/bestbooks");
-        const selectedBooks = booksResponse.data;
-        setBooks(selectedBooks);
+        const booksResponse = await api.get("/books/best");
+        const bestBooks = booksResponse.data;
+        setBooks(bestBooks);
       } catch (err) {
         setError(err);
       } finally {
@@ -34,26 +32,6 @@ const BestBook = () => {
 
     fetchBestBooks();
   }, [isAuthenticated, navigate]);
-
-  // 현재 페이지의 책들을 가져옴
-  const currentBooks = bestBooks.slice(
-    currentPage * booksPerPage,
-    (currentPage + 1) * booksPerPage
-  );
-
-  // 다음 페이지로 이동
-  const nextPage = () => {
-    if ((currentPage + 1) * booksPerPage < bestBooks.length) {
-      setCurrentPage(1); // 페이지를 1로 변경하여 나머지 4권을 표시
-    }
-  };
-
-  // 이전 페이지로 이동
-  const prevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(0); // 페이지를 0으로 변경하여 첫 4권을 다시 표시
-    }
-  };
 
   const goToBookDetail = (id) => {
     navigate(`/books/details/${id}`);
@@ -65,16 +43,9 @@ const BestBook = () => {
         <strong>Best</strong> 도서
       </div>
       <div className="bestBook-list-wrapper">
-        <button
-          className="pagebtn"
-          onClick={prevPage}
-          disabled={currentPage === 0}
-        >
-          {"<"}
-        </button>
         <div className="book-list">
-          {currentBooks.length > 0 ? (
-            currentBooks.map((book) => (
+          {books.length > 0 ? (
+            books.map((book) => (
               <div
                 key={book.id}
                 className="bestbook-item"
@@ -97,13 +68,6 @@ const BestBook = () => {
             <p>베스트 도서 준비 중!</p>
           )}
         </div>
-        <button
-          className="pagebtn"
-          onClick={nextPage}
-          disabled={(currentPage + 1) * booksPerPage >= bestBooks.length}
-        >
-          {">"}
-        </button>
       </div>
     </div>
   );
