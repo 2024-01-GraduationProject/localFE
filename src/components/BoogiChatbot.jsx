@@ -4,7 +4,7 @@ import api from "../api";
 
 const BoogiChatbot = () => {
   const location = useLocation();
-  const { userId, bookTitle } = location.state || {};
+  const { userId, bookTitle, bookAuthor } = location.state || {};
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
@@ -54,38 +54,45 @@ const BoogiChatbot = () => {
   };
 
   return (
-    <div className="chatbot-container">
-      <div className="messages">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`message-bubble ${
-              message.sender === "boogi" ? "left" : "right"
-            }`}
-          >
-            {message.text}
-          </div>
-        ))}
+    <>
+      <div className="boogi-book-info">
+        {bookTitle} | {bookAuthor}
       </div>
-      {!isCompleted && (
-        <div className="input-container">
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleSend()}
-            placeholder="답변을 입력하세요..."
-          />
-          <button onClick={handleSend}>전송</button>
+      <div className="chatbot-container-wrapper">
+        <div className="chatbot-container">
+          <div className="messages">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`message-bubble ${
+                  message.sender === "boogi" ? "left" : "right"
+                }`}
+              >
+                {message.text}
+              </div>
+            ))}
+          </div>
+          {!isCompleted && (
+            <div className="input-container">
+              <input
+                type="text"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                placeholder="답변을 입력하세요..."
+              />
+              <button onClick={handleSend}>전송</button>
+            </div>
+          )}
+          {!isCompleted && (
+            <div className="next-question-buttons">
+              <button onClick={() => handleNextQuestion("YES")}>예</button>
+              <button onClick={() => handleNextQuestion("NO")}>아니오</button>
+            </div>
+          )}
         </div>
-      )}
-      {!isCompleted && (
-        <div className="next-question-buttons">
-          <button onClick={() => handleNextQuestion("YES")}>예</button>
-          <button onClick={() => handleNextQuestion("NO")}>아니오</button>
-        </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

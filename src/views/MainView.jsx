@@ -22,11 +22,6 @@ const MainView = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSearchResults = (results) => {
-    // 검색 결과를 SearchList 페이지로 전달
-    navigate("/searchlist", { state: { searchResults: results } });
-  };
-
   if (!isAuthenticated) {
     return <div>로딩 중...</div>; // 로딩 중 메시지 표시
   }
@@ -34,17 +29,16 @@ const MainView = () => {
   return (
     <>
       <Header2 />
-      <SearchBar onSearch={handleSearchResults} />
       <MainNav />
 
       <div>
         <hr className="mainview_line" />
-        <NewBook />
+        <BestBook />
       </div>
 
       <div>
         <hr className="mainview_line" />
-        <BestBook />
+        <NewBook />
       </div>
 
       <div>

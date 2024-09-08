@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "assets/img/logo.jpg";
 import api from "../../api";
 import { useAuth } from "AuthContext";
+import { SearchBar } from "components";
 
 const Header2 = () => {
   const { logout } = useAuth();
@@ -32,6 +33,11 @@ const Header2 = () => {
     navigate(path);
   };
 
+  const handleSearchResults = (results) => {
+    // 검색 결과를 SearchList 페이지로 전달
+    navigate("/searchlist", { state: { searchResults: results } });
+  };
+
   return (
     <header id="header2" role="banner">
       <div className="header__inner">
@@ -41,6 +47,11 @@ const Header2 = () => {
         >
           <img src={logo} alt="로고"></img>
         </span>
+
+        <span>
+          <SearchBar onSearch={handleSearchResults} />
+        </span>
+
         <nav className="header__nav" role="navigation" aria-label="로그인 메뉴">
           <ul>
             <li>
@@ -60,7 +71,7 @@ const Header2 = () => {
           </ul>
         </nav>
       </div>
-      <hr />
+      {/*<hr />*/}
     </header>
   );
 };

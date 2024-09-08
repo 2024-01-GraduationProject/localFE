@@ -26,7 +26,7 @@ const BookReader = () => {
   const [userId, setUserId] = useState(null);
   const [isBookReady, setIsBookReady] = useState(false);
   const [bookTitle, setBookTitle] = useState(""); // 책 제목 상태 추가
-  const [showChatbot, setShowChatbot] = useState(false); // 챗봇 표시 여부 상태 추가
+  const [bookAuthor, setBookAuthor] = useState("");
   const { isAuthenticated, logout } = useAuth();
   const [lastReadCFI, setLastReadCFI] = useState(null);
   const [isBookCompleted, setIsBookCompleted] = useState(false); // 책 완독 상태 추가
@@ -54,8 +54,9 @@ const BookReader = () => {
           headers: { Accept: "application/epub+zip" },
         });
 
-        const bookTitleResponse = await api.get(`/books/${bookId}`);
-        setBookTitle(bookTitleResponse.data.title);
+        const bookDetailResponse = await api.get(`/books/${bookId}`);
+        setBookTitle(bookDetailResponse.data.title);
+        setBookAuthor(bookDetailResponse.data.author);
 
         if (response.status === 200) {
           const arrayBuffer = response.data;
@@ -99,7 +100,9 @@ const BookReader = () => {
 
   useEffect(() => {
     if (isBookCompleted) {
-      navigate(`/books/${bookId}/boogi`, { state: { userId, bookTitle } });
+      navigate(`/books/${bookId}/boogi`, {
+        state: { userId, bookTitle, bookAuthor },
+      });
     }
   }, [isBookCompleted, bookId, userId, bookTitle, navigate]);
 

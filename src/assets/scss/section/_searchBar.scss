@@ -4,13 +4,13 @@
 
 .search {
   display: flex;
-  padding-top: 7rem;
+  //padding-top: 1rem;
   width: 300px;
   height: 50px;
   position: relative;
   margin: auto;
-  margin-top: 1em;
-  margin-bottom: 1.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .searchInput {
@@ -25,10 +25,10 @@
   position: absolute;
   border-style: none;
   background-color: transparent;
-  top: 8px;
-  bottom: 5px;
+  top: 2px;
+  bottom: 4px;
   right: 7px;
-  padding-top: 7rem;
+  padding-top: 0.6rem;
   cursor: pointer;
 
   .searchIcon {
