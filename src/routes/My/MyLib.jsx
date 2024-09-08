@@ -114,19 +114,17 @@ const MyLib = () => {
           const allBooks = booksResponse.data;
 
           // 즐겨찾기 책 목록 필터링
-          const favoriteBooks = allBooks.filte((book) =>
-            favoriteBookIds.includes(book.bookd)
+          const favoriteBooks = allBooks.filter((book) =>
+            favoriteBookIds.includes(book.bookId)
           );
 
           setFavorites(favoriteBooks);
         } catch (error) {
-          alert("즐겨찾기 목록을 가져오는 중 류가 발생했습니다.");
+          alert("즐겨찾기 목록을 가져오는 중 오류가 발생했습니다.");
         }
       };
 
       fetchFavorites();
-    } else if (activeTab === "나의 답변") {
-      // 내 답변 가져오기
     }
   }, [activeTab, userId]);
 
