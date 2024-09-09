@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import api from "../api";
 
 const BoogiChatbot = () => {
+  const { bookId } = useParams();
   const location = useLocation();
   const { userId, bookTitle, bookAuthor } = location.state || {};
   const [messages, setMessages] = useState([]);
@@ -11,16 +12,30 @@ const BoogiChatbot = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const encodedBookTitle = encodeURIComponent(bookTitle);
     // 책 완독 축하 메시지와 첫 질문을 가져옴
     api
-      .get(`/boogi/ask-question/${userId}/${bookTitle}`)
+      .get(`/boogi/ask-question/${userId}/${encodedBookTitle}`)
       .then((response) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: "boogi", text: response.data },
-        ]);
+        console.log(response.data); // 데이터 구조 확인용
+
+        // 응답이 문자열인지 배열인지 확인
+        if (Array.isArray(response.data)) {
+          const messagesArray = response.data.map((item) => ({
+            sender: "boogi",
+            text: item, // item은 배열의 각 요소 (질문 텍스트 등)
+          }));
+          setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
+        } else {
+          // 응답이 문자열일 경우 처리
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { sender: "boogi", text: response.data },
+          ]);
+        }
       })
       .catch((error) => {
+        console.error("Error response:", error.response.data);
         setMessages((prevMessages) => [
           ...prevMessages,
           { sender: "boogi", text: "질문을 가져오는 중 오류가 발생했습니다." },
@@ -41,47 +56,81 @@ const BoogiChatbot = () => {
 
     // 답변 전송 후 챗봇 응답
     api
-      .post("/boogi/answer", { userId, userAnswer: userInput, bookTitle })
+      .post("/boogi/answer", userInput, {
+        params: {
+          userId,
+          bookTitle,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          //{ sender: "user", text: userInput },
-          { sender: "boogi", text: response.data },
-        ]);
+        // 응답이 배열이므로, 각 항목을 메시지로 추가
+        const messagesArray = response.data.split("\n").map((item, index) => ({
+          sender: "boogi",
+          text: item,
+        }));
+        setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
 
         // 질문이 모두 끝난 경우 완료 상태로 설정
-        if (response.data.includes("모두 마쳤어")) {
+        if (response.data.some((message) => message.includes("모두 마쳤어"))) {
           setIsCompleted(true);
         }
       })
       .catch((error) => {
+        console.error("Error response:", error.response.data);
         setMessages((prevMessages) => [
           ...prevMessages,
           { sender: "boogi", text: "답변 처리 중 오류가 발생했습니다." },
         ]);
       })
       .finally(() => {
-        setLoading(false); // 로딩 상태 비활성화
-        setUserInput(""); // 입력 필드 초기화
+        // 사용자 답변을 DB에 저장
+        api
+          .post("/boogi/save-answer", {
+            userId,
+            bookId,
+            answer: userInput,
+          })
+          .then((response) => {
+            console.log(response.data); // 저장 성공 메시지
+          })
+          .catch((error) => {
+            console.error("Error saving answer:", error.response.data);
+          })
+          .finally(() => {
+            setLoading(false); // 로딩 상태 비활성화
+            setUserInput(""); // 입력 필드 초기화
+          });
       });
   };
 
   const handleNextQuestion = (response) => {
     setLoading(true); // 로딩 상태 활성화
     api
-      .post("/boogi/next-question", { userId, response, bookTitle })
+      .post("/boogi/next-question", null, {
+        params: {
+          userId,
+          response,
+          bookTitle,
+        },
+      })
       .then((res) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: "boogi", text: res.data },
-        ]);
+        // 응답이 배열이므로, 각 항목을 메시지로 추가
+        const messagesArray = res.data.split("\n").map((item, index) => ({
+          sender: "boogi",
+          text: item,
+        }));
+        setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
 
-        if (res.data.includes("대화를 마칠게")) {
+        if (res.data.some((message) => message.includes("대화를 마칠게"))) {
           setIsCompleted(true);
         }
       })
 
       .catch((error) => {
+        console.error("Error response:", error.response.data);
         setMessages((prevMessages) => [
           ...prevMessages,
           { sender: "boogi", text: "추가 질문 처리 중 오류가 발생했습니다." },
