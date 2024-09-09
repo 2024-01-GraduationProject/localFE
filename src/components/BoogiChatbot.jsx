@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import api from "../api";
+import boogi2 from "assets/img/boogi2.jpg";
 
 const BoogiChatbot = () => {
   const { bookId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { userId, bookTitle, bookAuthor } = location.state || {};
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showNextQuestionButtons, setShowNextQuestionButtons] = useState(false);
 
   useEffect(() => {
     const encodedBookTitle = encodeURIComponent(bookTitle);
@@ -60,31 +63,45 @@ const BoogiChatbot = () => {
         params: {
           userId,
           bookTitle,
+          bookId,
         },
         headers: {
           "Content-Type": "application/json",
         },
       })
       .then((response) => {
-        // 응답이 배열이므로, 각 항목을 메시지로 추가
-        const messagesArray = response.data.split("\n").map((item, index) => ({
-          sender: "boogi",
-          text: item,
-        }));
-        setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
-
+        // 응답이 배열인지 확인
+        if (Array.isArray(response.data)) {
+          const messagesArray = response.data.map((item) => ({
+            sender: "boogi",
+            text: item,
+          }));
+          setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
+        } else {
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { sender: "boogi", text: response.data },
+          ]);
+        }
         // 질문이 모두 끝난 경우 완료 상태로 설정
-        if (response.data.some((message) => message.includes("모두 마쳤어"))) {
+        if (response.data.includes("모두 마쳤어")) {
           setIsCompleted(true);
+        } else {
+          setShowNextQuestionButtons(true);
         }
       })
       .catch((error) => {
-        console.error("Error response:", error.response.data);
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "답변 처리 중 오류가 발생했습니다.";
+        console.error("Error response:", errorMessage);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { sender: "boogi", text: "답변 처리 중 오류가 발생했습니다." },
+          { sender: "boogi", text: errorMessage },
         ]);
       })
+
       .finally(() => {
         // 사용자 답변을 DB에 저장
         api
@@ -97,7 +114,12 @@ const BoogiChatbot = () => {
             console.log(response.data); // 저장 성공 메시지
           })
           .catch((error) => {
-            console.error("Error saving answer:", error.response.data);
+            // save-answer API 에러 처리
+            const saveErrorMessage =
+              error.response?.data?.message ||
+              error.message ||
+              "답변 저장 중 오류가 발생했습니다.";
+            console.error("Error saving answer:", saveErrorMessage);
           })
           .finally(() => {
             setLoading(false); // 로딩 상태 비활성화
@@ -108,6 +130,8 @@ const BoogiChatbot = () => {
 
   const handleNextQuestion = (response) => {
     setLoading(true); // 로딩 상태 활성화
+    setShowNextQuestionButtons(false); // 버튼 사라지게 하기
+
     api
       .post("/boogi/next-question", null, {
         params: {
@@ -117,23 +141,31 @@ const BoogiChatbot = () => {
         },
       })
       .then((res) => {
-        // 응답이 배열이므로, 각 항목을 메시지로 추가
-        const messagesArray = res.data.split("\n").map((item, index) => ({
-          sender: "boogi",
-          text: item,
-        }));
-        setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
+        // 응답을 문자열로 받아와 직접 메시지로 사용
+        const message = res.data;
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { sender: "boogi", text: message },
+        ]);
 
-        if (res.data.some((message) => message.includes("대화를 마칠게"))) {
+        // 응답에 따라 대화 종료 여부 설정
+        if (
+          message.includes("질문을 모두 마쳤어") ||
+          message.includes("대화를 마칠게")
+        ) {
           setIsCompleted(true);
         }
       })
-
       .catch((error) => {
-        console.error("Error response:", error.response.data);
+        // error.response가 존재하는지 확인
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "추가 질문 처리 중 오류가 발생했습니다.";
+        console.error("Error response:", errorMessage);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { sender: "boogi", text: "추가 질문 처리 중 오류가 발생했습니다." },
+          { sender: "boogi", text: errorMessage },
         ]);
       })
       .finally(() => {
@@ -157,6 +189,13 @@ const BoogiChatbot = () => {
                   message.sender === "boogi" ? "left" : "right"
                 }`}
               >
+                {message.sender === "boogi" && (
+                  <img
+                    src={boogi2}
+                    alt="chatbot_boogi"
+                    className="chatbot_profile"
+                  />
+                )}
                 {message.text}
               </div>
             ))}
@@ -176,7 +215,7 @@ const BoogiChatbot = () => {
               </button>
             </div>
           )}
-          {!isCompleted && (
+          {!isCompleted && showNextQuestionButtons && (
             <div className="next-question-buttons">
               <button
                 onClick={() => handleNextQuestion("YES")}
@@ -190,6 +229,11 @@ const BoogiChatbot = () => {
               >
                 아니오
               </button>
+            </div>
+          )}
+          {isCompleted && (
+            <div className="end-buttons">
+              <button onClick={() => navigate("/mylib")}>내 서재📚 가기</button>
             </div>
           )}
         </div>

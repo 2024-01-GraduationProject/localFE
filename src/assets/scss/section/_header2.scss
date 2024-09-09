@@ -1,6 +1,6 @@
 #header2 {
   @include position-fixed;
-  z-index: 10000;
+  z-index: 1000;
 }
 .header__inner {
   @include flex-between;

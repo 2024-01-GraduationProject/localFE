@@ -35,7 +35,7 @@
 }
 
 .message-bubble {
-  max-width: 30%;
+  max-width: 40%;
   padding: 10px;
   border-radius: 15px;
   margin-bottom: 10px;
@@ -48,6 +48,9 @@
     margin-right: auto;
     display: flex;
     align-items: center;
+    position: relative;
+    margin-left: 70px;
+
     &:before {
       content: "";
       position: absolute;
@@ -59,22 +62,50 @@
       border-bottom: 10px solid transparent;
       border-right: 15px solid #fff9b0;
     }
+
+    .chatbot_profile {
+      position: absolute;
+      left: -70px;
+      top: 30%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+    }
   }
 
   &.right {
     background-color: #b4eeb4;
     margin-left: auto;
+    margin-right: 10px;
     &:after {
       content: "";
       position: absolute;
-      right: -15px;
-      top: 15px;
+      right: -10px;
+      top: 5px;
       width: 0;
       height: 0;
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
       border-left: 15px solid #b4eeb4;
     }
+  }
+}
+
+.next-question-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: -8px;
+  button {
+    padding: 10px 20px;
+    background-color: #ffcc80;
+    border: none;
+    border-radius: 20px;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px; /* 버튼 간격 조절 */
   }
 }
 
@@ -100,6 +131,7 @@
     margin-left: 10px;
     padding: 10px 20px;
     background-color: #a6d9a6;
+    flex-direction: row;
     border: none;
     border-radius: 20px;
     color: white;
@@ -108,35 +140,30 @@
   }
 }
 
-.next-question-buttons {
+.end-buttons {
   display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  position: absolute;
+  bottom: 10px; /* 버튼을 컨테이너의 하단에 위치시킴 */
+  right: 10px; /* 버튼을 컨테이너의 오른쪽에 위치시킴 */
+  width: 100%;
+  padding: 10px;
 
   button {
     padding: 10px 20px;
-    background-color: #ffcc80;
+    background-color: transparent;
     border: none;
-    border-radius: 20px;
+    //border-radius: 50px;
     color: black;
     font-size: 16px;
-    cursor: pointer;
-  }
-}
+    font-weight: bold;
 
-.message-bubble.left .next-question-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 10px;
-
-  button {
-    background-color: #ffcc80;
-    color: black;
-    padding: 5px 15px;
-    border-radius: 10px;
-    font-size: 14px;
+    &:hover {
+      text-decoration: underline;
+      transform: scale(1.05); /* 버튼 크기 확대 */
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+    }
   }
 }
