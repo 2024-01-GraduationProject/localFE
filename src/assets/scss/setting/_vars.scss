@@ -33,6 +33,13 @@
     font-size: 14px;
     line-height: 1.4;
   }
+
+  #webpack-dev-server-client-overlay {
+    z-index: -300000000 !important;
+    overflow: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
 
 body {

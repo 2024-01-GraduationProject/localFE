@@ -346,8 +346,10 @@ const MyLib = () => {
           <CustomModal
             type={modalType}
             onConfirm={handleModalConfirmYes}
-            onCancel={handleModalConfirmNo} // 수정: onCancel로 변경
+            onCancel={handleModalConfirmNo}
             onOptionNavigate={handleModalOptionNavigate}
+            userId={userId}
+            bookId={selectedCompletedBook}
           />
         )}
       </div>

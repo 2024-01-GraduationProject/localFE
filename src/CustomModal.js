@@ -1,6 +1,13 @@
 import React from "react";
 
-const CustomModal = ({ type, onConfirm, onCancel, onOptionNavigate }) => {
+const CustomModal = ({
+  type,
+  onConfirm,
+  onCancel,
+  onOptionNavigate,
+  userId,
+  bookId,
+}) => {
   return (
     <div className="custom-modal-overlay">
       <div className="custom-modal-content">
@@ -14,7 +21,11 @@ const CustomModal = ({ type, onConfirm, onCancel, onOptionNavigate }) => {
         {type === "options" && (
           <div>
             <p>다음 작업을 선택하세요:</p>
-            <button onClick={() => onOptionNavigate("/boogi")}>
+            <button
+              onClick={() =>
+                onOptionNavigate(`/boogi/answers/${userId}/${bookId}`)
+              }
+            >
               부기와의 대화 보러가기
             </button>
             <button onClick={() => onOptionNavigate("/mainview")}>

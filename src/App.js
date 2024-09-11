@@ -19,6 +19,7 @@ import {
   BookCategory,
   SearchList,
   BoogiChatbot,
+  CompletedBoogi,
 } from "components";
 import MainView from "views/MainView";
 import { AuthProvider } from "./AuthContext";
@@ -39,7 +40,6 @@ const App = () => {
           <Route path="/homeview" element={<HomeView />} />
           <Route path="/editmypage" element={<EditMyPage />} />
           <Route path="/mypage" element={<MyPage />} />
-          <Route path="/editmypage" element={<EditMyPage />} />
           <Route path="/tastenext" element={<TasteNext />} />
           <Route path="/books/details/:bookId" element={<BookDetail />} />
           <Route
@@ -49,6 +49,10 @@ const App = () => {
           <Route path="/books/:bookId/content" element={<BookReader />} />
           <Route path="/books/:bookId/boogi" element={<BoogiChatbot />} />
           <Route path="/searchlist" element={<SearchList />} />
+          <Route
+            path="/boogi/answers/:userId/:bookId"
+            element={<CompletedBoogi />}
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

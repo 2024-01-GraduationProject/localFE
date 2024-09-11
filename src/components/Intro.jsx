@@ -114,7 +114,7 @@ const Intro = () => {
           첫 달 무료로 시작하기
         </button>
       </form>
-      <div className="social_join">
+      {/*<div className="social_join">
         <div>OR</div>
 
         <div className="social">
@@ -128,7 +128,7 @@ const Intro = () => {
         </div>
       </div>
       <KakaoLogin ref={kakaoLoginRef} />
-      <GoogleLogin ref={googleLoginRef} />
+      <GoogleLogin ref={googleLoginRef} /> */}
     </section>
   );
 };

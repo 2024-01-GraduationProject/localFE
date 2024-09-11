@@ -15,3 +15,4 @@ export { default as MainNav } from "./MainScreen/MainNav";
 
 export { default as Intro } from "./Intro";
 export { default as BoogiChatbot } from "./BoogiChatbot";
+export { default as CompletedBoogi } from "./CompletedBoogi";

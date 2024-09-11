@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 import boogi2 from "assets/img/boogi2.jpg";
@@ -14,36 +14,47 @@ const BoogiChatbot = () => {
   const [loading, setLoading] = useState(false);
   const [showNextQuestionButtons, setShowNextQuestionButtons] = useState(false);
 
-  useEffect(() => {
-    const encodedBookTitle = encodeURIComponent(bookTitle);
-    // 책 완독 축하 메시지와 첫 질문을 가져옴
-    api
-      .get(`/boogi/ask-question/${userId}/${encodedBookTitle}`)
-      .then((response) => {
-        console.log(response.data); // 데이터 구조 확인용
+  // useRef를 사용하여 처음 렌더링 시 한 번만 실행되도록 설정
+  const hasFetchedQuestion = useRef(false);
 
-        // 응답이 문자열인지 배열인지 확인
-        if (Array.isArray(response.data)) {
-          const messagesArray = response.data.map((item) => ({
-            sender: "boogi",
-            text: item, // item은 배열의 각 요소 (질문 텍스트 등)
-          }));
-          setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
-        } else {
-          // 응답이 문자열일 경우 처리
+  useEffect(() => {
+    // 첫 번째 렌더링 시만 실행되도록 설정
+    if (!hasFetchedQuestion.current) {
+      hasFetchedQuestion.current = true;
+
+      const encodedBookTitle = encodeURIComponent(bookTitle);
+      // 책 완독 축하 메시지와 첫 질문을 가져옴
+      api
+        .get(`/boogi/ask-question/${userId}/${encodedBookTitle}`)
+        .then((response) => {
+          console.log(response.data); // 데이터 구조 확인용
+
+          // 응답이 문자열인지 배열인지 확인
+          if (Array.isArray(response.data)) {
+            const messagesArray = response.data.map((item) => ({
+              sender: "boogi",
+              text: item, // item은 배열의 각 요소 (질문 텍스트 등)
+            }));
+            setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
+          } else {
+            // 응답이 문자열일 경우 처리
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              { sender: "boogi", text: response.data },
+            ]);
+          }
+        })
+        .catch((error) => {
+          console.error("Error response:", error.response.data);
           setMessages((prevMessages) => [
             ...prevMessages,
-            { sender: "boogi", text: response.data },
+            {
+              sender: "boogi",
+              text: "질문을 가져오는 중 오류가 발생했습니다.",
+            },
           ]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error response:", error.response.data);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: "boogi", text: "질문을 가져오는 중 오류가 발생했습니다." },
-        ]);
-      });
+        });
+    }
   }, [userId, bookTitle]);
 
   const handleSend = () => {
@@ -62,6 +73,7 @@ const BoogiChatbot = () => {
       .post("/boogi/answer", userInput, {
         params: {
           userId,
+          question: messages[messages.length - 1].text,
           bookTitle,
           bookId,
         },

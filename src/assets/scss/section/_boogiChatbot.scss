@@ -43,6 +43,10 @@
   font-size: 13px;
   line-height: 1.4;
 
+  .message-text {
+    padding: 5px;
+  }
+
   &.left {
     background-color: #fff9b0;
     margin-right: auto;
