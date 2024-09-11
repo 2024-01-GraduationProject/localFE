@@ -32,16 +32,20 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .message-bubble {
+  position: relative;
+  display: inline-block;
   max-width: 40%;
   padding: 10px;
   border-radius: 15px;
   margin-bottom: 10px;
-  position: relative;
   font-size: 13px;
   line-height: 1.4;
+  transition: transform 0.3s ease-in-out;
 
   .message-text {
     padding: 5px;
@@ -93,6 +97,34 @@
       border-bottom: 10px solid transparent;
       border-left: 15px solid #b4eeb4;
     }
+  }
+
+  .typing-indicator {
+    display: none;
+    position: absolute;
+    bottom: -30px;
+    left: 10px;
+    font-size: 12px;
+    color: #888;
+
+    &.show {
+      display: block;
+    }
+  }
+
+  @keyframes bubbleEffect {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &.show {
+    animation: bubbleEffect 1s ease-in-out;
   }
 }
 

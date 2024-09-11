@@ -13,6 +13,7 @@ const BoogiChatbot = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showNextQuestionButtons, setShowNextQuestionButtons] = useState(false);
+  const [showTypingIndicator, setShowTypingIndicator] = useState(false);
 
   // useRef를 사용하여 처음 렌더링 시 한 번만 실행되도록 설정
   const hasFetchedQuestion = useRef(false);
@@ -67,122 +68,132 @@ const BoogiChatbot = () => {
     ]);
 
     setLoading(true); // 로딩 상태 활성화
+    setShowTypingIndicator(true);
 
     // 답변 전송 후 챗봇 응답
-    api
-      .post("/boogi/answer", userInput, {
-        params: {
-          userId,
-          question: messages[messages.length - 1].text,
-          bookTitle,
-          bookId,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        // 응답이 배열인지 확인
-        if (Array.isArray(response.data)) {
-          const messagesArray = response.data.map((item) => ({
-            sender: "boogi",
-            text: item,
-          }));
-          setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
-        } else {
+    setTimeout(() => {
+      api
+        .post("/boogi/answer", userInput, {
+          params: {
+            userId,
+            question: messages[messages.length - 1].text,
+            bookTitle,
+            bookId,
+          },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          // 응답이 배열인지 확인
+          if (Array.isArray(response.data)) {
+            const messagesArray = response.data.map((item) => ({
+              sender: "boogi",
+              text: item,
+            }));
+            setMessages((prevMessages) => [...prevMessages, ...messagesArray]);
+          } else {
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              { sender: "boogi", text: response.data },
+            ]);
+          }
+          // 질문이 모두 끝난 경우 완료 상태로 설정
+          if (response.data.includes("모두 마쳤어")) {
+            setIsCompleted(true);
+            setShowTypingIndicator(false);
+          } else {
+            setShowNextQuestionButtons(true);
+          }
+        })
+        .catch((error) => {
+          const errorMessage =
+            error.response?.data?.message ||
+            error.message ||
+            "답변 처리 중 오류가 발생했습니다.";
+          console.error("Error response:", errorMessage);
           setMessages((prevMessages) => [
             ...prevMessages,
-            { sender: "boogi", text: response.data },
+            { sender: "boogi", text: errorMessage },
           ]);
-        }
-        // 질문이 모두 끝난 경우 완료 상태로 설정
-        if (response.data.includes("모두 마쳤어")) {
-          setIsCompleted(true);
-        } else {
-          setShowNextQuestionButtons(true);
-        }
-      })
-      .catch((error) => {
-        const errorMessage =
-          error.response?.data?.message ||
-          error.message ||
-          "답변 처리 중 오류가 발생했습니다.";
-        console.error("Error response:", errorMessage);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: "boogi", text: errorMessage },
-        ]);
-      })
+        })
 
-      .finally(() => {
-        // 사용자 답변을 DB에 저장
-        api
-          .post("/boogi/save-answer", {
-            userId,
-            bookId,
-            answer: userInput,
-          })
-          .then((response) => {
-            console.log(response.data); // 저장 성공 메시지
-          })
-          .catch((error) => {
-            // save-answer API 에러 처리
-            const saveErrorMessage =
-              error.response?.data?.message ||
-              error.message ||
-              "답변 저장 중 오류가 발생했습니다.";
-            console.error("Error saving answer:", saveErrorMessage);
-          })
-          .finally(() => {
-            setLoading(false); // 로딩 상태 비활성화
-            setUserInput(""); // 입력 필드 초기화
-          });
-      });
+        .finally(() => {
+          // 사용자 답변을 DB에 저장
+          api
+            .post("/boogi/save-answer", {
+              userId,
+              bookId,
+              answer: userInput,
+            })
+            .then((response) => {
+              console.log(response.data); // 저장 성공 메시지
+            })
+            .catch((error) => {
+              // save-answer API 에러 처리
+              const saveErrorMessage =
+                error.response?.data?.message ||
+                error.message ||
+                "답변 저장 중 오류가 발생했습니다.";
+              console.error("Error saving answer:", saveErrorMessage);
+            })
+            .finally(() => {
+              setLoading(false); // 로딩 상태 비활성화
+              setUserInput(""); // 입력 필드 초기화
+              setShowTypingIndicator(false);
+            });
+        });
+    }, 1000);
   };
 
   const handleNextQuestion = (response) => {
     setLoading(true); // 로딩 상태 활성화
     setShowNextQuestionButtons(false); // 버튼 사라지게 하기
+    setShowTypingIndicator(true);
 
-    api
-      .post("/boogi/next-question", null, {
-        params: {
-          userId,
-          response,
-          bookTitle,
-        },
-      })
-      .then((res) => {
-        // 응답을 문자열로 받아와 직접 메시지로 사용
-        const message = res.data;
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: "boogi", text: message },
-        ]);
+    setTimeout(() => {
+      api
+        .post("/boogi/next-question", null, {
+          params: {
+            userId,
+            response,
+            bookTitle,
+          },
+        })
+        .then((res) => {
+          // 응답을 문자열로 받아와 직접 메시지로 사용
+          const message = res.data;
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { sender: "boogi", text: message },
+          ]);
 
-        // 응답에 따라 대화 종료 여부 설정
-        if (
-          message.includes("질문을 모두 마쳤어") ||
-          message.includes("대화를 마칠게")
-        ) {
-          setIsCompleted(true);
-        }
-      })
-      .catch((error) => {
-        // error.response가 존재하는지 확인
-        const errorMessage =
-          error.response?.data?.message ||
-          error.message ||
-          "추가 질문 처리 중 오류가 발생했습니다.";
-        console.error("Error response:", errorMessage);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: "boogi", text: errorMessage },
-        ]);
-      })
-      .finally(() => {
-        setLoading(false); // 로딩 상태 비활성화
-      });
+          // 응답에 따라 대화 종료 여부 설정
+          if (
+            message.includes("질문을 모두 마쳤어") ||
+            message.includes("대화를 마칠게")
+          ) {
+            setIsCompleted(true);
+            setShowTypingIndicator(false);
+          }
+        })
+        .catch((error) => {
+          // error.response가 존재하는지 확인
+          const errorMessage =
+            error.response?.data?.message ||
+            error.message ||
+            "추가 질문 처리 중 오류가 발생했습니다.";
+          console.error("Error response:", errorMessage);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { sender: "boogi", text: errorMessage },
+          ]);
+        })
+        .finally(() => {
+          setLoading(false); // 로딩 상태 비활성화
+          setShowTypingIndicator(false);
+        });
+    }, 1000);
   };
 
   return (
@@ -199,6 +210,10 @@ const BoogiChatbot = () => {
                 key={index}
                 className={`message-bubble ${
                   message.sender === "boogi" ? "left" : "right"
+                } ${
+                  message.sender === "boogi" && index === messages.length - 1
+                    ? "show"
+                    : ""
                 }`}
               >
                 {message.sender === "boogi" && (
@@ -209,6 +224,13 @@ const BoogiChatbot = () => {
                   />
                 )}
                 {message.text}
+                {message.sender === "boogi" &&
+                  index === messages.length - 1 &&
+                  showTypingIndicator && (
+                    <div className="typing-indicator show">
+                      <span>typing...</span>
+                    </div>
+                  )}
               </div>
             ))}
           </div>
