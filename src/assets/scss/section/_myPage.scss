@@ -9,12 +9,37 @@
   margin: 0 auto;
   margin-top: 80px;
 
+  @media (max-width: 768px) {
+    padding: 15px;
+    margin-top: 50px;
+  }
+
+  @media (max-width: 480px) {
+    .user-info {
+      width: 100%;
+      .profile-pic {
+        width: 100px;
+        height: 100px;
+      }
+      .info {
+        div {
+          font-size: 14px;
+        }
+      }
+      .editBtn {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  }
+
   .user-info {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 80%;
     margin-bottom: 30px;
+    padding-bottom: 10px;
 
     .profile-pic-div {
       display: flex;
@@ -24,8 +49,14 @@
         width: 120px;
         height: 120px;
         border-radius: 50%;
+        border: 1px solid #eaeaea;
+        padding: 2px;
         object-fit: cover;
         margin-bottom: 10px;
+        transition: box-shadow 0.3s ease;
+        &:hover {
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+        }
       }
     }
 
@@ -36,7 +67,10 @@
         margin: 5px 0;
         font-size: 16px;
         line-height: 2;
-
+        opacity: 0; /* 처음에는 보이지 않음 */
+        transform: translateY(50px); /* 아래에서 떠오르는 효과 */
+        animation: fadeInFloat 1s ease forwards; /* 애니메이션 적용 */
+        animation-delay: calc(0.2s * var(--i)); /* 요소마다 지연 시간 설정 */
         .mypage-icon {
           margin-right: 20px;
         }
@@ -52,18 +86,46 @@
 
     .editBtn {
       margin-top: 20px;
-      padding: 12px;
-      border: none;
+      padding: 12px 24px;
+      border: 2px solid transparent;
       border-radius: 5px;
       background-color: #b6dc80;
       color: #fff;
       font-size: 16px;
       cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      opacity: 0; /* 처음에는 보이지 않음 */
+      transform: translateY(50px); /* 아래에서 떠오르는 효과 */
+      animation: fadeInFloat 1s ease forwards; /* 애니메이션 적용 */
+      animation-delay: calc(
+        0.2s * 5
+      ); /* 모든 info 요소 후에 버튼이 나타나도록 설정 */
 
       &:hover {
-        filter: grayscale(30%);
+        background-color: #a0cf60;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-4px);
+      }
+
+      &:active {
+        background-color: #8bbf5f;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transform: translateY(1px);
       }
     }
+  }
+}
+
+@keyframes fadeInFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -76,152 +138,190 @@
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;
-  margin-top: 80px;
+  margin-top: 130px;
+  margin-bottom: 50px;
+  border: 1px solid #ccc;
+  border-radius: 8px; // 모서리를 둥글게
+  background-color: #f9f9f9; // 배경 색상 추가
+}
 
-  .profile-pic-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.profile-pic-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-    .profile-pic {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
 
-    .camera-icon {
-      cursor: pointer;
-    }
-  }
+.form-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 20px;
+}
 
-  .form-section {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px;
-    margin-top: 20px;
+.form-field {
+  display: flex;
+  //align-items: center;
+  //flex-direction: column;
+  margin-bottom: 15px;
 
-    .user-email {
-      font-weight: 400;
-      margin-left: 30px;
-      margin-right: 10px;
-    }
-
-    .confirmBtn {
-      margin-left: 15px;
-      margin-top: 5px;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #b6dc80;
-      color: #fff;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    small {
-      margin-bottom: 10px;
-      margin-top: -6px;
-      margin-left: 70px;
-      font-weight: 300;
-    }
-
+  &.preferences {
+    //flex-direction: column;
     label {
-      display: flex;
-      align-items: center;
-      justify-content: baseline;
-      margin-bottom: 15px;
-      font-weight: 550;
+      margin-bottom: 10px;
+      font-weight: 500;
     }
-
-    input,
-    select {
-      flex: 1;
-      padding: 10px;
-      max-width: 150px;
-      margin-top: 5px;
-      margin-left: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .eventAlarm-group {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-
-      label {
-        margin-right: 10px;
-        font-weight: bold;
-      }
-
-      input,
-      select {
-        flex: 1;
-        padding: 10px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-    }
-    .radio-group {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-
-      label {
-        display: flex;
-        align-items: center;
-        font-weight: normal;
-
-        input {
-          margin-right: 5px;
-        }
-      }
-    }
-
     .preferences {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      padding-bottom: 15px;
       margin-top: 10px;
+    }
+  }
 
-      button {
-        padding: 10px 15px;
-        border: none;
-        border-radius: 20px;
-        background-color: #eaeaea;
-        cursor: pointer;
-        transition: background-color 0.3s;
+  label {
+    flex: 0 0 130px; // label의 너비를 고정
+    font-weight: 550;
+    margin-right: 10px;
+    text-align: left; // 레이블을 오른쪽 정렬
+  }
 
-        &:hover {
-          background-color: #b6dc80;
-        }
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
 
-        &.selected {
-          background-color: #b6dc80;
-          color: #fff;
-        }
-      }
+    input,
+    select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      max-width: 150px;
+      width: 40%;
+      text-align: center;
     }
 
-    .saveBtn {
-      margin-top: 20px;
-      padding: 12px;
-      border: none;
-      border-radius: 5px;
+    button {
+      margin-left: 10px;
+    }
+  }
+}
+
+.confirmBtn {
+  margin-left: 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #b6dc80;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  // 기본 상태
+  &:hover {
+    background-color: #a0cf60;
+  }
+
+  &:active {
+    background-color: #8bbf5f;
+    transform: scale(0.98); // 클릭 시 버튼이 살짝 작아짐
+  }
+
+  // 버튼의 크기와 위치 조정 (반응형)
+  @media (max-width: 600px) {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+}
+
+.small {
+  margin-bottom: 10px;
+  margin-top: -6px;
+  font-weight: 300;
+  color: #e74c3c;
+}
+
+.user-email {
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+  }
+
+  input {
+    margin-right: 5px;
+  }
+}
+
+.preferences {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+
+  button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: #eaeaea;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #b6dc80;
+    }
+
+    &.selected {
       background-color: #b6dc80;
       color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background-color: #b6dc80;
-      }
     }
+  }
+}
+
+.saveBtn {
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #b6dc80;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #a0cf60;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+  }
+
+  &:active {
+    background-color: #8bbf5f;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
   }
 }

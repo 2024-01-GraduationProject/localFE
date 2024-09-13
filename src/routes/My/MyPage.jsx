@@ -11,7 +11,7 @@ import { LuSettings } from "react-icons/lu";
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, authToken } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const MyPage = () => {
     };
 
     fetchUserData();
-  }, [isAuthenticated, authToken, navigate]);
+  }, [isAuthenticated, navigate]);
 
   if (!user) return <p>Loading...</p>;
 
@@ -48,17 +48,17 @@ const MyPage = () => {
           </div>
           <h2>{user.nickname} 님</h2>
           <div className="info">
-            <div>
+            <div style={{ "--i": 1 }}>
               <MdOutlineEmail className="mypage-icon" size="28" />
               <span>{user.email}</span>
             </div>
-            <div>
+            <div style={{ "--i": 2 }}>
               <FaRegUser className="mypage-icon" size="28" />
               <span>
                 {user.age}, {user.gender}
               </span>
             </div>
-            <div>
+            <div style={{ "--i": 3 }}>
               <IoMdBook className="mypage-icon" size="28" />
               {user.bookTaste.map((bookTaste, index) => (
                 <span key={index} className="bookTaste-tag">
@@ -66,7 +66,7 @@ const MyPage = () => {
                 </span>
               ))}
             </div>
-            <div>
+            <div style={{ "--i": 4 }}>
               <LuSettings className="mypage-icon" size="28" />
               <span>{user.loginMethod}</span>
             </div>
