@@ -83,11 +83,13 @@ const NewBook = () => {
               className="newbook-item"
               onClick={() => goToBookDetail(book.id)}
             >
+              <div className="book-cover-wrapper">
               <img
                 src={book.coverImageUrl}
                 alt={book.title}
                 className="book-cover"
               />
+              </div>
               <div className="book-details">
                 <h3 className="book-title">{book.title}</h3>
                 <p className="book-author">

@@ -15,9 +15,14 @@
   align-items: center;
   justify-content: center;
   justify-content: space-between; /* 버튼이 양 끝에 위치하도록 설정 */
-  width: 70%; /* 전체 컨테이너의 넓이 */
+  width: 60%; /* 전체 컨테이너의 넓이 */
   margin: 0 auto; /* 가운데 정렬 */
   border-radius: 10px;
+  // 추가
+  overflow: hidden; /* 넘치는 책 아이템을 숨김 */
+  background-color: #ececec; /* 회색 배경색 */
+  // border: 1px solid #ddd; /* 테두리 추가 */
+  padding: 3em; /* 내용과 테두리 사이에 여백 추가 */
   //margin-bottom: 1.5em;
   //background-color: #d0e9ad;
 
@@ -37,16 +42,51 @@
     }
   }
 
+  // 추가
+  .book-list {
+    display: flex; /* 책 아이템들을 가로로 배치 */
+    overflow-x: auto; /* 가로로 넘치는 책들을 스크롤 가능하게 함 */
+    scroll-behavior: smooth; /* 스크롤이 부드럽게 움직이도록 설정 */
+    gap: 2em; /* 책 아이템들 사이에 간격을 둠 */
+    justify-content: center; /* 아이템들을 가로 방향으로 가운데 정렬 */
+    align-items: center; /* 아이템들을 세로 방향으로 가운데 정렬 */
+    padding-bottom: 20px; /* 스크롤바와 컨테이너 아래쪽의 여백 추가 */
+  }
+
   .newbook-item {
     width: 160px;
-    margin: 1em 1em 1em 0;
+    // margin: 1em 1em 1em 0;
+    margin: 1em 0; /* 상하 간격만 주고 좌우 간격은 부모 요소에서 조절 */
     text-align: center;
     flex-shrink: 0; /* 고정된 크기로 유지 */
     display: flex;
     flex-direction: column;
     align-items: center;
     border-radius: 10px;
+    // 도서 틀 추가
+    padding: 30px 60px; /* 상하 30px, 좌우 50px 여백 */
+    background-color: #f7f7f7; /* 틀 내부의 배경색 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 추가 */
+    border: 1px solid #ddd; /* 테두리 추가 */
   }
+
+  /* 스크롤바 스타일링 */
+.book-list::-webkit-scrollbar {
+  height: 13px; /* 스크롤바의 높이 */
+}
+
+.book-list::-webkit-scrollbar-track {
+  background: transparent; /* 스크롤바의 트랙(배경) */
+}
+
+.book-list::-webkit-scrollbar-thumb {
+  background: #9fb9a3; /* 스크롤바의 색상 */
+  border-radius: 4px; /* 스크롤바의 모서리 둥글게 */
+}
+
+.book-list::-webkit-scrollbar-thumb:hover {
+  background: #3e744b; /* 스크롤바를 호버할 때의 색상 */
+}
 }
 
 /* BestBook.jsx */
@@ -148,6 +188,7 @@
   gap: 1em;
 }
 
+// 없어도 될 거 같음..고려...
 .book-item {
   width: 160px;
   margin: 1em 1em 1em 0;
@@ -170,8 +211,22 @@
   width: 100%;
   height: auto;
   object-fit: cover; /* 표지를 잘라내거나 비율을 맞춰서 잘 나타내도록 설정 */
-  border: 1px solid #ddd; /* 책 표지에 테두리를 추가하여 정렬된 느낌 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 추가 */
+  // border: 1px solid #ddd; /* 책 표지에 테두리를 추가하여 정렬된 느낌 */
+  // box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 추가 */
+}
+
+// 책 커버이미지 틀
+.book-cover-wrapper {
+  width: 100%; /* 원하는 고정 너비 */
+  height: 250px; /* 원하는 고정 높이 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* 이미지가 박스를 넘치지 않도록 숨김 */
+  border: 1px solid #ddd; /* 박스에 테두리 추가 */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 박스에 그림자 추가 */
+  background-color: #fff; /* 이미지 로딩 전 배경색 */
 }
 
 .book-details {
