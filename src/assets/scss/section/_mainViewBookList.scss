@@ -12,7 +12,7 @@
 
 .userNickname {
   font-size: 80%;
-  color: #730396;
+  color: #000000;
   font-weight: 800;
 }
 
@@ -281,8 +281,8 @@
   // 도서 틀 추가
   padding-top: 15pt;
   padding-bottom: 7pt;
-  background-color: #fdf7ff; /* 틀 내부의 배경색 */
-  box-shadow: 0 0 5pt rgba(138, 34, 170, 0.635); /* 부드러운 그림자 추가 */
+  background-color: #fffff1; /* 틀 내부의 배경색 */
+  box-shadow: 0 0 5pt rgba(206, 196, 4, 0.635); /* 부드러운 그림자 추가 */
 
   &:hover {
     transform: scale(1.05);
