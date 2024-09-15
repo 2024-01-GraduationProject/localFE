@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import api from "../api";
-import boogi2 from "assets/img/boogi2.jpg";
+import chatbot from "assets/img/chatbot.jpg";
+import chatbot2 from "assets/img/chatbot2.jpg";
+import chatbot3 from "assets/img/chatbot3.jpg";
 
 const BoogiChatbot = () => {
   const { bookId } = useParams();
@@ -196,6 +198,13 @@ const BoogiChatbot = () => {
     }, 1000);
   };
 
+  // 이미지 동적으로 설정
+  const getChatbotImage = (index) => {
+    if (index === 0) return chatbot; // 첫 번째 질문
+    if (index > 0 && messages[index - 1].sender === "user") return chatbot2; // 사용자의 답변 이후
+    return chatbot3; // 그 외의 경우
+  };
+
   return (
     <>
       <div className="boogi-book-info">
@@ -218,7 +227,7 @@ const BoogiChatbot = () => {
               >
                 {message.sender === "boogi" && (
                   <img
-                    src={boogi2}
+                    src={getChatbotImage(index)}
                     alt="chatbot_boogi"
                     className="chatbot_profile"
                   />

@@ -481,7 +481,7 @@ const BookReader = () => {
             className={`view-indexes ${showIndexes ? "active" : ""}`}
             onClick={handleViewIndexes}
           >
-            {showIndexes ? "-" : "+"}
+            {showIndexes ? <FaRegBookmark /> : <FaBookmark />}
           </button>
           {showIndexes && (
             <div className="indexes-list">

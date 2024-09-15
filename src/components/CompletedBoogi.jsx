@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api"; // API 호출용 설정 파일
-import boogi2 from "assets/img/boogi2.jpg";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa"; // 아이콘 임포트
+import chatbot from "assets/img/chatbot.jpg";
+import chatbot2 from "assets/img/chatbot2.jpg";
+import chatbot3 from "assets/img/chatbot3.jpg";
 
 const CompletedBoogi = () => {
   const { userId, bookId } = useParams();
@@ -54,6 +56,12 @@ const CompletedBoogi = () => {
       });
   }, [userId, bookId]);
 
+  // 이미지 동적으로 설정
+  const getChatbotImage = (index) => {
+    if (index === 0) return chatbot; // 첫 번째 질문
+    return chatbot3; // 그 외의 경우
+  };
+
   const handleBack = () => {
     navigate(-1);
   };
@@ -84,7 +92,7 @@ const CompletedBoogi = () => {
                   {answer.question && (
                     <div className="message-bubble left">
                       <img
-                        src={boogi2}
+                        src={getChatbotImage(index)}
                         alt="chatbot_boogi"
                         className="chatbot_profile"
                       />
