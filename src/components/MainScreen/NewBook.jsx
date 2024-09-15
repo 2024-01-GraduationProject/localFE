@@ -18,7 +18,7 @@ const NewBook = () => {
           .sort(
             (a, b) => new Date(b.publicationDate) - new Date(a.publicationDate)
           )
-          .slice(0, 5); // 상위 8권만 추출
+          .slice(0, 4); // 상위 4권만 추출
 
         // 필요한 정보만 추출하여 상태에 저장
         const bookData = sortedBooks.map((book) => ({
@@ -38,26 +38,6 @@ const NewBook = () => {
     fetchBooks();
   }, []);
 
-  // // 현재 페이지의 책들을 가져옴
-  // const currentBooks = books.slice(
-  //   currentPage * booksPerPage,
-  //   (currentPage + 1) * booksPerPage
-  // );
-
-  // // 다음 페이지로 이동
-  // const nextPage = () => {
-  //   if ((currentPage + 1) * booksPerPage < books.length) {
-  //     setCurrentPage(1); // 페이지를 1로 변경하여 나머지 4권을 표시
-  //   }
-  // };
-
-  // // 이전 페이지로 이동
-  // const prevPage = () => {
-  //   if (currentPage > 0) {
-  //     setCurrentPage(0); // 페이지를 0으로 변경하여 첫 4권을 다시 표시
-  //   }
-  // };
-
   const goToBookDetail = (id) => {
     navigate(`/books/details/${id}`);
   };
@@ -69,15 +49,7 @@ const NewBook = () => {
       </div>
 
       <div className="newbook-list-wrapper">
-        {/* <button
-          className="pagebtn"
-          onClick={prevPage}
-          disabled={currentPage === 0}
-        >
-          {"<"}
-        </button> */}
         <div className="book-list">
-          {/* {currentBooks.map((book) => ( */}
           {books.map((book) => (
             <div
               key={book.id}
@@ -98,13 +70,6 @@ const NewBook = () => {
             </div>
           ))}
         </div>
-        {/* <button
-          className="pagebtn"
-          onClick={nextPage}
-          disabled={(currentPage + 1) * booksPerPage >= books.length}
-        >
-          {">"}
-        </button> */}
       </div>
     </div>
   );

@@ -36,16 +36,17 @@ const MainView = () => {
       </div>
 
       <div className="mainview_wrapper">
+        <RecommendBook />
+      </div>
+
+      <div className="mainview_wrapper">
+      <hr className="mainview_line" />
         <NewBook />
       </div>
 
       <div className="mainview_wrapper">
+      <hr className="mainview_line" />
         <FamousBook />
-      </div>
-
-      <div className="mainview_wrapper">
-        <hr className="mainview_line" />
-        <RecommendBook />
       </div>
     </>
   );

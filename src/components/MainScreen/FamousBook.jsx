@@ -64,17 +64,20 @@ const FamousBook = () => {
   };
 
   return (
-    <>
+    <div className="booklist-wrapper">
       <div className="main-booklist-component">
-        요즘 <strong>{age}</strong> <strong>{gender}</strong>이(가) 즐겨 보는 책{" "}
+        <span className="groupingText">
+        요즘 </span><strong className="highlightAgeGender">{age}</strong> <strong className="highlightAgeGender">{gender}</strong>
+        <span className="groupingText">이(가) 즐겨 보는 책{" "}</span>
+      
       </div>
       <div className="famousBook-list-wrapper">
-        <div className="famousBook-list">
+        <div className="book-list">
           {books.length > 0 ? (
             books.map((book) => (
               <div
                 key={book.bookId}
-                className="book-item"
+                className="famous-book-item"
                 onClick={() => goToBookDetail(book.bookId)}
               >
                 <div className="book-cover-wrapper">
@@ -87,7 +90,7 @@ const FamousBook = () => {
                 <div className="book-details">
                   <h3 className="book-title">{book.title}</h3>
                   <p className="book-author">
-                    {book.author} | {book.publisher}
+                    {book.author}
                   </p>
                 </div>
               </div>
@@ -97,7 +100,7 @@ const FamousBook = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

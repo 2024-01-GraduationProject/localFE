@@ -231,7 +231,9 @@ const BookDetail = () => {
         </div>
       </div>
 
+      <div className="mainview_wrapper">
       <FamousBook />
+      </div>
     </>
   );
 };
