@@ -5,7 +5,8 @@
 .header__inner {
   @include flex-between;
   background-color: white; //rgba(116, 99, 99, 0.1);
-  padding: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 1rem;
   margin-left: 4em;
   margin-right: 4em;
 
