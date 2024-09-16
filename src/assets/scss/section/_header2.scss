@@ -5,10 +5,12 @@
 .header__inner {
   @include flex-between;
   background-color: white; //rgba(116, 99, 99, 0.1);
-  padding-top: 2rem;
-  padding-bottom: 1rem;
-  margin-left: 4em;
-  margin-right: 4em;
+  padding-top: 1rem;
+  padding-bottom: 0;
+  padding-left: 2em;
+  padding-right: 4em;
+  // margin-left: 2em;
+  // margin-right: 4em;
 
   .header__logo {
     font-size: 1rem;
@@ -16,8 +18,8 @@
     cursor: pointer;
 
     img {
-      width: 220px;
-      height: 57px;
+      width: 300px;
+      height: 100px;
       object-fit: cover;
     }
   }
