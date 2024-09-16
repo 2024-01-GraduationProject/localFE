@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import api from "../api";
-import chatbot from "assets/img/chatbot.jpg";
-import chatbot2 from "assets/img/chatbot2.jpg";
-import chatbot3 from "assets/img/chatbot3.jpg";
+import chatbot from "assets/img/chatbot_nobg.png";
+import chatbot2 from "assets/img/chatbot2_nobg.png";
+import chatbot3 from "assets/img/chatbot3_nobg.png";
 
 const BoogiChatbot = () => {
   const { bookId } = useParams();
@@ -251,7 +251,7 @@ const BoogiChatbot = () => {
                 onChange={(e) => setUserInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSend()}
                 placeholder="답변을 입력하세요..."
-                disabled={loading} // 로딩 중에는 입력 비활성화
+                disabled={loading || showNextQuestionButtons} // 로딩 중에는 입력 비활성화
               />
               <button onClick={handleSend} disabled={loading}>
                 {loading ? "전송 중..." : "전송"}

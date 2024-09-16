@@ -31,7 +31,7 @@
   align-items: center;
   justify-content: center; /* 자식 요소를 수평으로 가운데 배치 */
   margin: 0;
-  }
+}
 
 .newbook-item {
   text-align: center;
@@ -232,7 +232,7 @@
 }
 
 .book-title {
-  font-size: 1.0em;
+  font-size: 1em;
   font-weight: bold;
   margin: 0;
   line-height: 1.2; /* 줄간격을 1.5배로 설정 */
@@ -241,7 +241,7 @@
 .book-author {
   font-size: 0.8em;
   color: #555;
-  margin-top: 0.3em; 
+  margin-top: 0.3em;
   margin-bottom: 0;
 }
 
