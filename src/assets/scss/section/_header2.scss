@@ -4,13 +4,11 @@
 }
 .header__inner {
   @include flex-between;
-  background-color: white; //rgba(116, 99, 99, 0.1);
+  background-color: #c2e8c7; //rgba(116, 99, 99, 0.1);
   padding-top: 1rem;
   padding-bottom: 0;
   padding-left: 2em;
   padding-right: 4em;
-  // margin-left: 2em;
-  // margin-right: 4em;
 
   .header__logo {
     font-size: 1rem;

@@ -55,7 +55,7 @@ const SearchBar = ({ onSearch }) => {
           value={searchWord}
           onChange={onSearchChange}
           onKeyDown={handleKeyDown}
-          placeholder="검색어를 입력해주세요."
+          placeholder=" 검색어를 입력해주세요."
         />
         <button className="searchbtn" onClick={handleSearch}>
           <img className="searchIcon" src={searchIcon} alt="돋보기" />
