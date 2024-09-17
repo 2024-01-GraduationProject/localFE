@@ -4,7 +4,7 @@
 }
 .header__inner {
   @include flex-between;
-  background-color: #c2e8c7; //rgba(116, 99, 99, 0.1);
+  background-color: transparent;
   padding-top: 1rem;
   padding-bottom: 0;
   padding-left: 2em;
@@ -61,6 +61,6 @@
 hr {
   margin-top: 0;
   margin-bottom: 0;
-  border: 0;
-  border-top: 1px solid lightgray;
+  border: none;
+  background-color: transparent;
 }

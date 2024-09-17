@@ -1,108 +1,207 @@
 #taste {
   display: flex;
   flex-direction: column;
-}
-
-.taste_text {
-  display: inherit;
-  flex-direction: inherit;
-  justify-content: center;
-  align-items: center;
   padding-top: 7rem;
-  font-size: 1.7em;
-  font-weight: 700;
-}
 
-.select_taste {
-  padding-top: 2.4rem;
-  margin-left: 13rem;
-
-  div {
-    font-weight: 700;
-    color: rgb(33, 33, 33);
-    margin-bottom: 2rem;
+  .taste_text {
+    font-size: 1.9em;
+    font-weight: 100;
+    text-align: center;
+    margin-top: 1.5rem;
+    margin-bottom: 1.8rem;
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    display: inline-block;
   }
 
-  .selectAge {
-    width: 8rem;
-    height: 2.4rem;
-    font-size: 1em;
-    background-color: transparent;
-    margin-right: 2rem;
-    border-radius: 10px;
-    border: solid #afe06b 3px;
-    z-index: 3;
-    text-align: center;
-
-    option {
-      padding: 3px 0;
-    }
-    &:focus {
-      outline: none;
-      border: solid #afe06b 3px;
-    }
+  .taste_text .highlight {
+    position: relative;
+    z-index: 1; /* 텍스트 위로 형광펜 효과가 올라오지 않도록 설정 */
+    display: inline-block;
+    padding: 0 5px;
+  }
+  
+  .taste_text::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-60%);
+    width: 9%;
+    height: 0.6em;
+    background: rgba(175, 224, 107, 0.6); /* 형광펜 색상 */
+    z-index: -1;
+    filter: blur(8px); /* 부드러운 흐림 효과 */
   }
 
-  .selectGender {
-    text-align: center;
-    margin-left: 2rem;
-    border-radius: 10px;
-    width: 8rem;
-    height: 2.4rem;
-    font-size: 1em;
-    border: solid #afe06b 3px;
-    z-index: 3;
-    background-color: transparent;
 
-    &:focus {
-      outline: none;
-      border: solid #afe06b 3px;
+  .select_taste {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* 연령과 성별을 가로로 배치하는 컨테이너 */
+    .age-gender-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 500px; /* 컨테이너 너비 조정 */
+      margin-bottom: 2.5rem;
+      gap: 30px; /* 연령과 성별 사이의 거리 추가 */
+    }
+
+    /* 라벨과 드롭다운이 나란히 배치되도록 설정 */
+    .label-dropdown-pair {
+      display: flex;
+      align-items: center; /* 라벨과 드롭다운을 수직 가운데 정렬 */
+      gap: 10px; /* 라벨과 드롭다운 사이의 간격 추가 */
+    }
+
+    .label {
+      font-weight: 300;
+      color: #333;
+      font-size: 2rem;
+    }
+
+    /* 드롭다운 스타일 */
+    .custom-dropdown {
+      position: relative;
+      width: 180px;
+      margin-bottom: 20px;
+
+      .styled-select {
+        appearance: none;
+        width: 100%;
+        padding: 8px 15px;
+        font-size: 1rem;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 8px;
+        border: 2px solid #afe06b;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        outline: none;
+
+        &:hover {
+          border-color: #98b75d;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        &:focus {
+          border-color: #76c442;
+        }
+      }
+
+      /* 커스텀 화살표 추가 */
+      &::after {
+        content: "▼";
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #afe06b;
+        pointer-events: none;
+      }
     }
   }
 }
 
 .mood {
-  margin-top: 2rem;
-  margin-left: 13rem;
-  margin-right: 6rem;
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 900px;
+  margin: auto;
+
   div {
     font-weight: 700;
-    color: rgb(33, 33, 33);
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
   }
+
   button {
     cursor: pointer;
-    width: 125px;
-    height: 40px;
-    border: 0;
+    width: 150px;
+    height: 50px;
+    border: none;
     border-radius: 5px;
-    background-color: #999;
-    color: rgb(33, 33, 33);
-    text-align: center;
-    margin-top: 2rem;
-    margin-right: 4rem;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0.5rem;
+    font-size: 0.95em; 
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
     &:hover {
-      font-weight: 700;
+      background-color: #cff1a0;
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
     }
 
     &.selected {
-      font-weight: 700;
-      background-color: #afe06b;
-      //filter: brightness(120%);
+      background-color: #bfed7e;
+      font-weight: bold;
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
     }
   }
+
+  /* 버튼을 5개씩 두 줄로 배치 */
+  button:nth-child(5n) {
+    margin-right: 0;
+  }
+
+  button {
+    flex: 1 1 150px;
+  }
+
+  /* 2줄로 정렬 */
+  & > div {
+    flex-basis: 100%;
+  }
+
+  max-width: 900px;
 }
 
 .nextbtn {
   cursor: pointer;
-  margin-top: 1.4rem;
-  margin-right: 11rem;
-  width: 120px;
-  height: 40px;
-  background-color: transparent;
-  border: 0 none;
-  float: right;
-  font-size: 1em;
-  &:hover {
-    font-weight: 700;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 160px;
+  height: 50px;
+  background-color: #d3d3d3;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.3s, box-shadow 0.3s;
+
+  &.disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+  }
+
+  /* 버튼이 활성화되었을 때 */
+  &:not(.disabled) {
+    background-color: #afe06b;
+    cursor: pointer;
+  }
+
+  &:hover:not(.disabled) {
+    background-color: #98b75d;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
 }

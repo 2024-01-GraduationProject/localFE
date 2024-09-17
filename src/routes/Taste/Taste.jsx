@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import Header2 from "components/Header/Header2";
+import Header2 from "components/Header/Header";
 import api from "../../api"; // Axios 인스턴스 import
 import { useAuth } from "AuthContext";
 
@@ -15,6 +15,7 @@ const Taste = () => {
   const [selectedBookTastes, setSelectedBookTastes] = useState([]); // 선택된 분위기 저장
   const [selectedAge, setSelectedAge] = useState(""); // 선택된 연령 저장
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별 저장
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false); // 버튼 활성화 상태
 
   const [ageOptions, setAgeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
@@ -65,6 +66,15 @@ const Taste = () => {
     fetchBookCategory();
   }, []);
 
+  // 모든 선택이 완료되면 버튼을 활성화
+  useEffect(() => {
+    if (selectedAge && selectedGender && selectedBookTastes.length > 0) {
+      setIsButtonEnabled(true);
+    } else {
+      setIsButtonEnabled(false);
+    }
+  }, [selectedAge, selectedGender, selectedBookTastes]);
+
   // 분위기 버튼 클릭 핸들러
   const handleBookTasteClick = (title) => {
     if (selectedBookTastes.includes(title)) {
@@ -86,21 +96,8 @@ const Taste = () => {
     setSelectedGender(e.target.value); // 선택된 성별로 설정
   };
 
-  // 다음으로 버튼 클릭 시 서버로 데이터 전송
   const handleTasteSubmit = async () => {
-    // 연령과 성별이 선택되지 않았을 때
-    if (!selectedAge || !selectedGender) {
-      setErrorMessage("연령과 성별을 모두 선택해주세요.");
-      alert("연령과 성별을 모두 선택해주세요.");
-      return;
-    } else if (selectedBookTastes.length === 0) {
-      setErrorMessage("독서 취향을 선택해주세요.");
-      alert("독서 취향을 선택해주세요.");
-      return;
-    }
-
-    // 오류 메시지 초기화
-    setErrorMessage("");
+    if (!isButtonEnabled) return; // 버튼이 비활성화일 때는 실행하지 않음
 
     try {
       const response = await api.post("/save-taste", {
@@ -124,38 +121,35 @@ const Taste = () => {
     <>
       <Header2 />
       <div id="taste">
-        <div className="taste_text">여러분의 독서 취향을 알려주세요!</div>
+        <div className="taste_text">
+          <span className="highlight">여러분의 독서 취향을 알려주세요!</span>
+        </div>
         <div className="select_taste">
-          <div>연령/성별</div>
-          <select
-            className="selectAge"
-            onChange={handleAgeChange}
-            value={selectedAge}
-          >
-            <option value="" disabled>
-              연령 선택
-            </option>
-            {ageOptions.map((taste) => (
-              <option key={taste.age_id} value={taste.age}>
-                {taste.age}
-              </option>
-            ))}
-          </select>
+          <div className="age-gender-container">
+            <div>
+              연령
+              <div className="custom-dropdown">
+                <select className="styled-select" onChange={handleAgeChange} value={selectedAge}>
+                  <option value="" disabled>연령 선택</option>
+                  {ageOptions.map((age) => (
+                    <option key={age.age_id} value={age.age}>{age.age}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-          <select
-            className="selectGender"
-            onChange={handleGenderChange}
-            value={selectedGender}
-          >
-            <option value="" disabled>
-              성별 선택
-            </option>
-            {genderOptions.map((taste) => (
-              <option key={taste.gender_id} value={taste.gender}>
-                {taste.gender}
-              </option>
-            ))}
-          </select>
+            <div>
+              성별
+              <div className="custom-dropdown">
+                <select className="styled-select" onChange={handleGenderChange} value={selectedGender}>
+                  <option value="" disabled>성별 선택</option>
+                  {genderOptions.map((gender) => (
+                    <option key={gender.gender_id} value={gender.gender}>{gender.gender}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mood">
@@ -164,9 +158,7 @@ const Taste = () => {
             bookCategoryOptions.map((taste) => (
               <button
                 key={taste.category_id}
-                className={
-                  selectedBookTastes.includes(taste.category) ? "selected" : ""
-                }
+                className={selectedBookTastes.includes(taste.category) ? "selected" : ""}
                 onClick={() => handleBookTasteClick(taste.category)}
               >
                 #{taste.category}
@@ -178,8 +170,12 @@ const Taste = () => {
         </div>
 
         <div>
-          <button className="nextbtn" onClick={handleTasteSubmit}>
-            {">"} 다음으로
+          <button
+            className={`nextbtn ${isButtonEnabled ? "" : "disabled"}`}
+            onClick={handleTasteSubmit}
+            disabled={!isButtonEnabled}
+          >
+            다음 단계
           </button>
         </div>
       </div>
