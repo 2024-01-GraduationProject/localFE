@@ -146,14 +146,24 @@
   //top: 8%;
   bottom: 13%;
   right: 1.5%;
-  width: 200px; /* 북마크 메뉴의 폭 */
+  width: 100px; /* 북마크 메뉴의 폭 */
   height: 150px;
+  text-align: center;
   background-color: ivory;
-  border-left: 1px solid #ddd;
+  border: 1px solid #ddd; /* 가벼운 테두리 */
+  border-radius: 10px;
   padding: 10px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 20; /* 가장 위에 표시되도록 설정 */
   overflow-y: auto; /* 스크롤 기능 추가 */
+  transition: all 0.3s ease-in-out; /* 전환 효과 */
+
+  .bookmark-title {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.2em;
+    text-align: center;
+  }
 
   div {
     font-size: 1.2em;
@@ -169,11 +179,37 @@
 
     .index-progress {
       cursor: pointer;
-      margin-bottom: 10px;
+      padding: 10px;
       font-size: 14px;
+      border-radius: 8px; /* 항목에 둥근 모서리 추가 */
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      display: flex;
+      align-items: center; /* 텍스트 세로 중앙 정렬 */
+      justify-content: space-between;
+
       &:hover {
+        background-color: #e9f7df; /* 호버 시 배경색 변경 */
         font-weight: bold;
+        transform: translateY(-2px); 
       }
+
+      &:active {
+        transform: translateY(0); /* 클릭 시 원래 위치로 돌아옴 */
+      }
+    }
+
+    /* 스크롤바 스타일 변경 */
+    .indexes-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .indexes-list::-webkit-scrollbar-thumb {
+      background-color: #ccc; /* 스크롤바 색상 */
+      border-radius: 10px; /* 스크롤바 둥글게 */
+    }
+
+    .indexes-list::-webkit-scrollbar-track {
+      background-color: transparent;
     }
   }
 }

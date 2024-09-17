@@ -485,7 +485,9 @@ const BookReader = () => {
           </button>
           {showIndexes && (
             <div className="indexes-list">
-              <div>Index List</div>
+            <span className="bookmark-title">
+               &lt; 책갈피 &gt;
+            </span>
               <ul>
                 {indexes.map((id, index) => (
                   <li
@@ -493,7 +495,7 @@ const BookReader = () => {
                     className="index-progress"
                     onClick={() => handleIndexClick(id.progress)}
                   >
-                    - {Math.round(id.progress.toFixed(2))}%
+                     {Math.round(id.progress.toFixed(2))}%
                   </li>
                 ))}
               </ul>
