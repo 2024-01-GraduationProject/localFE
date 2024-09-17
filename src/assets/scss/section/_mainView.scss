@@ -9,6 +9,36 @@
     border: 0;
     cursor: pointer;
     margin-right: 2em;
+    padding-bottom: 25px;
+    transition: transform 0.3s ease, color 0.3s ease;
+
+    &:hover {
+      transform: scale(1.2); /* 살짝 커지는 효과 */
+    }
+
+    .hamburger-icon {
+      width: 30px;
+      height: 3px;
+      background-color: #333;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+  
+    &:hover .hamburger-icon {
+      background-color: #76c442; /* 호버 시 색상 변경 */
+    }
+  }
+
+  .hambtn.active .hamburger-icon:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .hambtn.active .hamburger-icon:nth-child(2) {
+    opacity: 0; /* 중간 막대 숨기기 */
+  }
+  
+  .hambtn.active .hamburger-icon:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
   }
 
   .mylib {
@@ -18,38 +48,59 @@
     cursor: pointer;
     font-weight: bold;
     text-align: center;
-    padding-bottom: 6px;
+    padding-bottom: 25px;
+    transition: color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1); /* 살짝 커지는 애니메이션 효과 */
+    }
   }
 }
 
 .category_buttons {
   position: absolute;
   top: 9.5em;
-  left: 12em;
+  left: 3em;
   right: 0;
-  width: 8em;
-  height: 250px;
-  background-color: white;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  width: 8.5em;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   z-index: 1000; /* Ensure it appears above other components */
   display: flex;
   flex-direction: column;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  padding-left: 0.3em;
+  padding: 1em;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+}
+
+.hambtn:hover + .category_buttons,
+.category_buttons:hover {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .category_button {
   margin-bottom: 0.5em;
-  font-size: 12px;
+  font-size: 14px;
   border: none;
   background-color: transparent;
   cursor: pointer;
+  padding: 0.7em 1em;
+  width: 100%; 
+  border-radius: 8px; /* 버튼에 약간의 둥근 모서리 추가 */
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .category_button:hover {
-  background-color: #ddd;
+  background-color: #f0f0f0;
   font-weight: bold;
+  transform: scale(1.05);
+}
+
+.category_button:active {
+  background-color: #e0e0e0; /* 클릭 시 배경색 변화 */
 }
 
 // MainView.jsx
