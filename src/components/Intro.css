@@ -1,0 +1,305 @@
+body {
+    font-family: 'Do Hyeon', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* 수평 스크롤 방지 */
+  }
+  
+  /* 초기 배경색 */
+  .intro-section {
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* 상단 정렬 */
+    transition: background-color 0.5s ease; /* 배경색 변경 시 애니메이션 */
+    background-color: #fdfdf5; /* 화이트 톤에 가까운 색상 */
+  }
+
+  .boogi_text1 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #76c442;
+  }
+  
+  .intro__text {
+    max-width: 50%; /* 텍스트의 너비를 50%로 고정 */
+}
+
+.intro__image-container {
+    position: absolute;
+    top: 21%;
+    right: 145px; /* 이미지가 화면 오른쪽에 배치되도록 설정 */
+    width: 35%;
+    height: auto;
+}
+
+.intro__image-container img {
+    width: 100%;
+    height: auto; /* 이미지를 부모 요소에 맞게 조절 */
+}
+
+
+  /* 텍스트 애니메이션 */
+  .intro__text {
+    position: absolute;
+    left: 270px; /* 텍스트를 더 오른쪽으로 이동 */
+    top: 260px;  /* 텍스트를 더 아래로 이동 */
+    line-height: 1.6;
+    opacity: 0; /* 초기 투명도 */
+    transform: translateY(20px); /* 초기 아래로 이동 */
+    animation: fade-in-up 1.2s ease-out forwards; /* 페이드 인 및 위로 이동 애니메이션 */
+    animation-delay: 0.5s;
+  }
+  
+  /* 페이드 인 및 위로 이동 애니메이션 */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px); /* 아래에서 위로 이동 */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0); /* 원래 위치로 */
+    }
+  }
+  
+  /* 버튼과 이메일 입력란을 나란히 배치하고 고정 */
+  .button-email-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+  
+  /* 이메일 입력란 */
+  .intro__input {
+    display: none; /* 기본적으로 숨김 처리 */
+  }
+  
+  .intro__input.visible {
+    display: block; /* 버튼 클릭 시 나타남 */
+    margin-right: 15px; /* 버튼과의 간격 */
+  }
+
+  /* 이메일 입력란 */
+  .intro__input input {
+    padding: 6px 20px; /* 세로 padding을 6px, 가로 padding을 20px로 설정 */
+    width: auto; /* 너비를 auto로 설정 */
+    font-size: 1.2rem;
+    text-align: center; /* 가운데 정렬 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  
+  /* 고정된 버튼 */
+  .start_btn {
+    background-color: #c5f2a3;
+    border: none;
+    padding: 14px 30px;
+    color: #fff;
+    font-size: 18px; /* 글씨 크기 조정 */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .start_btn.active {
+    background-color: #a0d468;
+  }
+  
+  .start_btn.inactive {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+  }
+
+  .start_btn.active:hover {
+    background-color: #98b75d; /* 활성화 중일 때 더 낮은 채도의 색상으로 변경 */
+  }
+
+  /* 이메일 오류 메시지 */
+  .error-message {
+    color: red;
+    font-size: 1rem;
+    margin-top: 5px;
+  }
+  
+  .error-message.success {
+    color: green;
+  }
+  
+  /* 묶인 섹션 스타일 */
+  .combined-section {
+    padding: 100px;
+    text-align: center;
+    background-color: #fffacd; /* 기본 배경색: 밝은 노란색 */
+    transition: background-color 0.5s ease; /* 배경색 변경 애니메이션 */
+  }
+  
+  /* 개별 박스 스타일 */
+  .section-box {
+    background-color: #e4f3dc; /* 연두색 */
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 80%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .section-box h2 {
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 텍스트 그림자 추가 */
+    position: relative;
+  }
+
+  .section-box p {
+    font-size: 1.6rem;
+    line-height: 1.5;
+  }
+
+  .image-balloon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 중앙 정렬 */
+    margin-top: 20px;
+    position: relative;
+  }
+  
+  .sliding-image {
+    width: 150px;
+    height: auto;
+    transition: opacity 0.5s ease-in-out;
+    margin-right: 1px; /* 이미지와 말풍선 사이의 간격 */
+  }
+  
+  .bubble-balloon {
+    position: relative;
+    background-color: rgba(255, 253, 220, 0.8); /* 말풍선 배경 */
+    border: 2px solid rgba(254, 250, 181, 0.5); /* 말풍선 테두리 */
+    padding: 10px 15px; /* 말풍선 안쪽 여백 */
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 139, 139, 0.8); /* 말풍선 글씨색 */
+    width: 370px; /* 말풍선 너비 고정 */
+    opacity: 0; /* 초기 투명도 */
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    margin-left: 10px;
+  }
+  
+  .bubble-balloon.show {
+    opacity: 1; /* 말풍선이 보일 때 */
+    transform: translateX(0);
+  }
+  
+  .bubble-balloon::after {
+    content: "";
+    position: absolute;
+    top: 65%;
+    left: -20px; /* 말풍선 꼬리를 왼쪽에 위치 */
+    transform: translateY(-50%);
+    border: 10px solid transparent;
+    border-right-color: rgba(255, 253, 220, 0.8); /* 말풍선 꼬리 배경색 */
+  }
+
+  /* 페이드 인 애니메이션 */
+  .fade-section {
+    opacity: 0;
+    transition: opacity 1s ease-in;
+  }
+  
+  .fade-in {
+    opacity: 1;
+  }
+  
+  /* 반응형 적용 */
+  @media (max-width: 768px) {
+    .intro__text {
+      left: 30px; /* 모바일에서는 더 작은 공간으로 이동 */
+      top: 30px;
+    }
+  
+    .text1, .text2, .text3 {
+      font-size: 2.8rem; /* 모바일에서 적당한 크기 */
+    }
+  
+    .intro__input input {
+      width: 250px;
+    }
+  
+    .start_btn {
+      font-size: 16px;
+      padding: 12px 25px;
+    }
+  
+    .section-box {
+      width: 90%;
+      padding: 20px;
+    }
+  }
+  
+  .speech-balloon {
+    position: absolute;
+    top: 110px; /* 원하는 위치로 조정 */
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.8); /* 불투명도 적용 */
+    border: 2px solid rgba(0, 0, 0, 0.3); /* 불투명한 테두리 */
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.8); /* 불투명한 글자색 */
+    animation: fadeIn 0.5s ease-in-out;
+    z-index: 10001; /* 헤더보다 높은 z-index 값 */
+  
+    /* 말풍선 꼬리 부분 */
+    &::after {
+      content: "";
+      position: absolute;
+      top: -10px; /* 말풍선 꼬리 위치 */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-bottom: 10px solid rgba(255, 255, 255, 0.9);
+      border-left: 0;
+      border-right: 10px solid transparent;
+    }
+  
+    /* 말풍선 테두리 꼬리 부분 */
+    &::before {
+      content: "";
+      position: absolute;
+      top: -12px; /* 말풍선 테두리 꼬리 위치 */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-bottom: 11px solid rgba(0, 0, 0, 0.3);
+    }
+  }  
+
+  
+  /* 말풍선 애니메이션 */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+

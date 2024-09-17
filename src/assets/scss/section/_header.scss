@@ -1,11 +1,12 @@
 #header {
   @include position-fixed;
   z-index: 10000;
+  background-color: transparent !important;
 }
 .header__inner {
   @include flex-between;
-  background-color: white;
   padding: 1rem;
+  background-color: transparent;
 
   .header__logo {
     font-size: 1rem;
@@ -60,4 +61,5 @@ hr {
   margin-bottom: 0;
   border: 0;
   border-top: 1px solid lightgray;
+  background-color: transparent;
 }
