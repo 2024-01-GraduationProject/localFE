@@ -1,27 +1,60 @@
-import React, { useState, useRef } from "react";
-import google from "assets/img/ico/google.ico";
-import kakao from "assets/img/ico/kakaotalk.ico";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api"; // Axios 인스턴스 import
-import KakaoLogin from "../routes/Login/KakaoLogin";
-import GoogleLogin from "../routes/Login/GoogleLogin";
-import { debounce } from "lodash"; // 사용자 입력이 자주 발생할 경우 API 호출 최적화
+import { debounce } from "lodash";
+import './Intro.css'; // 필요한 CSS 파일 import
+import boogiImage from "assets/img/boogi_main.png"; // 이미지 경로 import
+import boogi1 from "assets/img/miniboogi1.png"; // 첫 번째 이미지 경로
+import boogi2 from "assets/img/miniboogi2.png"; // 두 번째 이미지 경로
+import boogi3 from "assets/img/miniboogi3.png"; // 세 번째 이미지 경로
 
 const Intro = () => {
   const [introEmail, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [isEmailAvailable, setIsEmailAvailable] = useState(false);
+  const [emailVisible, setEmailVisible] = useState(false); // 이메일 입력란 표시 여부 상태 추가
+  const [scrollY, setScrollY] = useState(0); // 스크롤 위치 상태 추가
+  const [showBalloon, setShowBalloon] = useState(false); // 말풍선 표시 상태 추가
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); // 이미지 인덱스 상태 추가
+  const images = [boogi1, boogi2, boogi3];
 
   const navigate = useNavigate();
 
-  const kakaoLoginRef = useRef(null); // Reference to KakaoLogin component
-  const googleLoginRef = useRef(null);
+  // 이미지가 1초마다 바뀌는 함수
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 1000); // 1초마다 이미지 변경
 
-  const onChangeEmail = (e) => {
-    const emailValue = e.target.value;
-    setEmail(emailValue);
-    emailCheckHandler(emailValue);
-  };
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  // 스크롤 이벤트 핸들러
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+      const sections = document.querySelectorAll(".fade-section");
+      sections.forEach((section) => {
+        if (section.offsetTop <= window.scrollY + window.innerHeight - 200) {
+          section.classList.add("fade-in");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // 말풍선을 일정 시간 후에 나타나게 설정
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowBalloon(true);
+    }, 3000); // 3초 후에 말풍선 표시
+    return () => clearTimeout(timer);
+  }, []);
 
   const emailCheckHandler = debounce(async (email) => {
     const emailRegex =
@@ -55,81 +88,117 @@ const Intro = () => {
   }, 300);
 
   const handleStartClick = () => {
-    if (introEmail) {
+    if (!emailVisible) {
+      setEmailVisible(true);
+    } else if (isEmailAvailable) {
       navigate("/join", { state: { value: introEmail } });
+    } else {
+      alert("유효한 이메일을 입력해주세요.");
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    if (provider === "google" && googleLoginRef.current) {
-      googleLoginRef.current.triggerGoogleLogin?.();
-    } else if (provider === "kakao" && kakaoLoginRef.current) {
-      kakaoLoginRef.current.loginWithKakao?.();
-    }
+  const onChangeEmail = (e) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+    emailCheckHandler(emailValue);
   };
 
   return (
-    <section id="intro">
-      <div className="intro__text">
-        <div className="text1">오래도록 책을 마음에 두고 싶다면?</div>
-        <div className="text2">
-          <span className="boogi_text">부기</span>와 함께 밀도있는 독서생활,
-        </div>
-        <div className="text3">
-          <span className="boogi_text">AI 부기</span>가 책에 대한 여러 질문을
-          던져줍니다!
-        </div>
-      </div>
-      <form
-        className="intro__start"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleStartClick();
+    <>
+      <section
+        id="intro"
+        className="intro-section"
+        style={{
+          backgroundColor: scrollY > 100 ? '#ffeb3b' : '#fdfdf5',
+          transition: 'background-color 0.5s ease',
         }}
       >
-        <div className="intro__input">
-          <input
-            type="text"
-            placeholder="e-mail"
-            value={introEmail}
-            onChange={onChangeEmail}
-          />
-
-          {emailError && (
-            <div
-              className={`error-message ${
-                emailError === "사용 가능한 이메일입니다." ? "success" : ""
-              }`}
-            >
-              {emailError}
-            </div>
-          )}
+        <div className="intro__text">
+          <div className="text1">오래도록 책을 마음에 두고 싶다면?</div>
+          <div className="text2">
+            <span className="boogi_text1">부기</span> 와 함께 밀도있는 독서생활
+          </div>
+          <div className="text3">
+            <span className="boogi_text1">AI 부기</span> 가 책에 대한 여러 질문을 던져줍니다!
+          </div>
         </div>
 
-        <button
-          className={`start_btn ${isEmailAvailable ? "active" : "inactive"}`}
-          disabled={!isEmailAvailable}
-          onClick={handleStartClick}
+        {/* 이미지 컨테이너 */}
+        <div className="intro__image-container">
+          <img src={boogiImage} alt="Boogi Character" />
+        </div>
+
+        <form
+          className="intro__start"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleStartClick();
+          }}
         >
-          첫 달 무료로 시작하기
-        </button>
-      </form>
-      <div className="social_join">
-        <div>OR</div>
+          <div className="button-email-container">
+            {emailVisible && (
+              <div className="intro__input visible">
+                <input
+                  type="text"
+                  placeholder="e-mail"
+                  value={introEmail}
+                  onChange={onChangeEmail}
+                />
+                {emailError && (
+                  <div
+                    className={`error-message ${emailError === "사용 가능한 이메일입니다." ? "success" : ""}`}
+                  >
+                    {emailError}
+                  </div>
+                )}
+              </div>
+            )}
 
-        <div className="social">
-          <button onClick={() => handleSocialLogin("google")}>
-            <img src={google} alt="구글" />
-          </button>
+            <button
+              className={`start_btn ${emailVisible && !isEmailAvailable ? "inactive" : ""}`}
+              type="button"
+              onClick={handleStartClick}
+            >
+              첫 달 무료로 시작하기
+            </button>
+          </div>
+        </form>
 
-          <button onClick={() => handleSocialLogin("kakao")}>
-            <img src={kakao} alt="카카오" />
-          </button>
+        {/* 말풍선 */}
+        {showBalloon && (
+          <div className="speech-balloon">
+            이미 회원이신가요? 로그인하세요!
+          </div>
+        )}
+      </section>
+
+      {/* 묶인 섹션 */}
+      <section
+        className="fade-section combined-section"
+        style={{
+          backgroundColor: scrollY > 100 ? '#ffeb3b' : '#fffacd',
+          transition: 'background-color 0.5s ease',
+        }}
+      >
+        <div className="section-box">
+          <h2>전자책 도서관의 새로운 경험</h2>
+          <p>책을 읽고 부기와의 대화를 통해 더욱 깊은 독서의 즐거움을 느껴보세요!</p>
+          {/* 이미지 슬라이드 */}
+          <div className="image-balloon-container">
+            <img src={images[currentImageIndex]} alt="Boogi Character" className="sliding-image" />
+            {/* 말풍선 */}
+            <div className={`bubble-balloon ${showBalloon ? 'show' : ''}`}>
+            앨리스는 자꾸 크기도 커지고 작아지기도 하잖아.<br />
+            너라면 어떤 순간에 작아지고 싶고, 어떤 순간에 커지고 싶어?
+            </div>
+          </div>
         </div>
-      </div>
-      <KakaoLogin ref={kakaoLoginRef} />
-      <GoogleLogin ref={googleLoginRef} />
-    </section>
+        <div className="section-box">
+          <h2>독서의 새로운 패러다임</h2>
+          <p>다양한 도서를 자유롭게 탐색하고 여러분만의 독서 공간을 만드세요!</p>
+        </div>
+      </section>
+    </>
   );
 };
 
