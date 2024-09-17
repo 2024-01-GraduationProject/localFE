@@ -31,24 +31,22 @@ const MainView = () => {
       <Header2 />
       <MainNav />
 
-      <div>
-        <hr className="mainview_line" />
+      <div className="mainview_wrapper">
         <BestBook />
       </div>
 
-      <div>
-        <hr className="mainview_line" />
+      <div className="mainview_wrapper">
+        <RecommendBook />
+      </div>
+
+      <div className="mainview_wrapper">
+      <hr className="mainview_line" />
         <NewBook />
       </div>
 
-      <div>
-        <hr className="mainview_line" />
+      <div className="mainview_wrapper">
+      <hr className="mainview_line" />
         <FamousBook />
-      </div>
-
-      <div>
-        <hr className="mainview_line" />
-        <RecommendBook />
       </div>
     </>
   );

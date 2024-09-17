@@ -115,12 +115,12 @@ const Login = () => {
             </div>
           </form>
 
-          <div className="find_userdata">
+          {/*<div className="find_userdata">
             <button className="find_email">아이디 찾기</button> |{" "}
-            <button className="find_pw">비밀번호 찾기</button>
-          </div>
+            <button className="find_pw">비밀번호 찾기</button> */}
+        </div>
 
-          <div className="social">
+        {/*<div className="social">
             <button onClick={() => handleSocialLogin("google")}>
               <img src={google} alt="구글"></img>
             </button>
@@ -131,7 +131,7 @@ const Login = () => {
           </div>
         </div>
         <KakaoLogin ref={kakaoLoginRef} />
-        <GoogleLogin ref={googleLoginRef} />
+        <GoogleLogin ref={googleLoginRef} />*/}
       </div>
     </>
   );

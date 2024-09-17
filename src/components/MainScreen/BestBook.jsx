@@ -59,12 +59,13 @@ const BestBook = () => {
               이 달의 <span>BEST </span> <FaRegThumbsUp size="1.3em" />
             </h2>
             <div className="bestbook-info">
+              <div className="book-cover-wrapper">
               <img
                 src={bestBooks[currentIndex].coverImageUrl}
                 alt={bestBooks[currentIndex].title}
                 className="bestbook-cover"
                 onClick={() => goToBookDetail(bestBooks[currentIndex].id)}
-              />
+              /></div>
               <div className="bestbook-details">
                 <h3
                   className="bestbook-title"

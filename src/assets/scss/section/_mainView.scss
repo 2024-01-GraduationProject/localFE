@@ -1,7 +1,7 @@
 // MainNav.jsx
 .main_nav {
   margin-left: 11.5em;
-  margin-top: 6.5em;
+  margin-top: 8em;
   display: flex;
 
   .hambtn {
@@ -53,6 +53,13 @@
 }
 
 // MainView.jsx
+// 각 카테고리 나누는 라인
 .mainview_line {
+  width: 100%;
+}
+
+.mainview_wrapper {
   width: 70%;
+  height: auto;
+  margin: 0 auto; /* 가로로 중앙 정렬 */
 }

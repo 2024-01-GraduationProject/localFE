@@ -4,6 +4,7 @@ import Header2 from "components/Header/Header2";
 import boogi2 from "assets/img/boogi2.jpg";
 import api from "../../api"; // Axios 인스턴스 import
 import { useAuth } from "AuthContext";
+import CustomModal from "../../CustomModal";
 
 const MyLib = () => {
   const [activeTab, setActiveTab] = useState("책장");
@@ -15,6 +16,9 @@ const MyLib = () => {
   const [userId, setUserId] = useState(null);
   const [isEditing, setIsEditing] = useState(false); // 편집 모드 상태
   const [selectedBooks, setSelectedBooks] = useState([]); // 선택된 책 목록
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(""); // 모달의 타입 (다시 읽으시겠습니까? / 추가 옵션)
+  const [selectedCompletedBook, setSelectedCompletedBook] = useState(null);
 
   const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
   const navigate = useNavigate();
@@ -38,7 +42,7 @@ const MyLib = () => {
       }
     };
     fetchUserData();
-  }, []);
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     if (!userId) return; // userId가 로드되지 않았으면 아무 작업도 하지 않음
@@ -134,8 +138,33 @@ const MyLib = () => {
     setSelectedBooks([]);
   }, [activeTab]);
 
-  const handleBookClick = (bookId) => {
-    navigate(`/books/details/${bookId}`); // 클릭된 책의 세부 페이지로 이동
+  const handleBookClick = (bookId, tab) => {
+    if (tab === "독서 중" || tab === "My Favorite") {
+      // 독서 중인 책은 바로 상세 페이지로 이동
+      navigate(`/books/details/${bookId}`);
+    } else if (tab === "독서 완료") {
+      // 독서 완료된 책은 커스텀 모달을 띄움
+      setSelectedCompletedBook(bookId); // 클릭한 책 ID 저장
+      setModalType("confirm"); // 모달 타입 설정
+      setIsModalOpen(true); // 모달 열기
+    }
+  };
+
+  const handleModalConfirmYes = () => {
+    if (selectedCompletedBook) {
+      navigate(`/books/${selectedCompletedBook}/content`);
+    }
+    setIsModalOpen(false); // 모달 닫기
+  };
+
+  const handleModalConfirmNo = () => {
+    setModalType("options"); // 모달 타입을 옵션으로 설정
+    setIsModalOpen(true); // 모달 열기
+  };
+
+  const handleModalOptionNavigate = (path) => {
+    navigate(path);
+    setIsModalOpen(false); // 모달 닫기
   };
 
   // 편집 모드일 때 책 선택
@@ -187,7 +216,7 @@ const MyLib = () => {
             onClick={() =>
               isEditing
                 ? handleSelectBook(book.bookId)
-                : handleBookClick(book.bookId)
+                : handleBookClick(book.bookId, tab)
             }
           />
           <span className="book-details">
@@ -313,6 +342,16 @@ const MyLib = () => {
           </ul>
         </div>
         <div className="tab_content">{renderContent()}</div>
+        {isModalOpen && (
+          <CustomModal
+            type={modalType}
+            onConfirm={handleModalConfirmYes}
+            onCancel={handleModalConfirmNo}
+            onOptionNavigate={handleModalOptionNavigate}
+            userId={userId}
+            bookId={selectedCompletedBook}
+          />
+        )}
       </div>
     </>
   );

@@ -1,9 +1,10 @@
 :root {
   --mainEng-font: "Montserrat";
-  --mainKor-font: "nanumSquareNeo";
+  /*--mainKor-font: "nanumSquareNeo";*/
+  --mainKor-font: "Do Hyeon", sans-serif;
   --mainNum-font: "gmarket";
 
-  --mainBg-color: white; //#c5e49a
+  --mainBg-color: #fcfffa; //##fcfffa
   /*
   --subBg100: #cdc0b1;
   --subBg200: #afa395;
@@ -32,6 +33,13 @@
   @media (max-width: 800px) {
     font-size: 14px;
     line-height: 1.4;
+  }
+
+  #webpack-dev-server-client-overlay {
+    z-index: -300000000 !important;
+    overflow: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 }
 

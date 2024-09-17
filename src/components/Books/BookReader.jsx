@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ePub from "epubjs";
 import api from "../../api";
@@ -107,7 +107,7 @@ const BookReader = () => {
   }, [isBookCompleted, bookId, userId, bookTitle, navigate]);
 
   useEffect(() => {
-    let resizeObserver = null; // ResizeObserver 선언
+    //let resizeObserver = null; // ResizeObserver 선언
 
     const renderBook = async () => {
       if (bookInstance && bookRef.current) {
@@ -148,27 +148,19 @@ const BookReader = () => {
 
           const handleResize = debounce(() => {
             if (newRendition) {
-              try {
-                newRendition.resize();
-              } catch (error) {
-                console.warn("Failed to resize rendition:", error);
-              }
+              newRendition.resize();
             }
           }, 200);
 
-          resizeObserver = new ResizeObserver(() => {
-            handleResize();
-          });
-
-          resizeObserver.observe(bookRef.current);
+          /*if (isObserverActive) {
+            resizeObserver = new ResizeObserver(() => {
+              handleResize();
+            });
+            resizeObserver.observe(bookRef.current);
+          }*/
 
           const fetchLastReadPage = async () => {
             try {
-              /*if (!rendition || !bookInstance) {
-                console.warn("Rendition or BookInstance is not initialized.");
-                return;
-              }*/
-
               const response = await api.get("/bookshelf/reading", {
                 params: { userId },
               });
@@ -186,7 +178,6 @@ const BookReader = () => {
                   if (cfi) {
                     setLastReadCFI(cfi); // CFI를 상태에 저장
                     console.log("Calculated CFI:", cfi);
-                    //setProgress(lastReadPage * 100);
                   } else {
                     console.warn("Invalid CFI generated.");
                   }
@@ -265,9 +256,9 @@ const BookReader = () => {
     renderBook();
 
     return () => {
-      if (resizeObserver) {
+      /*if (resizeObserver) {
         resizeObserver.disconnect(); // ResizeObserver 해제
-      }
+      }*/
       if (rendition) {
         try {
           if (rendition.destroy) {
@@ -406,42 +397,6 @@ const BookReader = () => {
     };
   }, [progress, indexes, isAuthenticated, userId, bookId, logout]);
 
-  /*const handleGoToLastPage = async () => {
-    if (bookInstance && rendition) {
-      try {
-        const response = await api.get("/bookshelf/reading", {
-          params: { userId },
-        });
-
-        if (response.status === 200 && response.data.length > 0) {
-          const userBook = response.data.find(
-            (book) => book.bookId === parseInt(bookId)
-          );
-          if (userBook) {
-            const lastReadPage = userBook.lastReadPage / 100; // 페이지 비율로 변환
-            const cfi = bookInstance.locations.cfiFromPercentage(lastReadPage);
-
-            if (cfi) {
-              console.log("Navigating to last read page CFI:", cfi);
-              await rendition.display(cfi); // CFI로 이동
-              setProgress(lastReadPage * 100); // 진도율 업데이트
-            } else {
-              console.warn("Invalid CFI generated.");
-            }
-          } else {
-            console.log("No matching book found for this user.");
-          }
-        } else {
-          console.log("No reading progress data found.");
-        }
-      } catch (error) {
-        console.error("Failed to fetch last read page:", error);
-      }
-    } else {
-      console.warn("Book instance or rendition is not initialized.");
-    }
-  };*/
-
   const handleNextPage = () => {
     if (rendition) {
       rendition?.next();
@@ -506,13 +461,6 @@ const BookReader = () => {
           <button className="back-button" onClick={handleBack}>
             <FaRegArrowAltCircleLeft />
           </button>
-          {/*<button
-            className="go-to-last-page"
-            onClick={handleGoToLastPage}
-            disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
-          >
-            마지막 읽은 페이지
-          </button> */}
           <button className="nav-button left" onClick={handlePreviousPage}>
             이전
           </button>
@@ -533,7 +481,7 @@ const BookReader = () => {
             className={`view-indexes ${showIndexes ? "active" : ""}`}
             onClick={handleViewIndexes}
           >
-            {showIndexes ? "-" : "+"}
+            {showIndexes ? <FaRegBookmark /> : <FaBookmark />}
           </button>
           {showIndexes && (
             <div className="indexes-list">
