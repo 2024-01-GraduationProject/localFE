@@ -6,7 +6,8 @@
   padding: 2em; /* 내부 패딩 추가 */
   width: 200px; /* 네비게이션 바의 고정 너비 */
   height: 100vh; /* 전체 화면 높이 차지 */
-  margin-top: 6em;
+  margin-top: 6.5em;
+  margin-left: 1em;
   //box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background-color: transparent;
   top: 0; /* 상단에 붙이기 */
@@ -19,13 +20,13 @@
   font-size: 15pt;
   font-weight: bold;
   text-align: center;
-  background-color: #67cf8cdd;
-  border: 3px solid #34b479cd;
+  background-color: #67cf7add;
+  border: 3px solid #34b461cd;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #056752;
+  color: #056748;
   margin-bottom: 0.5em; /* 다른 요소들과의 간격 추가 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;

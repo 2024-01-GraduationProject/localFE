@@ -62,7 +62,7 @@ const Header2 = () => {
                 MY
               </button>
             </li>
-            <span>   </span>
+            <span class="separator"> | </span>
             <li>
               <button className="header2_btn" onClick={handleLogout}>
                 LOGOUT
