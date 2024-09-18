@@ -50,29 +50,31 @@ const SearchList = () => {
       <div id="searchResults">
         {hasResults ? (
           <>
-            <h2>"{searchWord}" 검색 결과입니다.</h2>
-            <div className="booksGrid">
-              {searchResults.map((book) => (
-                <div key={book.book_id} className="bookItem">
-                  <img
-                    src={book.coverImageUrl}
-                    alt={book.title}
-                    className="bookCover"
-                    onClick={() => navigate(`/books/details/${book.bookId}`)}
-                  />
-                  <div className="bookInfo">
-                    <h3>{book.title}</h3>
-                    <p>
-                      {book.author} | {book.publisher}
-                    </p>
+            <h2>"<span className="searchWord">{searchWord}</span>" 검색 결과입니다.</h2>
+            <div className="mainview_wrapper">
+              <div className="booksGrid">
+                {searchResults.map((book) => (
+                  <div key={book.book_id} className="bookItem">
+                    <img
+                      src={book.coverImageUrl}
+                      alt={book.title}
+                      className="bookCover"
+                      onClick={() => navigate(`/books/details/${book.bookId}`)}
+                    />
+                    <div className="bookInfo">
+                      <h3>{book.title}</h3>
+                      <p>
+                        {book.author} | {book.publisher}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </>
         ) : (
           <p className="noResultsMessage">
-            "{searchWord}" 검색 결과가 없습니다.
+            "<span className="searchWord">{searchWord}</span>" 검색 결과가 없습니다.
           </p>
         )}
       </div>

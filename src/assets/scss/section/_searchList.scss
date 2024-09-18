@@ -10,12 +10,16 @@
   width: 75%;
 }*/
 #searchResults {
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
   h2 {
     margin-bottom: 1.5rem;
     font-weight: bold;
   }
+}
+
+.searchWord {
+  color:rgb(14, 125, 21);
 }
 
 .booksGrid {

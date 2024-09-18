@@ -4,52 +4,24 @@
   margin-top: 8em;
   display: flex;
 
-  .hambtn {
-    background-color: transparent;
-    border: 0;
-    cursor: pointer;
-    margin-right: 2em;
-    padding-bottom: 25px;
-    transition: transform 0.3s ease, color 0.3s ease;
-
-    &:hover {
-      transform: scale(1.2); /* 살짝 커지는 효과 */
-    }
-
-    .hamburger-icon {
-      width: 30px;
-      height: 3px;
-      background-color: #333;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-  
-    &:hover .hamburger-icon {
-      background-color: #76c442; /* 호버 시 색상 변경 */
-    }
-  }
-
-  .hambtn.active .hamburger-icon:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-  
-  .hambtn.active .hamburger-icon:nth-child(2) {
-    opacity: 0; /* 중간 막대 숨기기 */
-  }
-  
-  .hambtn.active .hamburger-icon:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
-  }
-
   .mylib {
-    font-size: 18px;
-    background-color: transparent;
-    border: 0;
-    cursor: pointer;
+    position: absolute; /* 위치를 절대적으로 설정 */
+    top: 6.3em; /* .category_title보다 위쪽으로 조정 */
+    left: 2.3em; /* .category_title과 같은 left 값을 사용 */
+    width: 170px;
+    height: 50px;
+    font-size: 15pt;
     font-weight: bold;
     text-align: center;
-    padding-bottom: 25px;
-    transition: color 0.3s ease, transform 0.3s ease;
+    background-color: #67cf8cdd; /* 배경색을 투명으로 설정 */
+    border: 3px solid #34b479cd; /* 테두리 색상과 두께 설정 */
+    border-radius: 10px; /* 박스 모서리 둥글게 */
+    display: flex; /* 플렉스 컨테이너로 설정 */
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-content: center; /* 수평 가운데 정렬 */
+    color: #056752;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 
     &:hover {
       transform: scale(1.1); /* 살짝 커지는 애니메이션 효과 */
@@ -57,28 +29,41 @@
   }
 }
 
+.category_title {
+  position: absolute;
+  top: 8.5em; /* category_buttons보다 위에 위치하도록 조정 */
+  left: 2.3em; /* category_buttons와 같은 left 값을 사용 */
+  font-size: 15pt;
+  font-weight: bold;
+  margin-bottom: 0.5em; /* 카테고리 버튼들과의 간격 조정 */
+  text-align: center;
+  display: flex; /* 플렉스 컨테이너로 설정 */
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  width: 170px;
+  height: 50px;
+  background-color: rgba(148, 211, 128, 0.8); /* 박스 배경색 설정 */
+  border-radius: 10px; /* 박스 모서리 둥글게 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  color: rgb(12, 93, 48); // 글씨 색상
+}
+
 .category_buttons {
   position: absolute;
-  top: 9.5em;
+  top: 15em;
   left: 3em;
   right: 0;
   width: 8.5em;
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(234, 254, 211, 0.6);
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  z-index: 1000; /* Ensure it appears above other components */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 800; /* Ensure it appears above other components */
   display: flex;
   flex-direction: column;
   padding: 1em;
-  opacity: 0;
-  transform: translateY(-10px);
+  opacity: 1; /* 항상 보이도록 설정 */
+  transform: translateY(0); /* 초기 위치 설정 */
   transition: all 0.3s ease-in-out;
-}
-
-.hambtn:hover + .category_buttons,
-.category_buttons:hover {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .category_button {
@@ -91,11 +76,13 @@
   width: 100%; 
   border-radius: 8px; /* 버튼에 약간의 둥근 모서리 추가 */
   transition: background-color 0.3s, transform 0.3s;
+  color: rgb(12, 93, 48);
+  font-weight: 550;
 }
 
 .category_button:hover {
-  background-color: #f0f0f0;
-  font-weight: bold;
+  background-color: #afd7ac;
+  font-weight: 900;
   transform: scale(1.05);
 }
 
@@ -113,4 +100,5 @@
   width: 70%;
   height: auto;
   margin: 0 auto; /* 가로로 중앙 정렬 */
+  transform: translateX(70px); /* 오른쪽으로 20px 이동 */
 }

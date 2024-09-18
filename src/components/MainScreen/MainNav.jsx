@@ -43,16 +43,12 @@ const MainNav = () => {
   return (
     <>
       <div className="main_nav">
-        <button className="hambtn" onClick={handleHambtnClick}>
-          <MdOutlineMenu size="3em" />
-        </button>
 
         <button className="mylib" onClick={() => navigate("/mylib")}>
-          {/*<GiBookshelf size="3em" />*/}내 서재📚
+          내 서재 📖
         </button>
       </div>
-
-      {showCategoryButtons && (
+        <h2 className="category_title">도서 카테고리</h2>
         <div className="category_buttons">
           {categoryOptions.map((categoryData) => (
             <button
@@ -64,7 +60,6 @@ const MainNav = () => {
             </button>
           ))}
         </div>
-      )}
     </>
   );
 };

@@ -4,7 +4,7 @@
 }
 .header__inner {
   @include flex-between;
-  background-color: transparent;
+  background-color: #fcfffa;
   padding-top: 1rem;
   padding-bottom: 0;
   padding-left: 2em;
@@ -30,11 +30,13 @@
         text-decoration: none;
         text-transform: uppercase;
         font-size: 16px;
-        //padding: 5px;
         position: relative;
-        border: 0;
-        background-color: transparent;
-        cursor: pointer;
+        border: none; /* 테두리 색상과 두께 설정 */
+        background-color: #6ac79ca7; /* 박스 배경색 설정 */
+        border-radius: 8px; /* 모서리 둥글게 설정 */
+        padding: 10px 20px; /* 내부 여백 추가 */
+        color:rgb(9, 113, 82);
+        cursor: pointer; /* 커서 포인터로 변경 */
 
         &::before {
           content: "";
