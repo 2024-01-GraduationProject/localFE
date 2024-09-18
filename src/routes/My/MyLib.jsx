@@ -140,8 +140,8 @@ const MyLib = () => {
 
   const handleBookClick = (bookId, tab) => {
     if (tab === "독서 중" || tab === "My Favorite") {
-      // 독서 중인 책은 바로 상세 페이지로 이동
-      navigate(`/books/details/${bookId}`);
+      // 독서 중인 책은 바로 리더기로 이동
+      navigate(`/books/${bookId}/content`);
     } else if (tab === "독서 완료") {
       // 독서 완료된 책은 커스텀 모달을 띄움
       setSelectedCompletedBook(bookId); // 클릭한 책 ID 저장

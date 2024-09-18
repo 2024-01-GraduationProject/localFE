@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header2 from "components/Header/Header";
+import logo from "assets/img/logo.png";
 import api from "../../api"; // Axios 인스턴스 import
 import { useAuth } from "AuthContext";
 
@@ -119,7 +120,14 @@ const Taste = () => {
 
   return (
     <>
-      <Header2 />
+      <header id="header" role="banner">
+        <div className="header__inner">
+          <span className="header__logo" onClick={() => handleNavigate("/")}>
+            <img src={logo} alt="로고"></img>
+          </span>
+        </div>
+        <hr />
+      </header>
       <div id="taste">
         <div className="taste_text">
           <span className="highlight">여러분의 독서 취향을 알려주세요!</span>
@@ -129,10 +137,18 @@ const Taste = () => {
             <div>
               연령
               <div className="custom-dropdown">
-                <select className="styled-select" onChange={handleAgeChange} value={selectedAge}>
-                  <option value="" disabled>연령 선택</option>
+                <select
+                  className="styled-select"
+                  onChange={handleAgeChange}
+                  value={selectedAge}
+                >
+                  <option value="" disabled>
+                    연령 선택
+                  </option>
                   {ageOptions.map((age) => (
-                    <option key={age.age_id} value={age.age}>{age.age}</option>
+                    <option key={age.age_id} value={age.age}>
+                      {age.age}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -141,10 +157,18 @@ const Taste = () => {
             <div>
               성별
               <div className="custom-dropdown">
-                <select className="styled-select" onChange={handleGenderChange} value={selectedGender}>
-                  <option value="" disabled>성별 선택</option>
+                <select
+                  className="styled-select"
+                  onChange={handleGenderChange}
+                  value={selectedGender}
+                >
+                  <option value="" disabled>
+                    성별 선택
+                  </option>
                   {genderOptions.map((gender) => (
-                    <option key={gender.gender_id} value={gender.gender}>{gender.gender}</option>
+                    <option key={gender.gender_id} value={gender.gender}>
+                      {gender.gender}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -158,7 +182,9 @@ const Taste = () => {
             bookCategoryOptions.map((taste) => (
               <button
                 key={taste.category_id}
-                className={selectedBookTastes.includes(taste.category) ? "selected" : ""}
+                className={
+                  selectedBookTastes.includes(taste.category) ? "selected" : ""
+                }
                 onClick={() => handleBookTasteClick(taste.category)}
               >
                 #{taste.category}

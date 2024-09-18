@@ -47,7 +47,6 @@ const BookCategory = () => {
   return (
     <>
       <Header2 />
-      <SearchBar onSearch={handleSearchResults} />
       <MainNav />
       <div className="bookCG-list-wrapper">
         <h2>{categoryName}</h2>

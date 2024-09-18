@@ -39,13 +39,16 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  outline: none;
 
   &.left {
     left: 20px;
+    border: none;
   }
 
   &.right {
     right: 20px;
+    border: none;
   }
 
   &:hover {
@@ -65,6 +68,7 @@
   font-size: 1.5em; /* 글자 크기 */
   cursor: pointer; /* 마우스 커서 모양 */
   z-index: 20; /* nav-button보다 위에 위치하도록 설정 */
+  outline: none;
 
   &:hover {
     background-color: #999; /* 호버시 배경색 */
@@ -134,6 +138,7 @@
   font-size: 20px;
   cursor: pointer;
   z-index: 15;
+  outline: none;
 
   &.active {
     background-color: #999;
@@ -157,18 +162,12 @@
   z-index: 20; /* 가장 위에 표시되도록 설정 */
   overflow-y: auto; /* 스크롤 기능 추가 */
   transition: all 0.3s ease-in-out; /* 전환 효과 */
+  outline: none;
 
   .bookmark-title {
     font-weight: bold;
     color: #333;
     font-size: 1.2em;
-    text-align: center;
-  }
-
-  div {
-    font-size: 1.2em;
-    margin: 0 0 10px 0;
-    font-weight: 500;
     text-align: center;
   }
 
@@ -182,7 +181,7 @@
       padding: 10px;
       font-size: 14px;
       border-radius: 8px; /* 항목에 둥근 모서리 추가 */
-      transition: background-color 0.3s ease, transform 0.3s ease;
+      //transition: background-color 0.3s ease, transform 0.3s ease;
       display: flex;
       align-items: center; /* 텍스트 세로 중앙 정렬 */
       justify-content: space-between;
@@ -190,26 +189,26 @@
       &:hover {
         background-color: #e9f7df; /* 호버 시 배경색 변경 */
         font-weight: bold;
-        transform: translateY(-2px); 
+        transform: translateY(-2px);
       }
 
       &:active {
         transform: translateY(0); /* 클릭 시 원래 위치로 돌아옴 */
       }
     }
-
-    /* 스크롤바 스타일 변경 */
-    .indexes-list::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .indexes-list::-webkit-scrollbar-thumb {
-      background-color: #ccc; /* 스크롤바 색상 */
-      border-radius: 10px; /* 스크롤바 둥글게 */
-    }
-
-    .indexes-list::-webkit-scrollbar-track {
-      background-color: transparent;
-    }
   }
+}
+
+/* 스크롤바 스타일 변경 */
+.indexes-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.indexes-list::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* 스크롤바 색상 */
+  border-radius: 10px; /* 스크롤바 둥글게 */
+}
+
+.indexes-list::-webkit-scrollbar-track {
+  background-color: transparent;
 }
