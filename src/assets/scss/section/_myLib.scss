@@ -120,9 +120,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden; /* 이미지가 박스를 넘치지 않도록 숨김 */
-      //border: 1px solid #ddd; /* 박스에 테두리 추가 */
       border: none;
-      //border-radius: 5px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 박스에 그림자 추가 */
       background-color: transparent; /* 이미지 로딩 전 배경색 */
     }
@@ -135,9 +133,8 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
       &.selected {
-        border: 2px solid red;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
+        //border: 3px solid black;
+        opacity: 0.6;
       }
     }
 
@@ -177,7 +174,7 @@
 
     .progress-bar {
       height: 100%;
-      background-color: #00695c; /* 진행률 바의 색상 */
+      background-color: #67cf7add; /* 진행률 바의 색상 */
       border-radius: 5px;
       transition: width 0.3s ease-in-out; /* 부드러운 전환 효과 */
     }

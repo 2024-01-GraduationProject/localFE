@@ -7,6 +7,7 @@ import api from "../../api"; // Axios 인스턴스 import
 const MainNav = () => {
   const [showCategoryButtons, setShowCategoryButtons] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,10 +25,6 @@ const MainNav = () => {
     fetchCategories();
   }, []);
 
-  const handleHambtnClick = () => {
-    setShowCategoryButtons(!showCategoryButtons);
-  };
-
   const getLinkPath = (category) => {
     console.log("Category: ", category); // 한글인지 확인
     // category 값이 undefined일 경우 빈 문자열을 반환
@@ -37,6 +34,7 @@ const MainNav = () => {
   };
 
   const handleCategoryButtonClick = (category) => {
+    setSelectedCategory(category);
     navigate(getLinkPath(category));
   };
 
@@ -48,10 +46,14 @@ const MainNav = () => {
         </button>
 
         <div className="category_title">도서 카테고리</div>
-        <div className="category_buttons">
+        <div
+          className={`category_buttons ${showCategoryButtons ? "show" : ""}`}
+        >
           {categoryOptions.map((categoryData) => (
             <button
-              className="category_button"
+              className={`category_button ${
+                selectedCategory === categoryData.category ? "selected" : ""
+              }`}
               key={categoryData.category_id}
               onClick={() => handleCategoryButtonClick(categoryData.category)}
             >

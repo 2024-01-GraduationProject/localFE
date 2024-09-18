@@ -47,33 +47,39 @@ const BookCategory = () => {
   return (
     <>
       <Header2 />
-      <MainNav />
-      <div className="bookCG-list-wrapper">
-        <h2>{categoryName}</h2>
-        <div className="bookCG-list">
-          {books.length === 0 ? (
-            <p className="bookCG-no-books">No books found in this category.</p>
-          ) : (
-            books.map((book) => (
-              <div
-                key={book.id}
-                className="bookCG-item"
-                onClick={() => goToBookDetail(book.id)}
-              >
-                <img
-                  src={book.coverImageUrl}
-                  alt={`Cover of ${book.title}`}
-                  className="book-cover"
-                />
-                <div className="bookCG-details">
-                  <h2 className="bookCG-title">{book.title}</h2>
-                  <p className="bookCG-author">
-                    {book.author} | {book.publisher}
-                  </p>
+      <div className="container">
+        <MainNav />
+        <div className="bookCG-list-wrapper">
+          <h2>{categoryName}</h2>
+          <div className="bookCG-list">
+            {books.length === 0 ? (
+              <p className="bookCG-no-books">
+                No books found in this category.
+              </p>
+            ) : (
+              books.map((book) => (
+                <div
+                  key={book.id}
+                  className="bookCG-item"
+                  onClick={() => goToBookDetail(book.id)}
+                >
+                  <div className="category-book-cover-wrapper">
+                    <img
+                      src={book.coverImageUrl}
+                      alt={`Cover of ${book.title}`}
+                      className="book-cover"
+                    />
+                  </div>
+                  <div className="bookCG-details">
+                    <h2 className="bookCG-title">{book.title}</h2>
+                    <p className="bookCG-author">
+                      {book.author} | {book.publisher}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </>

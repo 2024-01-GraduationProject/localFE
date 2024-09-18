@@ -66,10 +66,10 @@ const FamousBook = () => {
   return (
     <div className="booklist-wrapper">
       <div className="main-booklist-component">
-        <span className="groupingText">
-        요즘 </span><strong className="highlightAgeGender">{age}</strong> <strong className="highlightAgeGender">{gender}</strong>
-        <span className="groupingText">이(가) 즐겨 보는 책{" "}</span>
-      
+        <span className="groupingText">요즘 </span>
+        <strong className="highlightAgeGender">{age}</strong>{" "}
+        <strong className="highlightAgeGender">{gender}</strong>
+        <span className="groupingText">이(가) 즐겨 보는 책 </span>
       </div>
       <div className="famousBook-list-wrapper">
         <div className="book-list">
@@ -81,17 +81,15 @@ const FamousBook = () => {
                 onClick={() => goToBookDetail(book.bookId)}
               >
                 <div className="book-cover-wrapper">
-                <img
-                  src={book.coverImageUrl}
-                  alt={book.title}
-                  className="book-cover"
-                />
+                  <img
+                    src={book.coverImageUrl}
+                    alt={book.title}
+                    className="book-cover"
+                  />
                 </div>
                 <div className="book-details">
                   <h3 className="book-title">{book.title}</h3>
-                  <p className="book-author">
-                    {book.author}
-                  </p>
+                  <p className="book-author">{book.author}</p>
                 </div>
               </div>
             ))

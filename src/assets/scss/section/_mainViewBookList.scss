@@ -21,6 +21,7 @@
   font-size: 2em;
   padding-top: 0.5em;
   padding-bottom: 0.3em;
+
   margin: 0 auto; /* 수평 가운데 정렬 */
   width: fit-content; /* 요소 크기만큼의 너비 설정 */
 }
@@ -65,6 +66,7 @@
   box-shadow: 0 4px 10px rgba(20, 127, 52, 0.1);
   margin: 0 auto; /* 수평 중앙 정렬 */
   margin-top: 7.5em;
+  box-sizing: border-box; /* 패딩을 포함하여 박스 크기 계산 */
 
   .best-book-wrapper {
     margin: auto;
@@ -72,11 +74,13 @@
 }
 
 .best-book-title {
-  font-size: 20pt;
+  font-size: 2.3vw; /* 화면 크기에 비례하는 폰트 크기 */
   font-weight: bold;
   margin-bottom: 1em;
-  margin-left: -4em;
+  margin-left: -3em;
   color: #333;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  text-overflow: ellipsis; /* 텍스트 넘치면 '...' 표시 */
 
   span {
     font-weight: bolder;

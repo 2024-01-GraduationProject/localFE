@@ -233,8 +233,8 @@ const BookDetail = () => {
         </div>
       </div>
 
-      <div className="mainview_wrapper">
-      <FamousBook />
+      <div className="bookDetail_wrapper">
+        <FamousBook />
       </div>
     </>
   );
