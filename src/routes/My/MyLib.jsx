@@ -207,18 +207,22 @@ const MyLib = () => {
     return books.length > 0 ? (
       books.map((book) => (
         <span key={book.bookId} className="mylib-book-item">
-          <img
-            src={book.coverImageUrl}
-            alt={book.title}
-            className={`book-cover ${
-              isEditing && selectedBooks.includes(book.bookId) ? "selected" : ""
-            }`}
-            onClick={() =>
-              isEditing
-                ? handleSelectBook(book.bookId)
-                : handleBookClick(book.bookId, tab)
-            }
-          />
+          <div className="mylib-book-cover-wrapper">
+            <img
+              src={book.coverImageUrl}
+              alt={book.title}
+              className={`book-cover ${
+                isEditing && selectedBooks.includes(book.bookId)
+                  ? "selected"
+                  : ""
+              }`}
+              onClick={() =>
+                isEditing
+                  ? handleSelectBook(book.bookId)
+                  : handleBookClick(book.bookId, tab)
+              }
+            />
+          </div>
           <span className="book-details">
             <span className="book-title">{book.title}</span>
             <span className="book-author">{book.author}</span>
@@ -239,9 +243,7 @@ const MyLib = () => {
             )}
             {tab === "독서 완료" && (
               <>
-                <span className="completed_on">
-                  Completed on: {book.endDate}
-                </span>
+                <span className="completed_on">완독일: {book.endDate}</span>
               </>
             )}
           </span>

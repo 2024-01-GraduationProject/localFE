@@ -485,7 +485,7 @@ const BookReader = () => {
                     className="index-progress"
                     onClick={() => handleIndexClick(id.progress)}
                   >
-                    {Math.round(id.progress.toFixed(2))}%
+                    {id.progress.toFixed(1)}%
                   </li>
                 ))}
               </ul>
@@ -497,7 +497,8 @@ const BookReader = () => {
               style={{ width: `${progress}%` }}
             ></div>
             <div className="progress-text" style={{ left: `${progress}%` }}>
-              {Math.round(progress)}%
+              {/*{Math.round(progress)}%*/}
+              {progress.toFixed(1)}%
             </div>
           </div>
         </>
