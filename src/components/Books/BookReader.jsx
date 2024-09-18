@@ -40,6 +40,7 @@ const BookReader = () => {
       } catch (err) {
         console.error("사용자 데이터 가져오기 실패: ", err);
         alert("사용자 데이터를 가져오는 데 실패했습니다.");
+        navigate("/login");
       }
     };
 
@@ -73,7 +74,7 @@ const BookReader = () => {
           console.log("Book ready.");
 
           // 전체 페이지 수 계산
-          await book.locations.generate(1600); // 1600은 기준점(텍스트 길이 기준)
+          await book.locations.generate(2000); // 2000은 기준점(텍스트 길이 기준)
           setTotalPages(book.locations.total);
 
           setBookInstance(book);
@@ -107,8 +108,6 @@ const BookReader = () => {
   }, [isBookCompleted, bookId, userId, bookTitle, navigate]);
 
   useEffect(() => {
-    //let resizeObserver = null; // ResizeObserver 선언
-
     const renderBook = async () => {
       if (bookInstance && bookRef.current) {
         try {
@@ -151,13 +150,6 @@ const BookReader = () => {
               newRendition.resize();
             }
           }, 200);
-
-          /*if (isObserverActive) {
-            resizeObserver = new ResizeObserver(() => {
-              handleResize();
-            });
-            resizeObserver.observe(bookRef.current);
-          }*/
 
           const fetchLastReadPage = async () => {
             try {
@@ -485,9 +477,7 @@ const BookReader = () => {
           </button>
           {showIndexes && (
             <div className="indexes-list">
-            <span className="bookmark-title">
-               &lt; 책갈피 &gt;
-            </span>
+              <span className="bookmark-title"> 책갈피 </span>
               <ul>
                 {indexes.map((id, index) => (
                   <li
@@ -495,7 +485,7 @@ const BookReader = () => {
                     className="index-progress"
                     onClick={() => handleIndexClick(id.progress)}
                   >
-                     {Math.round(id.progress.toFixed(2))}%
+                    {id.progress.toFixed(1)}%
                   </li>
                 ))}
               </ul>
@@ -507,7 +497,8 @@ const BookReader = () => {
               style={{ width: `${progress}%` }}
             ></div>
             <div className="progress-text" style={{ left: `${progress}%` }}>
-              {Math.round(progress)}%
+              {/*{Math.round(progress)}%*/}
+              {progress.toFixed(1)}%
             </div>
           </div>
         </>

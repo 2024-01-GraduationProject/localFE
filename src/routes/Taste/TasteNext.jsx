@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Header2 } from "components";
 import boogi2 from "assets/img/boogi2.jpg";
+import logo from "assets/img/logo.png";
 import { useAuth } from "AuthContext";
 
 const TasteNext = () => {
@@ -22,7 +23,14 @@ const TasteNext = () => {
 
   return (
     <>
-      <Header2 />
+      <header id="header" role="banner">
+        <div className="header__inner">
+          <span className="header__logo" onClick={() => handleNavigate("/")}>
+            <img src={logo} alt="로고"></img>
+          </span>
+        </div>
+        <hr />
+      </header>
       <div id="tastenext">
         <img src={boogi2} alt="부기"></img>
         <div className="taste_text">

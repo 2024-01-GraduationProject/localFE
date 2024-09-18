@@ -140,8 +140,8 @@ const MyLib = () => {
 
   const handleBookClick = (bookId, tab) => {
     if (tab === "독서 중" || tab === "My Favorite") {
-      // 독서 중인 책은 바로 상세 페이지로 이동
-      navigate(`/books/details/${bookId}`);
+      // 독서 중인 책은 바로 리더기로 이동
+      navigate(`/books/${bookId}/content`);
     } else if (tab === "독서 완료") {
       // 독서 완료된 책은 커스텀 모달을 띄움
       setSelectedCompletedBook(bookId); // 클릭한 책 ID 저장
@@ -207,18 +207,22 @@ const MyLib = () => {
     return books.length > 0 ? (
       books.map((book) => (
         <span key={book.bookId} className="mylib-book-item">
-          <img
-            src={book.coverImageUrl}
-            alt={book.title}
-            className={`book-cover ${
-              isEditing && selectedBooks.includes(book.bookId) ? "selected" : ""
-            }`}
-            onClick={() =>
-              isEditing
-                ? handleSelectBook(book.bookId)
-                : handleBookClick(book.bookId, tab)
-            }
-          />
+          <div className="mylib-book-cover-wrapper">
+            <img
+              src={book.coverImageUrl}
+              alt={book.title}
+              className={`book-cover ${
+                isEditing && selectedBooks.includes(book.bookId)
+                  ? "selected"
+                  : ""
+              }`}
+              onClick={() =>
+                isEditing
+                  ? handleSelectBook(book.bookId)
+                  : handleBookClick(book.bookId, tab)
+              }
+            />
+          </div>
           <span className="book-details">
             <span className="book-title">{book.title}</span>
             <span className="book-author">{book.author}</span>
@@ -239,9 +243,7 @@ const MyLib = () => {
             )}
             {tab === "독서 완료" && (
               <>
-                <span className="completed_on">
-                  Completed on: {book.endDate}
-                </span>
+                <span className="completed_on">완독일: {book.endDate}</span>
               </>
             )}
           </span>

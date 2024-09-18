@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import logo from "assets/img/logo.jpg";
+import logo from "assets/img/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api"; // Axios 인스턴스 import
 import { useAuth } from "AuthContext";
