@@ -43,12 +43,11 @@ const MainNav = () => {
   return (
     <>
       <div className="main_nav">
-
         <button className="mylib" onClick={() => navigate("/mylib")}>
           내 서재 📖
         </button>
-      </div>
-        <h2 className="category_title">도서 카테고리</h2>
+
+        <div className="category_title">도서 카테고리</div>
         <div className="category_buttons">
           {categoryOptions.map((categoryData) => (
             <button
@@ -60,6 +59,7 @@ const MainNav = () => {
             </button>
           ))}
         </div>
+      </div>
     </>
   );
 };

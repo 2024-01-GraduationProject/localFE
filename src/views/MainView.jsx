@@ -29,24 +29,28 @@ const MainView = () => {
   return (
     <>
       <Header2 />
-      <MainNav />
+      <div className="container">
+        <MainNav />
 
-      <div className="mainview_wrapper">
-        <BestBook />
-      </div>
+        <div className="mainview_content">
+          <div className="mainview_wrapper">
+            <BestBook />
+          </div>
 
-      <div className="mainview_wrapper">
-        <RecommendBook />
-      </div>
+          <div className="mainview_wrapper">
+            <RecommendBook />
+          </div>
 
-      <div className="mainview_wrapper">
-      <hr className="mainview_line" />
-        <NewBook />
-      </div>
+          <div className="mainview_wrapper">
+            <hr className="mainview_line" />
+            <NewBook />
+          </div>
 
-      <div className="mainview_wrapper">
-      <hr className="mainview_line" />
-        <FamousBook />
+          <div className="mainview_wrapper">
+            <hr className="mainview_line" />
+            <FamousBook />
+          </div>
+        </div>
       </div>
     </>
   );

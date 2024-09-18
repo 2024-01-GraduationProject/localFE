@@ -142,7 +142,7 @@
   margin-bottom: 50px;
   border: 1px solid #ccc;
   border-radius: 8px; // 모서리를 둥글게
-  background-color: #f9f9f9; // 배경 색상 추가
+  background-color: #f8fdf5;
 }
 
 .profile-pic-section {
@@ -169,12 +169,9 @@
 
 .form-field {
   display: flex;
-  //align-items: center;
-  //flex-direction: column;
   margin-bottom: 15px;
 
   &.preferences {
-    //flex-direction: column;
     label {
       margin-bottom: 10px;
       font-weight: 500;
@@ -258,6 +255,7 @@
   font-weight: 400;
   color: #333;
   margin-bottom: 10px;
+  padding-left: 1em;
 }
 
 .radio-group {
