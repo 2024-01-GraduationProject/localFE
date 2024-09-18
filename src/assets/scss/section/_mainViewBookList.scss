@@ -17,10 +17,12 @@
 }
 
 .main-booklist-component {
-  display: inline-block;
+  display: block;
   font-size: 2em;
   padding-top: 0.5em;
   padding-bottom: 0.3em;
+  margin: 0 auto; /* 수평 가운데 정렬 */
+  width: fit-content; /* 요소 크기만큼의 너비 설정 */
 }
 
 /* NewBook.jsx */
