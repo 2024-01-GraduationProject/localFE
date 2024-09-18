@@ -46,7 +46,7 @@ const MyPage = () => {
               className="profile-pic"
             />
           </div>
-          <h2>{user.nickname} 님</h2>
+          <h2 className="userName">{user.nickname} 님</h2>
           <div className="info">
             <div style={{ "--i": 1 }}>
               <MdOutlineEmail className="mypage-icon" size="28" />
