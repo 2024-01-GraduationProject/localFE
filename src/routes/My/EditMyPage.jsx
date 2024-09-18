@@ -462,7 +462,10 @@ const EditMyPage = () => {
           )}
           <div className="form-field">
             <label>이 메 일</label>
-            <span className="user-email">{user.newEmail}</span>
+            <span className="user-email">
+              {"   "}
+              {user.newEmail}
+            </span>
           </div>
           <div className="form-field">
             <label>현재 비밀번호</label>

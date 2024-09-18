@@ -43,40 +43,49 @@ const SearchList = () => {
   return (
     <>
       <Header2 />
-      <SearchBar onSearch={handleSearchResults} /> {/* 검색 결과 콜백 전달 */}
-      <MainNav />
-      <hr className="mainview_line" />
-      {/* 검색 결과 표시 */}
-      <div id="searchResults">
-        {hasResults ? (
-          <>
-            <h2>"<span className="searchWord">{searchWord}</span>" 검색 결과입니다.</h2>
-            <div className="mainview_wrapper">
-              <div className="booksGrid">
-                {searchResults.map((book) => (
-                  <div key={book.book_id} className="bookItem">
-                    <img
-                      src={book.coverImageUrl}
-                      alt={book.title}
-                      className="bookCover"
-                      onClick={() => navigate(`/books/details/${book.bookId}`)}
-                    />
-                    <div className="bookInfo">
-                      <h3>{book.title}</h3>
-                      <p>
-                        {book.author} | {book.publisher}
-                      </p>
+      <div className="container">
+        <MainNav />
+        {/*<hr className="mainview_line" />*/}
+        {/* 검색 결과 표시 */}
+        <div id="searchResults">
+          {hasResults ? (
+            <>
+              <h2>
+                "<span className="searchWord">{searchWord}</span>" 검색
+                결과입니다.
+              </h2>
+              <div className="mainview_wrapper">
+                <div className="booksGrid">
+                  {searchResults.map((book) => (
+                    <div key={book.book_id} className="bookItem">
+                      <div className="searchList-book-cover-wrapper">
+                        <img
+                          src={book.coverImageUrl}
+                          alt={book.title}
+                          className="bookCover"
+                          onClick={() =>
+                            navigate(`/books/details/${book.bookId}`)
+                          }
+                        />
+                      </div>
+                      <div className="bookInfo">
+                        <h3>{book.title}</h3>
+                        <p>
+                          {book.author} | {book.publisher}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          </>
-        ) : (
-          <p className="noResultsMessage">
-            "<span className="searchWord">{searchWord}</span>" 검색 결과가 없습니다.
-          </p>
-        )}
+            </>
+          ) : (
+            <p className="noResultsMessage">
+              "<span className="searchWord">{searchWord}</span>" 검색 결과가
+              없습니다.
+            </p>
+          )}
+        </div>
       </div>
     </>
   );

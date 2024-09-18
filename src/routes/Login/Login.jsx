@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import logo from "assets/img/logo.jpg";
+import logo from "assets/img/logo.png";
 import google from "assets/img/ico/google.ico";
 import kakao from "assets/img/ico/kakaotalk.ico";
 import { useNavigate } from "react-router-dom";

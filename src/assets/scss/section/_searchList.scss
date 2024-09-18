@@ -1,34 +1,33 @@
-/*#searchResults {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(180px, 1fr)
-  ); // 한 줄에 4권씩 보이도록 설정
-  gap: 3rem; // 아이템 사이의 간격
-  padding: 3rem;
-  margin: auto;
-  width: 75%;
-}*/
+.container {
+  display: flex;
+  height: 100vh; /* 화면 전체 높이 */
+}
+
 #searchResults {
-  padding: 1rem;
-  text-align: center;
+  margin-top: 10em;
+  flex: 1;
+  overflow-y: auto; /* 세로 스크롤 가능 */
   h2 {
     margin-bottom: 1.5rem;
     font-weight: bold;
+    text-align: center;
   }
 }
 
 .searchWord {
-  color:rgb(14, 125, 21);
+  color: rgb(14, 125, 21);
 }
 
 .booksGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(150px, 1fr)
+  ); /* 반응형 그리드 */
+  gap: 4rem;
   margin: auto;
-  padding: 3em;
-  width: 75%;
+  padding: 2em;
+  width: 80%;
 }
 
 .noResultsMessage {
@@ -49,10 +48,19 @@
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
+
+  .searchList-book-cover-wrapper {
+    width: 13.5em; /* 원하는 고정 너비 */
+    height: 18em; /* 원하는 고정 높이 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* 이미지가 박스를 넘치지 않도록 숨김 */
+  }
 }
 
 .bookCover {
-  width: 100%;
+  width: auto;
   height: auto;
   display: block;
 }
