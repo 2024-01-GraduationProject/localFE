@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api"; // Axios 인스턴스 import
 import { debounce } from "lodash";
-import './Intro.css'; // 필요한 CSS 파일 import
 import boogiImage from "assets/img/boogi_main.png"; // 이미지 경로 import
 import boogi1 from "assets/img/miniboogi1.png"; // 첫 번째 이미지 경로
 import boogi2 from "assets/img/miniboogi2.png"; // 두 번째 이미지 경로
@@ -109,8 +108,8 @@ const Intro = () => {
         id="intro"
         className="intro-section"
         style={{
-          backgroundColor: scrollY > 100 ? '#ffeb3b' : '#fdfdf5',
-          transition: 'background-color 0.5s ease',
+          backgroundColor: scrollY > 100 ? "#ffeb3b" : "#fdfdf5",
+          transition: "background-color 0.5s ease",
         }}
       >
         <div className="intro__text">
@@ -119,7 +118,8 @@ const Intro = () => {
             <span className="boogi_text1">부기</span> 와 함께 밀도있는 독서생활
           </div>
           <div className="text3">
-            <span className="boogi_text1">AI 부기</span> 가 책에 대한 여러 질문을 던져줍니다!
+            <span className="boogi_text1">AI 부기</span> 가 책에 대한 여러
+            질문을 던져줍니다!
           </div>
         </div>
 
@@ -146,7 +146,11 @@ const Intro = () => {
                 />
                 {emailError && (
                   <div
-                    className={`error-message ${emailError === "사용 가능한 이메일입니다." ? "success" : ""}`}
+                    className={`error-message ${
+                      emailError === "사용 가능한 이메일입니다."
+                        ? "success"
+                        : ""
+                    }`}
                   >
                     {emailError}
                   </div>
@@ -155,7 +159,9 @@ const Intro = () => {
             )}
 
             <button
-              className={`start_btn ${emailVisible && !isEmailAvailable ? "inactive" : ""}`}
+              className={`start_btn ${
+                emailVisible && !isEmailAvailable ? "inactive" : ""
+              }`}
               type="button"
               onClick={handleStartClick}
             >
@@ -166,9 +172,7 @@ const Intro = () => {
 
         {/* 말풍선 */}
         {showBalloon && (
-          <div className="speech-balloon">
-            이미 회원이신가요? 로그인하세요!
-          </div>
+          <div className="speech-balloon">이미 회원이신가요? 로그인하세요!</div>
         )}
       </section>
 
@@ -176,26 +180,36 @@ const Intro = () => {
       <section
         className="fade-section combined-section"
         style={{
-          backgroundColor: scrollY > 100 ? '#ffeb3b' : '#fffacd',
-          transition: 'background-color 0.5s ease',
+          backgroundColor: scrollY > 100 ? "#ffeb3b" : "#fffacd",
+          transition: "background-color 0.5s ease",
         }}
       >
         <div className="section-box">
           <h2>전자책 도서관의 새로운 경험</h2>
-          <p>책을 읽고, 부기와의 대화를 통해 더욱 깊은 독서의 즐거움을 느껴보세요!</p>
+          <p>
+            책을 읽고, 부기와의 대화를 통해 더욱 깊은 독서의 즐거움을
+            느껴보세요!
+          </p>
           {/* 이미지 슬라이드 */}
           <div className="image-balloon-container">
-            <img src={images[currentImageIndex]} alt="Boogi Character" className="sliding-image" />
+            <img
+              src={images[currentImageIndex]}
+              alt="Boogi Character"
+              className="sliding-image"
+            />
             {/* 말풍선 */}
-            <div className={`bubble-balloon ${showBalloon ? 'show' : ''}`}>
-            앨리스는 자꾸 크기도 커지고 작아지기도 하잖아.<br />
-            너라면 어떤 순간에 작아지고 싶고, 어떤 순간에 커지고 싶어?
+            <div className={`bubble-balloon ${showBalloon ? "show" : ""}`}>
+              앨리스는 자꾸 크기도 커지고 작아지기도 하잖아.
+              <br />
+              너라면 어떤 순간에 작아지고 싶고, 어떤 순간에 커지고 싶어?
             </div>
           </div>
         </div>
         <div className="section-box">
           <h2>독서의 새로운 패러다임</h2>
-          <p>다양한 도서를 자유롭게 탐색하고 여러분만의 독서 공간을 만드세요!</p>
+          <p>
+            다양한 도서를 자유롭게 탐색하고 여러분만의 독서 공간을 만드세요!
+          </p>
         </div>
       </section>
     </>
