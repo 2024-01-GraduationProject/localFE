@@ -1,19 +1,9 @@
-.highlightNew {
-  font-size: 80%;
-  color: #0f872b;
-  font-weight: 800;
-}
+/* 공통 */
 
-.highlightAgeGender {
-  font-size: 80%;
-  color: #11229f;
-  font-weight: 800;
-}
-
-.userNickname {
-  font-size: 80%;
-  color: #000000;
-  font-weight: 800;
+.booklist-wrapper {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  height: 80%;
 }
 
 .main-booklist-component {
@@ -26,135 +16,10 @@
   width: fit-content; /* 요소 크기만큼의 너비 설정 */
 }
 
-/* NewBook.jsx */
-
-.newbook-list-wrapper {
-  height: 80%;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* 자식 요소를 수평으로 가운데 배치 */
-  margin: 0;
-  margin-top: 1em;
-}
-
-.newbook-item {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 10px;
-  // 도서 틀 추가
-  padding-top: 15pt;
-  padding-bottom: 7pt;
-  background-color: #f2fbf1; /* 틀 내부의 배경색 */
-  box-shadow: 0 0 5pt rgba(55, 170, 34, 0.635); /* 부드러운 그림자 추가 */
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-}
-
-/* BestBook.jsx */
-
-.best-book-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #e6f4e3; //#d8fac0;
-  width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(20, 127, 52, 0.1);
-  margin: 0 auto; /* 수평 중앙 정렬 */
-  margin-top: 7.5em;
-  box-sizing: border-box; /* 패딩을 포함하여 박스 크기 계산 */
-
-  .best-book-wrapper {
-    margin: auto;
-  }
-}
-
-.best-book-title {
-  font-size: 2.3vw; /* 화면 크기에 비례하는 폰트 크기 */
-  font-weight: bold;
-  margin-bottom: 1em;
-  margin-left: -3em;
-  color: #333;
-  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-  text-overflow: ellipsis; /* 텍스트 넘치면 '...' 표시 */
-
-  span {
-    font-weight: bolder;
-    font-style: italic;
-    font-size: 1.3em;
-    color: #158218;
-  }
-}
-
-.bestbook-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 600px;
-}
-
-.bestbook-cover {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
-.bestbook-details {
-  text-align: center;
-  flex: 1;
-  max-width: 100%; /* 고정된 너비 설정 */
-}
-
-.bestbook-title {
-  font-size: 17pt;
-  font-weight: bold;
-  margin-bottom: 0.5em;
-  cursor: pointer;
-}
-
-.bestbook-author,
-.bestbook-publisher {
-  font-size: 0.8em;
-  margin-bottom: 0.3em;
-  color: #555;
-}
-
-.carousel-indicators {
-  display: flex;
-  justify-content: center;
-  margin-top: 2em;
-  margin-bottom: 2em;
-}
-
-.indicator {
-  width: 10px;
-  height: 10px;
-  background-color: #ccc;
-  border-radius: 50%;
-  margin: 0 5px;
-  cursor: pointer;
-}
-
-.indicator.active {
-  background-color: #9acc6d;
-}
-
-/* 공통 */
 .groupingText {
   font-size: 60%;
   color: #6c6c6c;
   font-weight: 500;
-}
-
-.booklist-wrapper {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  height: 80%;
 }
 
 .book-list {
@@ -164,28 +29,6 @@
   height: 100%;
   gap: 1.5em;
 }
-
-// .book-item {
-//   width: 160px;
-//   margin: 1em 1em 1em 0;
-//   text-align: center;
-//   flex-shrink: 0; /* 고정된 크기로 유지 */
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   background-color: #fff;
-//   border-radius: 10px;
-//   // 도서 틀 추가
-//   padding-top: 15pt;
-//   padding-bottom: 7pt;
-//   background-color: #f4fff2; /* 틀 내부의 배경색 */
-//   box-shadow: 0 0 5pt rgba(55, 170, 34, 0.635); /* 부드러운 그림자 추가 */
-
-//     &:hover {
-//     transform: scale(1.05);
-//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-//   }
-// }
 
 .book-cover {
   width: 100%;
@@ -234,7 +77,137 @@
   margin-bottom: 0;
 }
 
+/* NewBook.jsx */
+
+.highlightNew {
+  font-size: 80%;
+  color: #0f872b;
+  font-weight: 800;
+}
+
+.newbook-list-wrapper {
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 자식 요소를 수평으로 가운데 배치 */
+  margin: 0;
+  margin-top: 1em;
+}
+
+.newbook-item {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  // 도서 틀 추가
+  padding-top: 15pt;
+  padding-bottom: 7pt;
+  background-color: #f2fbf1; /* 틀 내부의 배경색 */
+  box-shadow: 0 0 5pt rgba(55, 170, 34, 0.635); /* 부드러운 그림자 추가 */
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* BestBook.jsx */
+
+.best-book-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #e6f4e3; //#d8fac0;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(20, 127, 52, 0.1);
+  margin: 0 auto; /* 수평 중앙 정렬 */
+  margin-top: 7.5em;
+  box-sizing: border-box; /* 패딩을 포함하여 박스 크기 계산 */
+
+  .best-book-wrapper {
+    margin: auto;
+
+    .best-book-title {
+      font-size: 2.3vw; /* 화면 크기에 비례하는 폰트 크기 */
+      font-weight: bold;
+      margin-bottom: 1em;
+      margin-left: -3em;
+      color: #333;
+      white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+      text-overflow: ellipsis; /* 텍스트 넘치면 '...' 표시 */
+
+      span {
+        font-weight: bolder;
+        font-style: italic;
+        font-size: 1.3em;
+        color: #158218;
+      }
+    }
+
+    .bestbook-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 600px;
+    }
+  }
+}
+
+.bestbook-cover {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.bestbook-details {
+  text-align: center;
+  flex: 1;
+  max-width: 100%; /* 고정된 너비 설정 */
+
+  .bestbook-title {
+    font-size: 17pt;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    cursor: pointer;
+  }
+
+  .bestbook-author,
+  .bestbook-publisher {
+    font-size: 0.8em;
+    margin-bottom: 0.3em;
+    color: #555;
+  }
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  .indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+
+    &.active {
+      background-color: #9acc6d;
+    }
+  }
+}
+
 /* FamousBook.jsx */
+
+.highlightAgeGender {
+  font-size: 80%;
+  color: #11229f;
+  font-weight: 800;
+}
+
 .famousBook-list-wrapper {
   height: 80%;
   display: flex;
@@ -262,7 +235,15 @@
   }
 }
 
-.famous2-book-item {
+/* RecommendBook.jsx */
+
+.userNickname {
+  font-size: 80%;
+  color: #000000;
+  font-weight: 800;
+}
+
+.recommend-book-item {
   text-align: center;
   display: flex;
   flex-direction: column;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import api from "../api";
+import api from "../../api";
 import chatbot from "assets/img/chatbot_nobg.png";
 import chatbot2 from "assets/img/chatbot2_nobg.png";
 import chatbot3 from "assets/img/chatbot3_nobg.png";

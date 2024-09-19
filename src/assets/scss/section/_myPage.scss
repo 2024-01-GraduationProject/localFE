@@ -1,4 +1,4 @@
-// MyPage.scss
+/* MyPage.scss */
 
 #my-page {
   display: flex;
@@ -133,7 +133,7 @@
   }
 }
 
-// EditMyPage.scss
+/* EditMyPage.scss */
 
 .edit-profile {
   display: flex;
@@ -153,14 +153,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
 
-.profile-pic {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
 }
 
 .form-section {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../api"; // API 호출용 설정 파일
+import api from "../../api"; // API 호출용 설정 파일
 import { FaRegArrowAltCircleLeft } from "react-icons/fa"; // 아이콘 임포트
 import chatbot from "assets/img/chatbot_nobg.png";
 import chatbot3 from "assets/img/chatbot3_nobg.png";

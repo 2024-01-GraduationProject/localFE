@@ -1,9 +1,12 @@
-export { default as Join } from "./Join";
+export { default as BoogiChatbot } from "./Boogi/BoogiChatbot";
+export { default as CompletedBoogi } from "./Boogi/CompletedBoogi";
 
+export { default as BookCategory } from "./Books/BookCategory";
+export { default as BookDetail } from "./Books/BookDetail";
+export { default as BookReader } from "./Books/BookReader";
+
+export { default as Join } from "./Login/Join";
 export { default as Login } from "./Login/Login";
-export { default as GoogleLogin } from "./Login/GoogleLogin";
-export { default as KakaoLogin } from "./Login/KakaoLogin";
-export { default as NaverLogin } from "./Login/NaverLogin";
 
 export { default as EditMyPage } from "./My/EditMyPage";
 export { default as MyLib } from "./My/MyLib";

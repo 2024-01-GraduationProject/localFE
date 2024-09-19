@@ -186,9 +186,9 @@ const BookDetail = () => {
 
       <div id="book-detail">
         <div className="book-cover-wrapper">
-        <div className="bookDetail-cover">
-          <img src={book.coverImageUrl} alt={`${book.title} cover`} />
-        </div>
+          <div className="bookDetail-cover">
+            <img src={book.coverImageUrl} alt={`${book.title} cover`} />
+          </div>
         </div>
 
         <div className="book-info">

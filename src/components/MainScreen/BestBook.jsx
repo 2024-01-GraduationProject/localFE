@@ -60,12 +60,13 @@ const BestBook = () => {
             </h2>
             <div className="bestbook-info">
               <div className="book-cover-wrapper">
-              <img
-                src={bestBooks[currentIndex].coverImageUrl}
-                alt={bestBooks[currentIndex].title}
-                className="bestbook-cover"
-                onClick={() => goToBookDetail(bestBooks[currentIndex].id)}
-              /></div>
+                <img
+                  src={bestBooks[currentIndex].coverImageUrl}
+                  alt={bestBooks[currentIndex].title}
+                  className="bestbook-cover"
+                  onClick={() => goToBookDetail(bestBooks[currentIndex].id)}
+                />
+              </div>
               <div className="bestbook-details">
                 <h3
                   className="bestbook-title"

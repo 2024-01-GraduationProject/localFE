@@ -63,32 +63,32 @@
   opacity: 1; /* 항상 보이도록 설정 */
   transform: translateY(0); /* 초기 위치 설정 */
   transition: all 0.3s ease-in-out;
-}
 
-.category_button {
-  font-size: 14px;
-  padding: 0.7em;
-  width: 100%;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  border-radius: 8px;
-  color: rgb(12, 93, 48);
-  font-weight: 550;
-  margin-bottom: 0.5em;
-  transition: background-color 0.3s, transform 0.3s;
+  .category_button {
+    font-size: 14px;
+    padding: 0.7em;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+    color: rgb(12, 93, 48);
+    font-weight: 550;
+    margin-bottom: 0.5em;
+    transition: background-color 0.3s, transform 0.3s;
 
-  &:hover {
-    background-color: #afd7ac;
-    transform: scale(1.05);
-  }
+    &:hover {
+      background-color: #afd7ac;
+      transform: scale(1.05);
+    }
 
-  &:active {
-    background-color: #e0e0e0;
-  }
+    &:active {
+      background-color: #e0e0e0;
+    }
 
-  &.selected {
-    background-color: #afd7ac;
+    &.selected {
+      background-color: #afd7ac;
+    }
   }
 }
 

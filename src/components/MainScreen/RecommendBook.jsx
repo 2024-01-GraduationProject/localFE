@@ -55,41 +55,41 @@ const RecommendBook = () => {
 
   return (
     <>
-    <div className="booklist-wrapper">
-      <div className="main-booklist-component">
-      <strong className="userNickname">{nickname}</strong>
-        <span className="groupingText">님, 이런 책 어떠세요?</span>
-      </div>
-      <div className="famousBook-list-wrapper">
-        <div className="book-list">
-          {books.length > 0 ? (
-            books.map((book) => (
-              <div
-                key={book.bookId}
-                className="famous2-book-item"
-                onClick={() => goToBookDetail(book.bookId)}
-              >
-                <div className="book-cover-wrapper">
-                <img
-                  src={book.coverImageUrl}
-                  alt={book.title}
-                  className="book-cover"
-                />
+      <div className="booklist-wrapper">
+        <div className="main-booklist-component">
+          <strong className="userNickname">{nickname}</strong>
+          <span className="groupingText">님, 이런 책 어떠세요?</span>
+        </div>
+        <div className="famousBook-list-wrapper">
+          <div className="book-list">
+            {books.length > 0 ? (
+              books.map((book) => (
+                <div
+                  key={book.bookId}
+                  className="recommend-book-item"
+                  onClick={() => goToBookDetail(book.bookId)}
+                >
+                  <div className="book-cover-wrapper">
+                    <img
+                      src={book.coverImageUrl}
+                      alt={book.title}
+                      className="book-cover"
+                    />
+                  </div>
+                  <div className="book-details">
+                    <h3 className="book-title">{book.title}</h3>
+                    <p className="book-author">
+                      {book.author} | {book.publisher}
+                    </p>
+                  </div>
                 </div>
-                <div className="book-details">
-                  <h3 className="book-title">{book.title}</h3>
-                  <p className="book-author">
-                    {book.author} | {book.publisher}
-                  </p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>추천 책이 없습니다.</p>
-          )}
+              ))
+            ) : (
+              <p>추천 책이 없습니다.</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

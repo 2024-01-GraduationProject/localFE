@@ -46,7 +46,6 @@ const EditMyPage = () => {
           newAge: userData.data.age,
           newGender: userData.data.gender,
           newBookTaste: userData.data.bookTaste,
-          //newProfilePic: userData.data.profilePic,
           agreements: userData.data.agreements,
         });
 
@@ -56,7 +55,6 @@ const EditMyPage = () => {
           newAge: userData.data.age,
           newGender: userData.data.gender,
           newBookTaste: userData.data.bookTaste,
-          //newProfilePic: userData.data.profilePic,
           newPassword: "", // 초기에는 비밀번호를 변경하지 않음
           agreements: userData.data.agreements,
         });
@@ -84,7 +82,6 @@ const EditMyPage = () => {
       user.newGender !== initialData.newGender ||
       JSON.stringify(user.newBookTaste) !==
         JSON.stringify(initialData.newBookTaste) ||
-      //user.newProfilePic !== initialData.newProfilePic ||
       newPassword !== "" ||
       user.agreements !== initialData.agreements
     );
@@ -236,182 +233,6 @@ const EditMyPage = () => {
 
   if (!user) return <p>Loading...</p>;
 
-  {
-    /*return (
-    <div>
-      <Header2 />
-      <div className="edit-profile">
-        <div className="profile-pic-section">
-          <img
-            src={user.newProfilePic || boogi3}
-            alt="프로필"
-            className="profile-pic"
-          />
-          {/*<div className="camera-icon-wrapper">
-            <label htmlFor="profilePicInput">
-              <FaCamera className="camera-icon" />
-            </label> 
-            <input
-              id="profilePicInput"
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={(e) =>
-                setUser({ ...user, newProfilePic: e.target.files[0] })
-              }
-            /> 
-          </div> */
-  }
-  {
-    /*</div>
-        <div className="form-section">
-          <label>
-            닉 네 임 :
-            <input
-              type="text"
-              value={user.newNickname}
-              onChange={onChangeNicknameHandler}
-            />
-            <button
-              className="confirmBtn"
-              type="button"
-              onClick={checkNicknameAvailability}
-            >
-              중복 확인
-            </button>
-          </label>
-          {nicknameError && (
-            <small className={isNicknameAvailable ? "NicknameAvailable" : ""}>
-              * {nicknameError}
-            </small>
-          )}
-          <label>
-            이 메 일 : <span className="user-email">{user.newEmail}</span>
-          </label>
-          <label>
-            현재 비밀번호 :
-            <input
-              type="password"
-              value={currentPassword}
-              onChange={onChangeCurrentPasswordHandler}
-            />
-            <button
-              type="button"
-              className="confirmBtn"
-              onClick={checkCurrentPassword}
-            >
-              확인
-            </button>
-          </label>
-          {passwordError && (
-            <small className="PasswordError">* {passwordError}</small>
-          )}
-          <label>
-            새 비밀번호 :
-            <input
-              type="password"
-              value={newPassword}
-              onChange={onChangeNewPasswordHandler}
-            />
-          </label>
-          {newPasswordError && (
-            <small className="PasswordError">* {newPasswordError}</small>
-          )}
-          <label>
-            연 령 대 :
-            <select
-              value={user.newAge}
-              onChange={(e) => setUser({ ...user, newAge: e.target.value })}
-            >
-              {ageOptions.map((age) => (
-                <option key={age.age_id} value={age.age}>
-                  {age.age}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            성 별 :
-            <select
-              value={user.newGender}
-              onChange={(e) => setUser({ ...user, newGender: e.target.value })}
-            >
-              {genderOptions.map((gender) => (
-                <option key={gender.gender_id} value={gender.gender}>
-                  {gender.gender}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div>
-            <label> 관심 분야 : </label>
-            <div className="preferences">
-              {bookCategories.map((category) => (
-                <button
-                  key={category.category}
-                  className={
-                    user.newBookTaste.includes(category.category)
-                      ? "selected"
-                      : ""
-                  }
-                  onClick={() =>
-                    setUser((prevState) => {
-                      const newBookTaste = prevState.newBookTaste.includes(
-                        category.category
-                      )
-                        ? prevState.newBookTaste.filter(
-                            (id) => id !== category.category
-                          )
-                        : [...prevState.newBookTaste, category.category];
-                      return { ...prevState, newBookTaste };
-                    })
-                  }
-                >
-                  # {category.category}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="eventAlarm-group">
-            <label> 이벤트 알림 수신 :</label>
-            <div className="radio-group">
-              <label>
-                <input
-                  type="radio"
-                  checked={user.agreements.eventAlarm === true}
-                  onChange={() =>
-                    setUser({
-                      ...user,
-                      agreements: { ...user.agreements, eventAlarm: true },
-                    })
-                  }
-                />
-                동의
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  checked={user.agreements.eventAlarm === false}
-                  onChange={() =>
-                    setUser({
-                      ...user,
-                      agreements: { ...user.agreements, eventAlarm: false },
-                    })
-                  }
-                />
-                비동의
-              </label>
-            </div>
-          </div>
-          <button className="saveBtn" onClick={handleSave}>
-            저장
-          </button>
-        </div>
-      </div>
-    </div>
-  ); */
-  }
-
   return (
     <div>
       <Header2 />
@@ -422,20 +243,6 @@ const EditMyPage = () => {
             alt="프로필"
             className="profile-pic"
           />
-          {/*<div className="camera-icon-wrapper">
-            <label htmlFor="profilePicInput">
-              <FaCamera className="camera-icon" />
-            </label> 
-            <input
-              id="profilePicInput"
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={(e) =>
-                setUser({ ...user, newProfilePic: e.target.files[0] })
-              }
-            /> 
-          </div> */}
         </div>
         <div className="form-section">
           <div className="form-field">

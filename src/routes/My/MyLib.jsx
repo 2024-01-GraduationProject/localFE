@@ -4,7 +4,7 @@ import Header2 from "components/Header/Header2";
 import boogi2 from "assets/img/boogi2.jpg";
 import api from "../../api"; // Axios 인스턴스 import
 import { useAuth } from "AuthContext";
-import CustomModal from "../../CustomModal";
+import CustomModal from "../../components/CustomModal";
 
 const MyLib = () => {
   const [activeTab, setActiveTab] = useState("책장");
@@ -47,65 +47,82 @@ const MyLib = () => {
   useEffect(() => {
     if (!userId) return; // userId가 로드되지 않았으면 아무 작업도 하지 않음
 
-    if (activeTab === "책장") {
-      // "독서 중" 책과 "독서 완료" 책 가져오기
-      const fetchBooks = async () => {
-        try {
-          // 독서 중 책 가져오기
-          const readingResponse = await api.get(`/bookshelf/reading`, {
-            params: { userId },
-          });
-          const readingBooksWithDetails = await Promise.all(
-            readingResponse.data.map(async (userBook) => {
-              const bookDetailsResponse = await api.get(
-                `/books/${userBook.bookId}`
-              );
-              const bookDetails = bookDetailsResponse.data;
+    const fetchBooks = async () => {
+      try {
+        if (activeTab === "책장") {
+          if (subTab === "독서 중") {
+            // 독서 중인 책 가져오기
+            const readingResponse = await api.get(`/bookshelf/reading`, {
+              params: { userId },
+            });
+            const readingBooksWithDetails = await Promise.all(
+              readingResponse.data.map(async (userBook) => {
+                const bookDetailsResponse = await api.get(
+                  `/books/${userBook.bookId}`
+                );
+                const bookDetails = bookDetailsResponse.data;
 
-              // lastReadPage 값을 소수점 첫째 자리에서 반올림
-              const progressRate = Math.round(userBook.lastReadPage * 10) / 10;
+                const progressRate =
+                  Math.round(userBook.lastReadPage * 10) / 10;
 
-              return {
-                ...userBook,
-                ...bookDetails,
-                startDate: userBook.startDate, // 독서 중 시작 날짜
-                progressRate,
-              };
-            })
-          );
+                return {
+                  ...userBook,
+                  ...bookDetails,
+                  startDate: userBook.startDate,
+                  progressRate,
+                };
+              })
+            );
 
-          // 독서 완료 책 가져오기
-          const completedResponse = await api.get(`/bookshelf/completed`, {
-            params: { userId },
-          });
-          const completedBooksWithDetails = await Promise.all(
-            completedResponse.data.map(async (userBook) => {
-              const bookDetailsResponse = await api.get(
-                `/books/${userBook.bookId}`
-              );
-              const bookDetails = bookDetailsResponse.data;
+            // 독서 완료 책 중 lastReadPage가 100이 아닌 책 가져오기
+            const completedResponse = await api.get(`/bookshelf/completed`, {
+              params: { userId },
+            });
+            const incompleteCompletedBooks = await Promise.all(
+              completedResponse.data
+                .filter((userBook) => userBook.lastReadPage < 100)
+                .map(async (userBook) => {
+                  const bookDetailsResponse = await api.get(
+                    `/books/${userBook.bookId}`
+                  );
+                  const bookDetails = bookDetailsResponse.data;
 
-              return {
-                ...userBook,
-                ...bookDetails,
-                endDate: userBook.endDate, // 독서 완료 종료 날짜
-              };
-            })
-          );
+                  return {
+                    ...userBook,
+                    ...bookDetails,
+                    startDate: userBook.startDate, // 독서 중 시작 날짜
+                    progressRate: Math.round(userBook.lastReadPage * 10) / 10, // 소수점 첫째 자리에서 반올림된 백분율
+                  };
+                })
+            );
 
-          setReadingBooks(readingBooksWithDetails);
-          setCompletedBooks(completedBooksWithDetails);
-        } catch (error) {
-          alert("책 데이터를 가져오는 중 오류가 발생했습니다.");
-        }
-      };
+            // 독서 중인 책 + lastReadPage가 100이 아닌 독서 완료 책 결합
+            setReadingBooks([
+              ...readingBooksWithDetails,
+              ...incompleteCompletedBooks,
+            ]);
+          } else if (subTab === "독서 완료") {
+            // 독서 완료 탭일 경우 독서 완료 책 목록 가져오기
+            const completedResponse = await api.get(`/bookshelf/completed`, {
+              params: { userId },
+            });
+            const completedBooksWithDetails = await Promise.all(
+              completedResponse.data.map(async (userBook) => {
+                const bookDetailsResponse = await api.get(
+                  `/books/${userBook.bookId}`
+                );
+                const bookDetails = bookDetailsResponse.data;
 
-      fetchBooks();
-    } else if (activeTab === "My Favorite") {
-      // 즐겨찾기 목록 가져오기
-      const fetchFavorites = async () => {
-        try {
-          // 즐겨찾기 목록을 가져오기
+                return {
+                  ...userBook,
+                  ...bookDetails,
+                  endDate: userBook.endDate, // 독서 완료 날짜
+                };
+              })
+            );
+            setCompletedBooks(completedBooksWithDetails);
+          }
+        } else if (activeTab === "My Favorite") {
           const favoritesResponse = await api.get(
             `/bookmarks/list?userId=${userId}`
           );
@@ -113,24 +130,22 @@ const MyLib = () => {
             (favorite) => favorite.bookId
           );
 
-          // 모든 책 목록을 가져와 userbookId 생성하고, 해당 책이 즐겨찾기인지 확인
           const booksResponse = await api.get("/books");
           const allBooks = booksResponse.data;
 
-          // 즐겨찾기 책 목록 필터링
           const favoriteBooks = allBooks.filter((book) =>
             favoriteBookIds.includes(book.bookId)
           );
 
           setFavorites(favoriteBooks);
-        } catch (error) {
-          alert("즐겨찾기 목록을 가져오는 중 오류가 발생했습니다.");
         }
-      };
+      } catch (error) {
+        alert("책 데이터를 가져오는 중 오류가 발생했습니다.");
+      }
+    };
 
-      fetchFavorites();
-    }
-  }, [activeTab, userId]);
+    fetchBooks();
+  }, [activeTab, subTab, userId]);
 
   useEffect(() => {
     // 탭이 변경될 때 편집 모드를 해제
