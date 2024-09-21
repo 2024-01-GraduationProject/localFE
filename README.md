@@ -1,29 +1,16 @@
-# 졸업 프로젝트(AI 이용 전자책 사이트)
+# 프로젝트 소개(AI 이용 전자책 웹사이트)
+숙명여자대학교 졸업프로젝트로 작성한 코드입니다. 
+"읽은 책을 오랫동안 기억하고 싶다"는 생각에서 출발하여, '사용자 취향을 기반으로 맞춤형 책을 추천'하고 '독서 후 AI가 던져주는 질문에 답변'하며 독서인들의 밀도 있는 독서 생활을 지원하는 웹사이트를 제작했습니다.
 
-## 사용 스택
+## 사용 스택 및 데이터 출처
 
 - React
 - SCSS
+- Spring Boot
 - git 파일 관리
+- ebook 데이터: <https://www.gutenberg.org/> 
 
-### 파일 설명
-
-- assets/img : 이미지, 아이콘 파일
-- assets/scss : scss 파일
-
-- components/Header/Header.jsx : 로그인 전 HomeView의 헤더
-- components/Header/Header2.jsx : 로그인 후 MainView의 헤더
-- components/Intro.jsx : 접속 시 첫 화면, 이메일 입력 후 첫달 무료로 시작하기
-
-- components/MainScreen : 로그인 후 메인화면 컴포넌트 나눠놓음
-
-- components/constants/index.js : 취향 선택 데이터 모아놓음
-
-- components/Join.jsx : 회원가입 화면
-- components/routes/Login : 간편 로그인, 로그인 화면
-
-- components/routes/My : 마이페이지, 내 서재
-
-- components/routes/Taste : 회원가입 후 취향 선택 화면
-
-- components/routes/views : 로그인 전 / 후 메인 화면
+## 팀원 소개
+- IT공학전공 **김도경**(FE)
+- IT공학전공 **임서현**(BE, ML)
+- IT공학전공 **홍정인**(BE)
