@@ -462,14 +462,14 @@ const BookReader = () => {
               onClick={toggleIndex}
               disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
             >
-              {isIndex ? <FaBookmark /> : <FaRegBookmark />}
+              {/*{isIndex ? <FaBookmark /> : <FaRegBookmark />}*/}
             </button>
           </div>
           <button className="nav-button right" onClick={handleNextPage}>
             다음
           </button>
 
-          <button
+          {/*<button
             className={`view-indexes ${showIndexes ? "active" : ""}`}
             onClick={handleViewIndexes}
           >
@@ -490,7 +490,7 @@ const BookReader = () => {
                 ))}
               </ul>
             </div>
-          )}
+          )} */}
           <div className="progress-bar-container">
             <div
               className="progress-bar"
