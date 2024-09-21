@@ -283,6 +283,7 @@
   background-color: rgba(255, 255, 255, 0.8); /* 불투명도 적용 */
   border: 2px solid rgba(0, 0, 0, 0.3); /* 불투명한 테두리 */
   padding: 10px 20px;
+  margin-right: 10px;
   border-radius: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.8); /* 불투명한 글자색 */
@@ -294,7 +295,7 @@
     content: "";
     position: absolute;
     top: -10px; /* 말풍선 꼬리 위치 */
-    left: 15%;
+    left: 10%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
@@ -309,7 +310,7 @@
     content: "";
     position: absolute;
     top: -12px; /* 말풍선 테두리 꼬리 위치 */
-    left: 50%;
+    left: 60%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
