@@ -229,7 +229,7 @@ const BookReader = () => {
                 if (progressPercentage === 100) {
                   setTimeout(() => {
                     setIsBookCompleted(true);
-                  }, 4000); // 마지막 페이지에서 4초 머물기
+                  }, 2000); // 마지막 페이지에서 2초 머물기
                 }
               } else {
                 console.warn("Location or CFI is undefined.");
