@@ -111,6 +111,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-family: "Do Hyeon", sans-serif;
+  outline: none;
 
   &.active {
     background-color: #a0d468;

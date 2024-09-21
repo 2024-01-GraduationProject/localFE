@@ -13,6 +13,7 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     position: relative;
     display: inline-block;
+    font-family: "Do Hyeon", sans-serif;
 
     &.highlight {
       position: relative;
@@ -49,6 +50,7 @@
       width: 500px; /* 컨테이너 너비 조정 */
       margin-bottom: 2.3rem;
       gap: 30px; /* 연령과 성별 사이의 거리 추가 */
+      font-family: "Do Hyeon", sans-serif;
     }
 
     /* 라벨과 드롭다운이 나란히 배치되도록 설정 */
@@ -67,13 +69,14 @@
     /* 드롭다운 스타일 */
     .custom-dropdown {
       position: relative;
-      width: 180px;
+      width: 160px;
       margin-bottom: 20px;
 
       .styled-select {
         appearance: none;
         width: 100%;
         padding: 8px 15px;
+        padding-left: 2px;
         font-size: 1rem;
         font-weight: bold;
         text-align: center;
@@ -101,9 +104,9 @@
         content: "▼";
         position: absolute;
         top: 50%;
-        right: 15px;
+        right: 12px;
         transform: translateY(-50%);
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         color: #afe06b;
         pointer-events: none;
       }
