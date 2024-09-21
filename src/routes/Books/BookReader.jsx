@@ -201,10 +201,6 @@ const BookReader = () => {
                   } else {
                     console.warn("Invalid CFI generated for completed book.");
                   }
-                } else {
-                  console.log(
-                    "No matching book found in completed list or book already fully read."
-                  );
                 }
               }
             } catch (error) {
@@ -282,7 +278,7 @@ const BookReader = () => {
         setRendition(null); // 상태 초기화
       }
     };
-  }, [bookInstance, isBookReady, lastReadCFI]);
+  }, [bookInstance, isBookReady]);
 
   // 키보드 이벤트 리스너 추가
   useEffect(() => {
@@ -330,6 +326,7 @@ const BookReader = () => {
               return queryString.toString();
             },
           });
+          console.log("Response from API:", response);
         } catch (error) {
           console.error(
             "Error saving progress:",
@@ -377,7 +374,9 @@ const BookReader = () => {
               userId: userId,
               bookId: bookId,
               lastReadPage: lastReadPage, // float 형식으로 저장
-              indices: indexes.map((index) => index.progress),
+              indices: indexes.map((index) =>
+                parseFloat(index.progress).toFixed(1)
+              ),
             },
 
             paramsSerializer: (params) => {
@@ -386,8 +385,13 @@ const BookReader = () => {
               queryString.append("bookId", params.bookId);
               queryString.append("lastReadPage", params.lastReadPage);
               params.indices.forEach((index, i) => {
-                queryString.append(`indices[${i}]`, encodeURIComponent(index)); // 여기서 인코딩
+                const formattedIndex = parseFloat(index).toFixed(1); // 소수점 첫째자리로 변환
+                queryString.append(
+                  `indices[${i}]`,
+                  encodeURIComponent(formattedIndex)
+                ); // 인코딩
               });
+
               return queryString.toString();
             },
           });
@@ -457,9 +461,15 @@ const BookReader = () => {
 
   const handleIndexClick = async (indexProgress) => {
     if (bookInstance && rendition) {
-      const cfi = bookInstance.locations.cfiFromPercentage(indexProgress / 100);
+      const cfi = bookInstance.locations.cfiFromPercentage(
+        (indexProgress / 100).toFixed(1)
+      );
       await rendition.display(cfi);
       setProgress(indexProgress);
+      console.log(
+        "Indices to be saved:",
+        indexes.map((index) => index.progress)
+      );
     }
   };
 
@@ -481,14 +491,14 @@ const BookReader = () => {
               onClick={toggleIndex}
               disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
             >
-              {/*{isIndex ? <FaBookmark /> : <FaRegBookmark />}*/}
+              {isIndex ? <FaBookmark /> : <FaRegBookmark />}
             </button>
           </div>
           <button className="nav-button right" onClick={handleNextPage}>
             다음
           </button>
 
-          {/*<button
+          <button
             className={`view-indexes ${showIndexes ? "active" : ""}`}
             onClick={handleViewIndexes}
           >
@@ -509,7 +519,7 @@ const BookReader = () => {
                 ))}
               </ul>
             </div>
-          )} */}
+          )}
           <div className="progress-bar-container">
             <div
               className="progress-bar"
