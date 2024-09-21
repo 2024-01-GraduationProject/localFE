@@ -25,7 +25,8 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
-  const handleSocialLogin = (provider) => {
+  {
+    /*const handleSocialLogin = (provider) => {
     switch (provider) {
       case "google":
         googleLoginRef.current.triggerGoogleLogin();
@@ -36,7 +37,8 @@ const Login = () => {
       default:
         break;
     }
-  };
+  };*/
+  }
 
   // 로그인 요청 핸들러
   const handleLogin = async (e) => {

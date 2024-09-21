@@ -30,8 +30,6 @@ const BoogiChatbot = () => {
       api
         .get(`/boogi/ask-question/${userId}/${encodedBookTitle}`)
         .then((response) => {
-          console.log(response.data); // 데이터 구조 확인용
-
           // 응답이 문자열인지 배열인지 확인
           if (Array.isArray(response.data)) {
             const messagesArray = response.data.map((item) => ({
@@ -48,7 +46,6 @@ const BoogiChatbot = () => {
           }
         })
         .catch((error) => {
-          console.error("Error response:", error.response.data);
           setMessages((prevMessages) => [
             ...prevMessages,
             {
@@ -113,7 +110,7 @@ const BoogiChatbot = () => {
             error.response?.data?.message ||
             error.message ||
             "답변 처리 중 오류가 발생했습니다.";
-          console.error("Error response:", errorMessage);
+
           setMessages((prevMessages) => [
             ...prevMessages,
             { sender: "boogi", text: errorMessage },
@@ -145,7 +142,7 @@ const BoogiChatbot = () => {
               setShowTypingIndicator(false);
             });
         });
-    }, 1000);
+    }, 500);
   };
 
   const handleNextQuestion = (response) => {

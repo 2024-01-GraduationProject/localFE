@@ -29,11 +29,6 @@ const SearchList = () => {
     }
   }, [location.state]);
 
-  const handleSearchResults = (results, query) => {
-    setSearchResults(results); // 검색 결과를 상태에 저장
-    setSearchWord(query); // 검색어를 상태에 저장
-  };
-
   if (!isAuthenticated) {
     return <div>로딩 중...</div>; // 로딩 중 메시지 표시
   }

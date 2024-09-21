@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Header2, MainNav, SearchBar } from "components";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Header2, MainNav } from "components";
 import api from "../../api";
 
 const BookCategory = () => {
@@ -9,6 +9,7 @@ const BookCategory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchBooksByCategory = async () => {
@@ -29,16 +30,11 @@ const BookCategory = () => {
     };
 
     fetchBooksByCategory(); // 컴포넌트가 마운트되면 API를 호출
-  }, [categoryName]); // categoryName이 변경될 때마다 데이터를 다시 가져옴
+  }, [categoryName, location]); // categoryName이 변경될 때마다 데이터를 다시 가져옴
 
   const goToBookDetail = (id) => {
     console.log("Navigating to book ID:", id);
     navigate(`/books/details/${id}`);
-  };
-
-  const handleSearchResults = (results) => {
-    // 검색 결과를 SearchList 페이지로 전달
-    navigate("/searchlist", { state: { searchResults: results } });
   };
 
   if (loading) return <p>Loading...</p>;

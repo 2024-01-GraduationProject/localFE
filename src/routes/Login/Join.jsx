@@ -92,7 +92,6 @@ const Join = () => {
           setIsNicknameAvailable(true);
         }
       } catch (error) {
-        console.error("Error checking nickname: ", error);
         setNicknameError(
           "닉네임 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
         );

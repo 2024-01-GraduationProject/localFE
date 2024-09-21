@@ -88,11 +88,6 @@ const EditMyPage = () => {
   };
 
   const handleSave = async () => {
-    console.log("isAuthenticated:", isAuthenticated);
-    console.log("currentPassword:", currentPassword);
-    console.log("isPasswordVerified:", isPasswordVerified);
-    console.log("hasChanges:", hasChanges());
-
     if (!isAuthenticated) {
       alert("로그인이 필요합니다.");
       return;
@@ -125,7 +120,7 @@ const EditMyPage = () => {
         newPassword,
         agreements: user.agreements,
       });
-      console.log("Response:", response);
+
       alert("저장이 완료되었습니다.");
       navigate("/mypage");
     } catch (error) {
@@ -157,7 +152,6 @@ const EditMyPage = () => {
       const checkPasswordResponse = await api.post("/check-password", {
         currentPassword,
       });
-      console.log(checkPasswordResponse.data);
       if (checkPasswordResponse.data) {
         setPasswordError("");
         setIsPasswordVerified(true);
@@ -167,7 +161,6 @@ const EditMyPage = () => {
         setIsPasswordVerified(false);
       }
     } catch (error) {
-      console.error("비밀번호 확인 실패: ", error);
       setPasswordError("비밀번호 확인에 실패했습니다. 다시 시도해주세요.");
       setIsPasswordVerified(false);
     }
@@ -199,7 +192,6 @@ const EditMyPage = () => {
         setIsNicknameAvailable(true);
       }
     } catch (error) {
-      console.error("닉네임 중복 확인 오류: ", error);
       setNicknameError(
         "닉네임 중복 확인 중 오류가 발생했습니다. 관리자에게 문의해주세요."
       );

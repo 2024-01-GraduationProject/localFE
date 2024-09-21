@@ -22,7 +22,6 @@ const BookDetail = () => {
         const userResponse = await api.get("/user-data");
         setUserId(userResponse.data.userId); // 사용자 ID 저장
       } catch (err) {
-        console.error("사용자 데이터 가져오기 실패: ", err);
         setError("사용자 데이터를 가져오는 데 실패했습니다.");
       }
     };
@@ -50,7 +49,6 @@ const BookDetail = () => {
         const downloadStatus = await checkDownloadStatus();
         setIsDownloaded(downloadStatus);
       } catch (err) {
-        console.error(`데이터 가져오기 실패: `, err);
         setError("데이터를 가져오는 데 실패했습니다.");
       } finally {
         setIsLoading(false); // 데이터 로드 완료 후 로딩 상태 false로 설정
@@ -73,7 +71,6 @@ const BookDetail = () => {
 
       return currentBook ? currentBook.favorite : false; // 북마크 목록에 해당 책이 없으면 false 반환
     } catch (error) {
-      console.error("즐겨찾기 상태 확인 실패: ", error);
       setError("즐겨찾기 상태를 확인하는 데 실패했습니다.");
       return false; // 에러 발생 시 기본값 반환
     }
@@ -110,7 +107,6 @@ const BookDetail = () => {
       };
 
       // 다운로드 누르면 '독서 중'에 저장
-
       // URL에 쿼리 파라미터로 userId, bookId, startDate를 포함
       const url = `/bookshelf/add-to-reading?userId=${encodeURIComponent(
         userId
@@ -120,7 +116,6 @@ const BookDetail = () => {
 
       // requestData 대신 URL에 쿼리 파라미터로 데이터를 전송
       const response = await api.post(url);
-      console.log("response: ", response);
 
       setIsDownloaded(true);
     } catch (error) {
@@ -148,7 +143,6 @@ const BookDetail = () => {
       });
       setIsFavorite(true);
     } catch (error) {
-      console.error("즐겨찾기 추가 실패: ", error);
       setError("즐겨찾기 추가에 실패했습니다.");
     }
   };
@@ -165,7 +159,6 @@ const BookDetail = () => {
       });
       setIsFavorite(false);
     } catch (error) {
-      console.error("즐겨찾기 제거 실패: ", error);
       setError("즐겨찾기 제거에 실패했습니다.");
     }
   };

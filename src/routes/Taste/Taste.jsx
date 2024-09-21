@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import Header2 from "components/Header/Header";
 import logo from "assets/img/logo.png";
 import api from "../../api"; // Axios 인스턴스 import
 import { useAuth } from "AuthContext";
@@ -21,8 +20,6 @@ const Taste = () => {
   const [ageOptions, setAgeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
   const [bookCategoryOptions, setBookCategoryOptions] = useState([]);
-
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     // 인증되지 않은 사용자가 접근할 수 없도록 리디렉션
@@ -108,7 +105,6 @@ const Taste = () => {
         bookTaste: selectedBookTastes,
       });
       if (response.status === 200) {
-        console.log("선택된 정보가 서버에 전송되었습니다.");
         navigate("/tastenext", { state: { email, password } });
       } else {
         alert(`서버로 데이터 전송 실패: ${response.data.message}`);

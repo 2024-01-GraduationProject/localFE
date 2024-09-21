@@ -9,7 +9,6 @@ import {
   FaBookmark,
   FaRegBookmark,
 } from "react-icons/fa"; // 아이콘 임포트
-import { BoogiChatbot } from "components";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
 
 const BookReader = () => {
@@ -38,7 +37,6 @@ const BookReader = () => {
         const userResponse = await api.get("/user-data");
         setUserId(userResponse.data.userId); // 사용자 ID 저장
       } catch (err) {
-        console.error("사용자 데이터 가져오기 실패: ", err);
         alert("사용자 데이터를 가져오는 데 실패했습니다.");
         navigate("/login");
       }
@@ -68,10 +66,8 @@ const BookReader = () => {
           });
 
           await book.loaded.metadata;
-          console.log("Book metadata loaded.");
 
           await book.ready;
-          console.log("Book ready.");
 
           // 전체 페이지 수 계산
           await book.locations.generate(2000); // 2000은 기준점(텍스트 길이 기준)
@@ -105,14 +101,13 @@ const BookReader = () => {
         state: { userId, bookTitle, bookAuthor },
       });
     }
-  }, [isBookCompleted, bookId, userId, bookTitle, navigate]);
+  }, [isBookCompleted, bookId, userId, bookTitle, bookAuthor, navigate]);
 
   useEffect(() => {
     const renderBook = async () => {
       if (bookInstance && bookRef.current) {
         try {
           if (rendition) {
-            console.log("Destroying previous rendition...");
             if (rendition.destroy) {
               rendition.destroy();
             }
@@ -120,11 +115,9 @@ const BookReader = () => {
           }
 
           await bookInstance.ready;
-          console.log("Book instance is ready.");
 
           // spine이 준비되었는지 확인
           await bookInstance.spine.ready;
-          console.log("Book spine is ready.");
 
           const newRendition = bookInstance.renderTo(bookRef.current, {
             width: "100%",
@@ -153,12 +146,20 @@ const BookReader = () => {
 
           const fetchLastReadPage = async () => {
             try {
-              const response = await api.get("/bookshelf/reading", {
+              // 현재 읽고 있는 책의 데이터 가져오기
+              const readingResponse = await api.get("/bookshelf/reading", {
+                params: { userId },
+              });
+              // 독서 완료 중 lastReadPage가 100이 아닌 책 가져오기
+              const completedResponse = await api.get("/bookshelf/completed", {
                 params: { userId },
               });
 
-              if (response.status === 200 && response.data.length > 0) {
-                const userBook = response.data.find(
+              if (
+                readingResponse.status === 200 &&
+                readingResponse.data.length > 0
+              ) {
+                const userBook = readingResponse.data.find(
                   (book) => book.bookId === parseInt(bookId)
                 );
 
@@ -169,7 +170,6 @@ const BookReader = () => {
 
                   if (cfi) {
                     setLastReadCFI(cfi); // CFI를 상태에 저장
-                    console.log("Calculated CFI:", cfi);
                   } else {
                     console.warn("Invalid CFI generated.");
                   }
@@ -179,6 +179,34 @@ const BookReader = () => {
               } else {
                 console.log("No reading progress data found.");
               }
+
+              // 완료된 책에서 lastReadPage가 100 미만인 경우 확인
+              if (
+                completedResponse.status === 200 &&
+                completedResponse.data.length > 0
+              ) {
+                const completedBook = completedResponse.data.find(
+                  (book) =>
+                    book.bookId === parseInt(bookId) && book.lastReadPage < 100
+                );
+
+                if (completedBook) {
+                  const lastReadPage = completedBook.lastReadPage / 100; // 페이지 비율로 변환
+                  const cfi =
+                    bookInstance.locations.cfiFromPercentage(lastReadPage);
+
+                  if (cfi) {
+                    setLastReadCFI(cfi);
+                    await rendition.display(cfi); // 마지막 읽은 페이지부터 렌더링
+                  } else {
+                    console.warn("Invalid CFI generated for completed book.");
+                  }
+                } else {
+                  console.log(
+                    "No matching book found in completed list or book already fully read."
+                  );
+                }
+              }
             } catch (error) {
               console.error("Failed to fetch last read page:", error);
             }
@@ -187,7 +215,6 @@ const BookReader = () => {
           const updateLocation = () => {
             requestAnimationFrame(() => {
               const location = newRendition.currentLocation();
-              console.log("Current Location:", location);
 
               if (location?.start?.cfi) {
                 const currentPage = bookInstance.locations.percentageFromCfi(
@@ -200,7 +227,9 @@ const BookReader = () => {
 
                 // 진도율이 100% 이면 완독
                 if (progressPercentage === 100) {
-                  setIsBookCompleted(true);
+                  setTimeout(() => {
+                    setIsBookCompleted(true);
+                  }, 4000); // 마지막 페이지에서 4초 머물기
                 }
               } else {
                 console.warn("Location or CFI is undefined.");
@@ -209,31 +238,25 @@ const BookReader = () => {
           };
 
           newRendition.on("rendered", async (section) => {
-            console.log("Section rendered:", section);
             updateLocation();
 
             await bookInstance.ready;
-            console.log("Book instance is ready.");
 
             setTimeout(async () => {
               await fetchLastReadPage();
             }, 1000); // Adjust delay if necessary
-            console.log("Fetch last read page initiated.");
           });
 
           newRendition.on("relocated", (location) => {
-            console.log("Relocated to:", location);
             updateLocation();
           });
 
-          console.log("Rendition instance created and listener attached.");
-
           await bookInstance.spine.ready;
-          console.log("Book spine is ready.");
+
           const spineItems = bookInstance.spine?.spineItems;
           if (spineItems?.length > 0) {
             const cfiToDisplay = lastReadCFI || spineItems[0]?.href;
-            console.log(`Displaying page: ${cfiToDisplay}`);
+
             await newRendition.display(cfiToDisplay);
             console.log("Book displayed.");
           } else {
@@ -248,9 +271,6 @@ const BookReader = () => {
     renderBook();
 
     return () => {
-      /*if (resizeObserver) {
-        resizeObserver.disconnect(); // ResizeObserver 해제
-      }*/
       if (rendition) {
         try {
           if (rendition.destroy) {
@@ -263,7 +283,7 @@ const BookReader = () => {
       }
     };
   }, [bookInstance, isBookReady, lastReadCFI]);
-  // isBookReady
+
   // 키보드 이벤트 리스너 추가
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -310,7 +330,6 @@ const BookReader = () => {
               return queryString.toString();
             },
           });
-          console.log("Progress saved successfully.", response);
         } catch (error) {
           console.error(
             "Error saving progress:",

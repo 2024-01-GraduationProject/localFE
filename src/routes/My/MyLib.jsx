@@ -96,11 +96,16 @@ const MyLib = () => {
                 })
             );
 
-            // 독서 중인 책 + lastReadPage가 100이 아닌 독서 완료 책 결합
-            setReadingBooks([
+            // 독서 중인 책 + lastReadPage가 100이 아닌 독서 완료 책 결합 후 정렬
+            const combinedBooks = [
               ...readingBooksWithDetails,
               ...incompleteCompletedBooks,
-            ]);
+            ];
+            combinedBooks.sort(
+              (a, b) => new Date(b.startDate) - new Date(a.startDate)
+            );
+
+            setReadingBooks(combinedBooks);
           } else if (subTab === "독서 완료") {
             // 독서 완료 탭일 경우 독서 완료 책 목록 가져오기
             const completedResponse = await api.get(`/bookshelf/completed`, {
@@ -119,6 +124,10 @@ const MyLib = () => {
                   endDate: userBook.endDate, // 독서 완료 날짜
                 };
               })
+            );
+            // 정렬: 최신 완료 책 먼저
+            completedBooksWithDetails.sort(
+              (a, b) => new Date(b.endDate) - new Date(a.endDate)
             );
             setCompletedBooks(completedBooksWithDetails);
           }
@@ -154,9 +163,12 @@ const MyLib = () => {
   }, [activeTab]);
 
   const handleBookClick = (bookId, tab) => {
-    if (tab === "독서 중" || tab === "My Favorite") {
+    if (tab === "독서 중") {
       // 독서 중인 책은 바로 리더기로 이동
       navigate(`/books/${bookId}/content`);
+    } else if (tab === "My Favorite") {
+      // 즐겨찾기 책은 책 상세 페이지로 이동
+      navigate(`/books/details/${bookId}`);
     } else if (tab === "독서 완료") {
       // 독서 완료된 책은 커스텀 모달을 띄움
       setSelectedCompletedBook(bookId); // 클릭한 책 ID 저장
