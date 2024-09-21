@@ -6,7 +6,7 @@
 .header__inner {
   @include flex-between;
   padding: 1rem;
-  background-color: transparent;
+  background-color: transparent !important;
 
   .header__logo {
     font-size: 1rem;
@@ -30,7 +30,7 @@
         font-size: 18px;
         position: relative;
         border: 0;
-        background-color: transparent;
+        background-color: transparent !important;
         cursor: pointer;
 
         &::before {
