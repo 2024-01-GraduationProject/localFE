@@ -4,8 +4,6 @@ import api from "../../api";
 
 const NewBook = () => {
   const [books, setBooks] = useState([]); // 신간 8권 저장하는 상태
-  // const [currentPage, setCurrentPage] = useState(0); // 현재 페이지를 저장하는 상태
-  // const booksPerPage = 4; // 한 번에 보여줄 책의 수
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +43,8 @@ const NewBook = () => {
   return (
     <div className="booklist-wrapper">
       <div className="main-booklist-component">
-      <strong className="highlightNew">New! </strong> <span class="groupingText">새로 들어온 책</span>
+        <strong className="highlightNew">New! </strong>{" "}
+        <span className="groupingText">새로 들어온 책</span>
       </div>
 
       <div className="newbook-list-wrapper">
@@ -57,11 +56,11 @@ const NewBook = () => {
               onClick={() => goToBookDetail(book.id)}
             >
               <div className="book-cover-wrapper">
-              <img
-                src={book.coverImageUrl}
-                alt={book.title}
-                className="book-cover"
-              />
+                <img
+                  src={book.coverImageUrl}
+                  alt={book.title}
+                  className="book-cover"
+                />
               </div>
               <div className="book-details">
                 <h3 className="book-title">{book.title}</h3>

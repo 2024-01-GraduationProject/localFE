@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import {
   Header2,
   MainNav,
@@ -8,23 +7,8 @@ import {
   FamousBook,
   RecommendBook,
 } from "components";
-import { useAuth } from "AuthContext";
 
 const MainView = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    // 인증 상태가 false이면 로그인 페이지로 리디렉션
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
-
-  if (!isAuthenticated) {
-    return <div>로딩 중...</div>; // 로딩 중 메시지 표시
-  }
-
   return (
     <>
       <Header2 />

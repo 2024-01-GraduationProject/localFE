@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FamousBook, Header2 } from "components";
 import api from "../../api";
-import { useAuth } from "AuthContext";
-
 const BookDetail = () => {
   const { bookId } = useParams(); // URL 파라미터로부터 book_id를 가져옴.
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
-
   const [book, setBook] = useState(null);
+  const [bookCategories, setBookCategories] = useState([]); // 카테고리 배열 추가
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [error, setError] = useState(null); // 에러 상태 추가
@@ -31,15 +28,13 @@ const BookDetail = () => {
 
   useEffect(() => {
     if (userId === null) return; // 사용자 ID가 로드되지 않았으면 아무 작업도 하지 않음
-    if (!isAuthenticated) {
-      navigate("/login"); // 로그인 페이지로 리다이렉트
-      return;
-    }
+
     const fetchBookAndUserbookId = async () => {
       try {
         // 책 정보를 가져오기
         const bookResponse = await api.get(`/books/${bookId}`);
-        setBook(bookResponse.data);
+        setBook(bookResponse.data.book);
+        setBookCategories(bookResponse.data.bookCategory);
 
         // 즐겨찾기 상태 확인
         const isFav = await checkFavoriteStatus(`${userId}-${bookId}`);
@@ -100,7 +95,6 @@ const BookDetail = () => {
     try {
       const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜를 가져옴 (yyyy-mm-dd)
       const requestData = {
-        //userbookId: `${userId}-${bookId}`, // userId와 book_id를 결합하여 userbookId 생성
         userId: parseInt(userId),
         bookId: parseInt(bookId),
         startDate: currentDate,
@@ -132,11 +126,6 @@ const BookDetail = () => {
   };
 
   const handleAddBookmark = async () => {
-    if (!isAuthenticated) {
-      navigate("/login"); // 로그인 페이지로 리다이렉트
-      return;
-    }
-
     try {
       await api.post(`/bookmarks/addBook`, null, {
         params: { userId, bookId: bookId },
@@ -148,11 +137,6 @@ const BookDetail = () => {
   };
 
   const handleRemoveBookmark = async () => {
-    if (!isAuthenticated) {
-      navigate("/login"); // 로그인 페이지로 리다이렉트
-      return;
-    }
-
     try {
       await api.delete(`/bookmarks/remove`, {
         params: { userId, bookId: bookId },
@@ -214,13 +198,20 @@ const BookDetail = () => {
           </div>
           <div className="info-item publisher">
             <p>
-              <span
-                className="category-link"
-                onClick={() => navigate(`/books/category/${book.category}`)}
-              >
-                {book.category}
-              </span>{" "}
-              | {book.publisher} | {book.publicationDate}
+              {book.publisher} | {book.publicationDate}
+            </p>
+            <p>
+              {bookCategories
+                .map((category, index) => (
+                  <span
+                    key={index}
+                    className="category-link"
+                    onClick={() => navigate(`/books/category/${category}`)}
+                  >
+                    {category}
+                  </span>
+                ))
+                .reduce((prev, curr) => [prev, " , ", curr])}{" "}
             </p>
           </div>
         </div>

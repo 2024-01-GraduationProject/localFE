@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Header2 from "components/Header/Header2";
 import boogi2 from "assets/img/boogi2.jpg";
 import api from "../../api"; // Axios 인스턴스 import
-import { useAuth } from "AuthContext";
 import CustomModal from "../../components/CustomModal";
 
 const MyLib = () => {
@@ -19,21 +18,14 @@ const MyLib = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(""); // 모달의 타입 (다시 읽으시겠습니까? / 추가 옵션)
   const [selectedCompletedBook, setSelectedCompletedBook] = useState(null);
-
-  const { isAuthenticated } = useAuth(); // 로그인 상태 가져오기
   const navigate = useNavigate();
 
   useEffect(() => {
     // 사용자 데이터 가져오기
     const fetchUserData = async () => {
-      if (!isAuthenticated) {
-        navigate("/login"); // 로그인 페이지로 리다이렉트
-        return;
-      }
-
       try {
         // 닉네임 및 사용자 ID 가져오기
-        const userDataResponse = await api.get("/user-data");
+        const userDataResponse = await api.get(`/user-data`);
         const { userId, nickname } = userDataResponse.data;
         setNickname(nickname);
         setUserId(userId);
@@ -42,10 +34,10 @@ const MyLib = () => {
       }
     };
     fetchUserData();
-  }, [isAuthenticated, navigate]);
+  }, [navigate]);
 
   useEffect(() => {
-    if (!userId) return; // userId가 로드되지 않았으면 아무 작업도 하지 않음
+    if (!userId) return;
 
     const fetchBooks = async () => {
       try {
@@ -60,8 +52,8 @@ const MyLib = () => {
                 const bookDetailsResponse = await api.get(
                   `/books/${userBook.bookId}`
                 );
-                const bookDetails = bookDetailsResponse.data;
-
+                const bookDetails = bookDetailsResponse.data.book;
+                console.log("bookDetails: ", bookDetails);
                 const progressRate =
                   Math.round(userBook.lastReadPage * 10) / 10;
 
@@ -85,7 +77,7 @@ const MyLib = () => {
                   const bookDetailsResponse = await api.get(
                     `/books/${userBook.bookId}`
                   );
-                  const bookDetails = bookDetailsResponse.data;
+                  const bookDetails = bookDetailsResponse.data.book;
 
                   return {
                     ...userBook,
@@ -116,7 +108,7 @@ const MyLib = () => {
                 const bookDetailsResponse = await api.get(
                   `/books/${userBook.bookId}`
                 );
-                const bookDetails = bookDetailsResponse.data;
+                const bookDetails = bookDetailsResponse.data.book;
 
                 return {
                   ...userBook,
@@ -139,7 +131,7 @@ const MyLib = () => {
             (favorite) => favorite.bookId
           );
 
-          const booksResponse = await api.get("/books");
+          const booksResponse = await api.get(`/books`);
           const allBooks = booksResponse.data;
 
           const favoriteBooks = allBooks.filter((book) =>

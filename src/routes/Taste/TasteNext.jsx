@@ -1,30 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import boogi2 from "assets/img/boogi2.jpg";
 import logo from "assets/img/logo.png";
-import { useAuth } from "AuthContext";
 
 const TasteNext = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      // 인증되지 않은 경우 로그인 페이지로 이동
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
-
-  // 로딩 중일 때 로딩 메시지 표시
-  if (!isAuthenticated) {
-    return <div>로딩 중...</div>;
-  }
 
   return (
     <>
       <header id="header" role="banner">
         <div className="header__inner">
-          <span className="header__logo" onClick={() => handleNavigate("/")}>
+          <span className="header__logo" onClick={() => navigate("/")}>
             <img src={logo} alt="로고"></img>
           </span>
         </div>

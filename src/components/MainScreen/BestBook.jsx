@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "AuthContext";
 import api from "../../api";
 import { FaRegThumbsUp } from "react-icons/fa";
 
@@ -10,13 +9,8 @@ const BestBook = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login"); // 로그인 페이지로 리다이렉트
-      return;
-    }
     const fetchBestBooks = async () => {
       try {
         // 추천 도서 가져오기
@@ -39,7 +33,7 @@ const BestBook = () => {
     }, 10000); // 5초마다 슬라이드
 
     return () => clearInterval(interval);
-  }, [isAuthenticated, navigate, bestBooks.length]);
+  }, [navigate, bestBooks.length]);
 
   const goToBookDetail = (id) => {
     navigate(`/books/details/${id}`);

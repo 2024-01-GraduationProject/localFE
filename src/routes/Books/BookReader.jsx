@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ePub from "epubjs";
 import api from "../../api";
 import { debounce } from "debounce";
-import { useAuth } from "../../AuthContext";
 import {
   FaRegArrowAltCircleLeft,
   FaBookmark,
@@ -26,7 +25,6 @@ const BookReader = () => {
   const [isBookReady, setIsBookReady] = useState(false);
   const [bookTitle, setBookTitle] = useState(""); // 책 제목 상태 추가
   const [bookAuthor, setBookAuthor] = useState("");
-  const { isAuthenticated, logout } = useAuth();
   const [lastReadCFI, setLastReadCFI] = useState(null);
   const [isBookCompleted, setIsBookCompleted] = useState(false); // 책 완독 상태 추가
   const navigate = useNavigate();
@@ -34,7 +32,7 @@ const BookReader = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await api.get("/user-data");
+        const userResponse = await api.get(`/user-data`);
         setUserId(userResponse.data.userId); // 사용자 ID 저장
       } catch (err) {
         alert("사용자 데이터를 가져오는 데 실패했습니다.");
@@ -50,12 +48,15 @@ const BookReader = () => {
       try {
         const response = await api.get(`/books/${bookId}/content`, {
           responseType: "arraybuffer",
-          headers: { Accept: "application/epub+zip" },
+          headers: {
+            Accept: "application/epub+zip",
+            //Authorization: `Bearer ${token}`, // Bearer 토큰 추가
+          },
         });
 
         const bookDetailResponse = await api.get(`/books/${bookId}`);
-        setBookTitle(bookDetailResponse.data.title);
-        setBookAuthor(bookDetailResponse.data.author);
+        setBookTitle(bookDetailResponse.data.book.title);
+        setBookAuthor(bookDetailResponse.data.book.author);
 
         if (response.status === 200) {
           const arrayBuffer = response.data;
@@ -133,7 +134,7 @@ const BookReader = () => {
 
           try {
             // 예를 들어, start() 호출 시 발생할 수 있는 예외 처리
-            await newRendition.start(); // (이 부분은 ePub.js 라이브러리의 API에 따라 다를 수 있음)
+            await newRendition.start();
           } catch (error) {
             console.error("Error starting rendition:", error);
           }
@@ -147,11 +148,11 @@ const BookReader = () => {
           const fetchLastReadPage = async () => {
             try {
               // 현재 읽고 있는 책의 데이터 가져오기
-              const readingResponse = await api.get("/bookshelf/reading", {
+              const readingResponse = await api.get(`/bookshelf/reading`, {
                 params: { userId },
               });
               // 독서 완료 중 lastReadPage가 100이 아닌 책 가져오기
-              const completedResponse = await api.get("/bookshelf/completed", {
+              const completedResponse = await api.get(`/bookshelf/completed`, {
                 params: { userId },
               });
 
@@ -170,14 +171,11 @@ const BookReader = () => {
 
                   if (cfi) {
                     setLastReadCFI(cfi); // CFI를 상태에 저장
+                    await newRendition.display(cfi); // 마지막 읽은 페이지로 이동
                   } else {
                     console.warn("Invalid CFI generated.");
                   }
-                } else {
-                  console.log("No matching book found for this user.");
                 }
-              } else {
-                console.log("No reading progress data found.");
               }
 
               // 완료된 책에서 lastReadPage가 100 미만인 경우 확인
@@ -302,7 +300,7 @@ const BookReader = () => {
   // 진도율이 변경될 때마다 저장하는 로직 추가
   useEffect(() => {
     const saveProgress = async () => {
-      if (progress > 0 && isAuthenticated && userId) {
+      if (progress > 0 && userId) {
         try {
           // 확인: 데이터가 올바른 형식인지 검토
 
@@ -326,7 +324,6 @@ const BookReader = () => {
               return queryString.toString();
             },
           });
-          console.log("Response from API:", response);
         } catch (error) {
           console.error(
             "Error saving progress:",
@@ -337,13 +334,13 @@ const BookReader = () => {
     };
 
     saveProgress();
-  }, [progress, isAuthenticated, userId, bookId]);
+  }, [progress, userId, bookId]);
 
   // 창을 나가기 전 또는 로그아웃 시 진도율 저장
   useEffect(() => {
     // `beforeunload` 이벤트 핸들러
     const handleBeforeUnload = () => {
-      if (progress > 0 && isAuthenticated && userId) {
+      if (progress > 0 && userId) {
         const lastReadPage = (progress / 100) * 100;
 
         const url = new URL(`/bookshelf/completeBook`, window.location.origin);
@@ -366,7 +363,7 @@ const BookReader = () => {
 
     // 로그아웃 시 호출될 함수
     const wrappedLogout = async () => {
-      if (progress > 0 && isAuthenticated && userId) {
+      if (progress > 0 && userId) {
         const lastReadPage = (progress / 100) * 100;
         try {
           await api.put(`/bookshelf/completeBook`, null, {
@@ -400,7 +397,8 @@ const BookReader = () => {
           console.error("Error saving progress before logout:", error);
         }
       }
-      logout(); // 실제 로그아웃 수행
+      localStorage.removeItem("authToken");
+      navigate("/login"); // 실제 로그아웃 수행
     };
 
     // 이벤트 리스너 등록
@@ -410,7 +408,7 @@ const BookReader = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [progress, indexes, isAuthenticated, userId, bookId, logout]);
+  }, [progress, indexes, userId, bookId]);
 
   const handleNextPage = () => {
     if (rendition) {
@@ -433,11 +431,6 @@ const BookReader = () => {
   };
 
   const toggleIndex = () => {
-    if (!isAuthenticated) {
-      console.warn("User must be authenticated to bookmark.");
-      return;
-    }
-
     const newIndex = { progress }; // 현재 페이지 진도율 저장
 
     setIndexes((prevIndexes) => {
@@ -461,9 +454,7 @@ const BookReader = () => {
 
   const handleIndexClick = async (indexProgress) => {
     if (bookInstance && rendition) {
-      const cfi = bookInstance.locations.cfiFromPercentage(
-        (indexProgress / 100).toFixed(1)
-      );
+      const cfi = bookInstance.locations.cfiFromPercentage(indexProgress / 100);
       await rendition.display(cfi);
       setProgress(indexProgress);
       console.log(
@@ -489,7 +480,6 @@ const BookReader = () => {
             <button
               className={`index-button ${isIndex ? "active" : ""}`}
               onClick={toggleIndex}
-              disabled={!isAuthenticated} // 인증되지 않은 경우 버튼 비활성화
             >
               {isIndex ? <FaBookmark /> : <FaRegBookmark />}
             </button>
@@ -526,7 +516,6 @@ const BookReader = () => {
               style={{ width: `${progress}%` }}
             ></div>
             <div className="progress-text" style={{ left: `${progress}%` }}>
-              {/*{Math.round(progress)}%*/}
               {progress.toFixed(1)}%
             </div>
           </div>

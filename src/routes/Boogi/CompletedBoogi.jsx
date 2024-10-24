@@ -44,8 +44,8 @@ const CompletedBoogi = () => {
     api
       .get(`/books/${bookId}`)
       .then((response) => {
-        setBookTitle(response.data.title); // 책 제목 설정
-        setBookAuthor(response.data.author); // 책 저자 설정
+        setBookTitle(response.data.book.title); // 책 제목 설정
+        setBookAuthor(response.data.book.author); // 책 저자 설정
       })
       .catch((error) => {
         setError(

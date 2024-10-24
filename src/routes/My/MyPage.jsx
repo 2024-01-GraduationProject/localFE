@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Header2 } from "components";
 import boogi3 from "../../assets/img/boogi3.jpg";
 import api from "../../api";
-import { useAuth } from "AuthContext";
 import { MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { IoMdBook } from "react-icons/io";
@@ -11,15 +10,9 @@ import { LuSettings } from "react-icons/lu";
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login"); // Redirect to login if not authenticated
-      return;
-    }
-
     const fetchUserData = async () => {
       try {
         const response = await api.get("/user-data");
@@ -30,7 +23,7 @@ const MyPage = () => {
     };
 
     fetchUserData();
-  }, [isAuthenticated, navigate]);
+  }, [navigate]);
 
   if (!user) return <p>Loading...</p>;
 
