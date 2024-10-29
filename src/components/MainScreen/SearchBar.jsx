@@ -23,7 +23,7 @@ const SearchBar = ({ onSearch }) => {
     }
 
     try {
-      const response = await api.get("/books/search", {
+      const response = await api.get(`/books/search`, {
         params: { searchWord },
       });
 

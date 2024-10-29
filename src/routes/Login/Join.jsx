@@ -80,7 +80,7 @@ const Join = () => {
     } else {
       // 닉네임 중복 확인 API 호출
       try {
-        const response = await api.post("/validate-nickname", { nickname });
+        const response = await api.post(`/validate-nickname`, { nickname });
 
         if (response.data.isDuplicate) {
           setNicknameError("이미 사용 중인 닉네임입니다.");
@@ -140,7 +140,7 @@ const Join = () => {
 
     if (passwordCheckHandler(password)) {
       try {
-        const response = await api.post("/register", {
+        const response = await api.post(`/register`, {
           email,
           password,
           nickname,

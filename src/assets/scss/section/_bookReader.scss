@@ -14,7 +14,6 @@
     background-color: #f8f9fa;
     display: flex;
     flex-direction: row;
-    //box-sizing: border-box;
     align-items: center;
     justify-content: center;
     padding: 2px;
@@ -77,8 +76,6 @@
 
 .progress-bar-container {
   margin-top: 1em;
-  //bottom: 10px;
-  //left: 0;
   width: 50%;
   height: 10px;
   background-color: #e0e0e0;
@@ -94,7 +91,6 @@
 .progress-text {
   position: absolute;
   top: 12px; // 진도율 바로 밑에 숫자 위치
-  //left: 50%;
   transform: translateX(-50%); // 가운데 정렬
   font-size: 0.8rem;
   color: #333;
@@ -148,7 +144,6 @@
 // 인덱스 리스트 스타일
 .indexes-list {
   position: absolute;
-  //top: 8%;
   bottom: 13%;
   right: 1.5%;
   width: 100px; /* 북마크 메뉴의 폭 */

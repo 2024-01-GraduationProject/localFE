@@ -17,7 +17,7 @@ const MainNav = () => {
     // 책 카테고리 데이터 가져오기
     const fetchCategories = async () => {
       try {
-        const response = await api.get("/categories");
+        const response = await api.get(`/categories`);
         setCategoryOptions(response.data);
       } catch (error) {
         console.log("책 카테고리를 가져오는 중 오류가 발생했습니다.");
@@ -49,7 +49,7 @@ const MainNav = () => {
   useEffect(() => {
     // 현재 경로에서 카테고리 추출하여 selectedCategory 업데이트
     const currentCategory = decodeURIComponent(
-      location.pathname.split("/books/category/")[1] || ""
+      location.pathname.split(`/books/category/`)[1] || ""
     );
     setSelectedCategory(currentCategory || null);
   }, [location]);

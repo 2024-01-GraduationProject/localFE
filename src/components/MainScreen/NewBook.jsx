@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api";
 
 const NewBook = () => {
-  const [books, setBooks] = useState([]); // 신간 8권 저장하는 상태
+  const [books, setBooks] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 책 목록을 가져옴
     const fetchBooks = async () => {
       try {
-        const response = await api.get("/books");
+        const response = await api.get(`/books`);
         // 책 목록을 출판일 기준으로 내림차순 정렬
         const sortedBooks = response.data
           .sort(

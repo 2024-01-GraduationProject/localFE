@@ -62,7 +62,7 @@ const CompletedBoogi = () => {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate(-1); // 이전 페이지로 이동
   };
 
   if (loading) {

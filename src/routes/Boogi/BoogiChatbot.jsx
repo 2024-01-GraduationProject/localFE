@@ -72,7 +72,7 @@ const BoogiChatbot = () => {
     // 답변 전송 후 챗봇 응답
     setTimeout(() => {
       api
-        .post("/boogi/answer", userInput, {
+        .post(`/boogi/answer`, userInput, {
           params: {
             userId,
             question: messages[messages.length - 1].text,
@@ -120,7 +120,7 @@ const BoogiChatbot = () => {
         .finally(() => {
           // 사용자 답변을 DB에 저장
           api
-            .post("/boogi/save-answer", {
+            .post(`/boogi/save-answer`, {
               userId,
               bookId,
               answer: userInput,
@@ -152,7 +152,7 @@ const BoogiChatbot = () => {
 
     setTimeout(() => {
       api
-        .post("/boogi/next-question", null, {
+        .post(`/boogi/next-question`, null, {
           params: {
             userId,
             response,

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FamousBook, Header2 } from "components";
 import api from "../../api";
+
 const BookDetail = () => {
   const { bookId } = useParams(); // URL 파라미터로부터 book_id를 가져옴.
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const BookDetail = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await api.get("/user-data");
+        const userResponse = await api.get(`/user-data`);
         setUserId(userResponse.data.userId); // 사용자 ID 저장
       } catch (err) {
         setError("사용자 데이터를 가져오는 데 실패했습니다.");
@@ -56,7 +57,7 @@ const BookDetail = () => {
   const checkFavoriteStatus = async () => {
     try {
       // 새로운 북마크 목록 조회 엔드포인트
-      const bookmarkResponse = await api.get("/bookmarks/list", {
+      const bookmarkResponse = await api.get(`/bookmarks/list`, {
         params: { userId },
       });
       const bookmarks = bookmarkResponse.data;

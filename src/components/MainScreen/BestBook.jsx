@@ -14,7 +14,7 @@ const BestBook = () => {
     const fetchBestBooks = async () => {
       try {
         // 추천 도서 가져오기
-        const booksResponse = await api.get("/books/best");
+        const booksResponse = await api.get(`/books/best`);
         const bestBooks = booksResponse.data;
         setBestBooks(bestBooks);
       } catch (err) {
@@ -30,7 +30,7 @@ const BestBook = () => {
       setCurrentIndex((prevIndex) =>
         prevIndex === bestBooks.length - 1 ? 0 : prevIndex + 1
       );
-    }, 10000); // 5초마다 슬라이드
+    }, 10000); // 슬라이드
 
     return () => clearInterval(interval);
   }, [navigate, bestBooks.length]);

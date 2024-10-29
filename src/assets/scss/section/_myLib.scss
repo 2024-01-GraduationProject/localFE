@@ -97,7 +97,6 @@
 
     .mylib-book-item {
       width: calc(30% - 2px); /* 각 책 항목의 너비를 조정 */
-      //max-width: calc(30% - 10px); /* 최대 너비 설정 */
       margin-bottom: 1em;
       text-align: center;
       display: flex;
@@ -132,7 +131,6 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
       &.selected {
-        //border: 3px solid black;
         opacity: 0.6;
       }
     }

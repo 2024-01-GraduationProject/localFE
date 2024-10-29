@@ -8,7 +8,6 @@ import {
   FaBookmark,
   FaRegBookmark,
 } from "react-icons/fa"; // 아이콘 임포트
-import { MdOutlineExpandCircleDown } from "react-icons/md";
 
 const BookReader = () => {
   const { bookId } = useParams();
@@ -50,7 +49,6 @@ const BookReader = () => {
           responseType: "arraybuffer",
           headers: {
             Accept: "application/epub+zip",
-            //Authorization: `Bearer ${token}`, // Bearer 토큰 추가
           },
         });
 

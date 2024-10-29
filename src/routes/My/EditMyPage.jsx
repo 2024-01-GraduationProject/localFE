@@ -24,10 +24,10 @@ const EditMyPage = () => {
       try {
         const [userData, agesData, gendersData, categoriesData] =
           await Promise.all([
-            api.get("/user-data"),
-            api.get("/ages"),
-            api.get("/genders"),
-            api.get("/categories"),
+            api.get(`/user-data`),
+            api.get(`/ages`),
+            api.get(`/genders`),
+            api.get(`/categories`),
           ]);
 
         setUser({
@@ -95,7 +95,7 @@ const EditMyPage = () => {
 
     try {
       // 사용자 데이터 업데이트 요청
-      const response = await api.post("/update-userData", {
+      const response = await api.post(`/update-userData`, {
         newNickname: user.newNickname,
         newEmail: user.newEmail,
         newAge: user.newAge,
@@ -133,7 +133,7 @@ const EditMyPage = () => {
     }
 
     try {
-      const checkPasswordResponse = await api.post("/check-password", {
+      const checkPasswordResponse = await api.post(`/check-password`, {
         currentPassword,
       });
       if (checkPasswordResponse.data) {
@@ -164,7 +164,7 @@ const EditMyPage = () => {
     }
 
     try {
-      const response = await api.post("/validate-nickname", {
+      const response = await api.post(`/validate-nickname`, {
         nickname: user.newNickname,
       });
 
